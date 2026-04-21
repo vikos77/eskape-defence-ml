@@ -1,0 +1,8 @@
+name: defensefinder
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  - defense-finder=2.0.2

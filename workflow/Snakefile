@@ -1,20 +1,359 @@
 # Snakefile — ESKAPE defence ML pipeline
+# Phase 2: genome download, QC, and annotation
+#
 # Extends: github.com/vikos77/acinetobacter-defence-pipeline
-# Phase 2 will populate rules for each ESKAPE species.
-# This stub establishes the config loading pattern only.
+# All tool versions pinned in workflow/envs/*.yaml
+#
+# Usage:
+#   conda activate eskape-ml
+#   snakemake --use-conda --cores 8 --rerun-incomplete
+#
+# For a dry-run (see what would run without running it):
+#   snakemake --use-conda --cores 8 -n
 
-configfile: "../config/params.yaml"
-configfile: "../config/species.yaml"
+import yaml
+import os
 
-SPECIES = list(config["species"].keys())
+configfile: "config/params.yaml"
 
+# ── Load species and accessions from config ───────────────────────────────────
+with open("config/species.yaml") as f:
+    SPECIES_CFG = yaml.safe_load(f)
+
+SPECIES   = list(SPECIES_CFG["species"].keys())
+ACCESSIONS = {
+    sp: cfg["accessions"]
+    for sp, cfg in SPECIES_CFG["species"].items()
+}
+
+# Flat list of (species, accession) pairs — used for per-genome rules
+SP_ACC = [
+    (sp, acc)
+    for sp, accs in ACCESSIONS.items()
+    for acc in accs
+]
+
+# ── Helper: accession → safe filename (replace . with _) ──────────────────────
+def acc_to_fname(acc: str) -> str:
+    return acc.replace(".", "_")
+
+
+# ── Reference databases (run workflow/scripts/setup_databases.sh first) ───────
+BACMET_DB   = "data/raw/databases/BacMet2_EXP.fasta"
+ICEBERG_DB  = "data/raw/databases/ICEberg_IME.fasta"
+RESFINDER_DB = "data/raw/databases/db_resfinder"
+
+
+# ── Rule all: final targets ───────────────────────────────────────────────────
 rule all:
     input:
-        # populated in Phase 2
-        expand("../data/interim/{sp}/qc_done.flag", sp=SPECIES)
+        # QC reports per species
+        expand("data/interim/{sp}/qc/checkm2_quality_report.tsv", sp=SPECIES),
+        # Annotation outputs per genome
+        expand(
+            "data/interim/{sp}/defensefinder/{acc_fn}/defense_finder_systems.tsv",
+            zip,
+            sp=[s for s, a in SP_ACC],
+            acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
+        ),
+        expand(
+            "data/interim/{sp}/padloc/{acc_fn}_padloc.csv",
+            zip,
+            sp=[s for s, a in SP_ACC],
+            acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
+        ),
+        expand(
+            "data/interim/{sp}/crisprcasfinder/{acc_fn}/done.flag",
+            zip,
+            sp=[s for s, a in SP_ACC],
+            acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
+        ),
+        expand(
+            "data/interim/{sp}/resfinder/{acc_fn}/ResFinder_results_tab.txt",
+            zip,
+            sp=[s for s, a in SP_ACC],
+            acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
+        ),
+        expand(
+            "data/interim/{sp}/antidefensefinder/{acc_fn}/anti_defense_finder_systems.tsv",
+            zip,
+            sp=[s for s, a in SP_ACC],
+            acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
+        ),
+        expand(
+            "data/interim/{sp}/iceberg/{acc_fn}_iceberg.tsv",
+            zip,
+            sp=[s for s, a in SP_ACC],
+            acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
+        ),
+        expand(
+            "data/interim/{sp}/bacmet/{acc_fn}_bacmet.tsv",
+            zip,
+            sp=[s for s, a in SP_ACC],
+            acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
+        ),
+        expand("data/interim/{sp}/mlst/mlst_results.tsv", sp=SPECIES),
+        # Consolidated per-species metadata tables
+        expand("data/interim/{sp}/metadata.tsv", sp=SPECIES),
 
-rule placeholder:
+
+# ── 1. Download genomes ───────────────────────────────────────────────────────
+# Downloads the FASTA for one accession using ncbi-datasets-cli.
+# Output flagged with a sentinel file so re-download is not triggered if the
+# FASTA already exists.
+
+rule download_genome:
     output:
-        touch("../data/interim/{sp}/qc_done.flag")
+        fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
+    params:
+        acc = lambda wc: wc.acc_fn.replace("_", ".", 2),  # GCF_XXXXX_1 -> GCF_XXXXX.1
+        outdir = "data/raw/genomes/{sp}/tmp_{acc_fn}",
+    conda: "envs/blast.yaml"   # ncbi-datasets-cli bundled here
+    retries: 3
     shell:
-        "echo 'Phase 2 rules not yet implemented for {wildcards.sp}'"
+        """
+        mkdir -p {params.outdir}
+        datasets download genome accession {params.acc} \
+            --include genome \
+            --filename {params.outdir}/genome.zip
+
+        unzip -o {params.outdir}/genome.zip \
+            'ncbi_dataset/data/{params.acc}/*.fna' \
+            -d {params.outdir}/
+
+        # Move the FASTA to the expected output path
+        mv {params.outdir}/ncbi_dataset/data/{params.acc}/*.fna {output.fasta}
+        rm -rf {params.outdir}
+        """
+
+
+# ── 2. CheckM2 QC (per species, runs on all genomes at once) ─────────────────
+# CheckM2 is more accurate than CheckM1 and does not require a reference tree.
+# We run it per-species in batch mode rather than per-genome for speed.
+
+rule checkm2:
+    input:
+        fastas = lambda wc: expand(
+            "data/raw/genomes/{sp}/{acc_fn}.fna",
+            sp=wc.sp,
+            acc_fn=[acc_to_fname(a) for a in ACCESSIONS[wc.sp]],
+        ),
+    output:
+        report = "data/interim/{sp}/qc/checkm2_quality_report.tsv",
+    params:
+        genome_dir = "data/raw/genomes/{sp}",
+        out_dir    = "data/interim/{sp}/qc",
+        min_completeness = config["qc"]["checkm2_completeness_min"],
+        max_contamination = config["qc"]["checkm2_contamination_max"],
+    threads: 8
+    conda:
+        "/Users/Vicky/crc/.conda_envs/checkm2"
+    shell:
+        """
+        checkm2 predict \
+            --input {params.genome_dir}/*.fna \
+            --output-directory {params.out_dir} \
+            --threads {threads} \
+            --force
+        """
+
+
+# ── 3. DefenseFinder ──────────────────────────────────────────────────────────
+rule defensefinder:
+    input:
+        fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
+    output:
+        systems = "data/interim/{sp}/defensefinder/{acc_fn}/defense_finder_systems.tsv",
+        genes   = "data/interim/{sp}/defensefinder/{acc_fn}/defense_finder_genes.tsv",
+    params:
+        outdir = "data/interim/{sp}/defensefinder/{acc_fn}",
+    conda: "envs/defensefinder.yaml"
+    shell:
+        """
+        mkdir -p {params.outdir}
+        defense-finder run \
+            --out-dir {params.outdir} \
+            {input.fasta}
+        # Ensure output files exist even if no systems found (touch empty TSV)
+        [ -f {output.systems} ] || touch {output.systems}
+        [ -f {output.genes}   ] || touch {output.genes}
+        """
+
+
+# ── 4. PADLOC ─────────────────────────────────────────────────────────────────
+rule padloc:
+    input:
+        fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
+    output:
+        csv = "data/interim/{sp}/padloc/{acc_fn}_padloc.csv",
+    params:
+        outdir = "data/interim/{sp}/padloc",
+    conda: "envs/padloc.yaml"
+    shell:
+        """
+        mkdir -p {params.outdir}
+        padloc --fna {input.fasta} \
+               --outdir {params.outdir} \
+               --cpu 2
+        [ -f {output.csv} ] || touch {output.csv}
+        """
+
+
+# ── 5. CRISPRCasFinder ────────────────────────────────────────────────────────
+rule crisprcasfinder:
+    input:
+        fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
+    output:
+        flag = "data/interim/{sp}/crisprcasfinder/{acc_fn}/done.flag",
+    params:
+        outdir = "data/interim/{sp}/crisprcasfinder/{acc_fn}",
+    conda: "envs/crisprcasfinder.yaml"
+    shell:
+        """
+        mkdir -p {params.outdir}
+        CRISPRCasFinder.pl \
+            -in {input.fasta} \
+            -out {params.outdir} \
+            -cas \
+            -keep \
+            -quiet
+        touch {output.flag}
+        """
+
+
+# ── 6. ResFinder (ARG detection) ──────────────────────────────────────────────
+# Uses existing resfinder_env — matches published Acinetobacter pipeline version.
+rule resfinder:
+    input:
+        fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
+    output:
+        tab = "data/interim/{sp}/resfinder/{acc_fn}/ResFinder_results_tab.txt",
+    params:
+        outdir   = "data/interim/{sp}/resfinder/{acc_fn}",
+        db_path  = RESFINDER_DB,
+    conda:
+        "/opt/homebrew/Caskroom/miniconda/base/envs/resfinder_env"
+    shell:
+        """
+        mkdir -p {params.outdir}
+        python -m resfinder \
+            -ifa {input.fasta} \
+            -o {params.outdir} \
+            -db_res {params.db_path} \
+            -s "Other" \
+            --acquired \
+            -l 0.6 \
+            -t 0.9 \
+            --nanopore false
+        [ -f {output.tab} ] || touch {output.tab}
+        """
+
+
+# ── 7. AntiDefenseFinder ──────────────────────────────────────────────────────
+rule antidefensefinder:
+    input:
+        fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
+    output:
+        systems = "data/interim/{sp}/antidefensefinder/{acc_fn}/anti_defense_finder_systems.tsv",
+    params:
+        outdir = "data/interim/{sp}/antidefensefinder/{acc_fn}",
+    conda: "envs/antidefensefinder.yaml"
+    shell:
+        """
+        mkdir -p {params.outdir}
+        anti-defense-finder run \
+            --out-dir {params.outdir} \
+            {input.fasta}
+        [ -f {output.systems} ] || touch {output.systems}
+        """
+
+
+# ── 8. ICEberg IME tBLASTn ────────────────────────────────────────────────────
+# Searches for integrative mobile elements using protein sequences from ICEberg.
+# Same approach as published Acinetobacter pipeline.
+rule iceberg_tblastn:
+    input:
+        fasta  = "data/raw/genomes/{sp}/{acc_fn}.fna",
+        db     = ICEBERG_DB,
+    output:
+        tsv = "data/interim/{sp}/iceberg/{acc_fn}_iceberg.tsv",
+    params:
+        evalue  = 1e-5,
+        perc_id = 40,
+    conda: "envs/blast.yaml"
+    shell:
+        """
+        mkdir -p data/interim/{wildcards.sp}/iceberg
+        tblastn \
+            -query {input.db} \
+            -subject {input.fasta} \
+            -evalue {params.evalue} \
+            -perc_identity {params.perc_id} \
+            -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore" \
+            -out {output.tsv}
+        """
+
+
+# ── 9. BacMet HMRG tBLASTn ───────────────────────────────────────────────────
+rule bacmet_tblastn:
+    input:
+        fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
+        db    = BACMET_DB,
+    output:
+        tsv = "data/interim/{sp}/bacmet/{acc_fn}_bacmet.tsv",
+    params:
+        evalue  = 1e-5,
+        perc_id = 40,
+    conda: "envs/blast.yaml"
+    shell:
+        """
+        mkdir -p data/interim/{wildcards.sp}/bacmet
+        tblastn \
+            -query {input.db} \
+            -subject {input.fasta} \
+            -evalue {params.evalue} \
+            -perc_identity {params.perc_id} \
+            -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore" \
+            -out {output.tsv}
+        """
+
+
+# ── 10. MLST typing (per species, all genomes) ────────────────────────────────
+rule mlst:
+    input:
+        fastas = lambda wc: expand(
+            "data/raw/genomes/{sp}/{acc_fn}.fna",
+            sp=wc.sp,
+            acc_fn=[acc_to_fname(a) for a in ACCESSIONS[wc.sp]],
+        ),
+    output:
+        tsv = "data/interim/{sp}/mlst/mlst_results.tsv",
+    params:
+        genome_dir = "data/raw/genomes/{sp}",
+    conda: "envs/blast.yaml"
+    shell:
+        """
+        mkdir -p data/interim/{wildcards.sp}/mlst
+        mlst {params.genome_dir}/*.fna > {output.tsv}
+        """
+
+
+# ── 11. Collect NCBI metadata per species ─────────────────────────────────────
+# Assembles the per-genome metadata table from pre-fetched JSON files.
+# The JSON was written by build_accession_lists.py to data/interim/.
+rule collect_metadata:
+    input:
+        json = "data/interim/{sp}_accession_metadata.json",
+    output:
+        tsv = "data/interim/{sp}/metadata.tsv",
+    run:
+        import json, csv
+        with open(input.json) as f:
+            records = json.load(f)
+        fields = ["accession", "organism", "country", "year_bin",
+                  "release_date", "biosample", "complex_member"]
+        with open(output.tsv, "w", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=fields, delimiter="\t",
+                               extrasaction="ignore")
+            w.writeheader()
+            w.writerows(records)

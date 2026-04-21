@@ -1,0 +1,8 @@
+name: antidefensefinder
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  - anti-defense-finder>=1.2

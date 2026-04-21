@@ -1,0 +1,8 @@
+name: blast_mlst
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - blast>=2.14
+  - mlst>=2.23

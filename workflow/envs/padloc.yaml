@@ -1,0 +1,10 @@
+name: padloc
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  - padloc=2.0.0
+  - hmmer>=3.3
+  - prodigal>=2.6
