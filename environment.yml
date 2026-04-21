@@ -43,6 +43,10 @@ dependencies:
   # Phylogenetics
   - mash>=2.3                # genome distance sketching (bioconda)
   - ete3>=3.1
+  - mlst>=2.23               # MLST typing against PubMLST schemes (bioconda)
+
+  # NCBI data acquisition
+  - ncbi-datasets-cli>=16.0  # NCBI Datasets CLI for genome download (conda-forge)
 
   # Code quality / pre-commit
   - pre-commit>=3.6

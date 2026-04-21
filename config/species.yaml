@@ -1,7 +1,8 @@
 # ESKAPE species configuration
-# Accession lists populated in Phase 2 after stratified sampling
-# Target: 150 complete genomes per species (floor: 100 for E. cloacae complex)
+# Accession lists populated by src/features/build_accession_lists.py (Phase 2)
+# Target: 150 complete genomes per species
 # Quality gates: CheckM2 completeness >=95%, contamination <=5%
+# Country cap: max 30 genomes per country per species
 
 species:
   efaecium:
@@ -10,7 +11,12 @@ species:
     gram: positive
     genome_size_mb_approx: 2.8
     target_n: 150
-    accessions: []   # populated in Phase 2
+    country_cap: 30
+    ncbi_taxids:
+      - taxid: "1352"
+        member: "E. faecium"
+        sample_target: 150
+    accessions: []   # populated by build_accession_lists.py
 
   saureus:
     name: "Staphylococcus aureus"
@@ -18,6 +24,11 @@ species:
     gram: positive
     genome_size_mb_approx: 2.8
     target_n: 150
+    country_cap: 30
+    ncbi_taxids:
+      - taxid: "1280"
+        member: "S. aureus"
+        sample_target: 150
     accessions: []
 
   kpneumoniae:
@@ -26,6 +37,11 @@ species:
     gram: negative
     genome_size_mb_approx: 5.5
     target_n: 150
+    country_cap: 30
+    ncbi_taxids:
+      - taxid: "573"
+        member: "K. pneumoniae"
+        sample_target: 150
     accessions: []
 
   abaumannii:
@@ -34,7 +50,12 @@ species:
     gram: negative
     genome_size_mb_approx: 3.9
     target_n: 150
-    note: "Reference species — published data from Muthuraman et al. 2026"
+    country_cap: 30
+    note: "Reference species — published data from Muthuraman et al. 2026 used as held-out validation set"
+    ncbi_taxids:
+      - taxid: "470"
+        member: "A. baumannii"
+        sample_target: 150
     accessions: []
 
   paeruginosa:
@@ -43,6 +64,11 @@ species:
     gram: negative
     genome_size_mb_approx: 6.3
     target_n: 150
+    country_cap: 30
+    ncbi_taxids:
+      - taxid: "287"
+        member: "P. aeruginosa"
+        sample_target: 150
     accessions: []
 
   ecloaceae:
@@ -51,6 +77,28 @@ species:
     gram: negative
     genome_size_mb_approx: 5.0
     target_n: 150
-    floor_n: 100
-    note: "Floor of 100 if complete genomes are limiting"
+    country_cap: 30
+    note: >
+      Expanded from taxid 550 alone (142 genomes) to full E. cloacae complex
+      (980 genomes across 6 genomospecies). Genomospecies recorded as metadata.
+      Per-member sampling caps applied to prevent E. hormaechei domination.
+    ncbi_taxids:
+      - taxid: "158836"
+        member: "E. hormaechei"
+        sample_target: 60
+      - taxid: "550"
+        member: "E. cloacae"
+        sample_target: 50
+      - taxid: "61645"
+        member: "E. asburiae"
+        sample_target: 15
+      - taxid: "208224"
+        member: "E. kobei"
+        sample_target: 10
+      - taxid: "299767"
+        member: "E. ludwigii"
+        sample_target: 10
+      - taxid: "1812935"
+        member: "E. roggenkampii"
+        sample_target: 5
     accessions: []
