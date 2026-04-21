@@ -205,3 +205,33 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Genomics data — large files, never commit raw genomes
+data/raw/
+data/interim/
+*.fasta
+*.fna
+*.gbff
+*.fastq
+*.gz
+*.zip
+
+# Processed data — parquet/csv outputs go to Zenodo on release, not git
+data/processed/*.parquet
+data/processed/*.csv
+data/processed/*.tsv
+
+# Trained models — serialised via results/models/, versioned on release
+results/models/*.pkl
+results/models/*.joblib
+results/models/*.json
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Snakemake
+.snakemake/
+*.snakemake.log
+
+# OS
+.DS_Store

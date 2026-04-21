@@ -1,0 +1,65 @@
+name: eskape-ml
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  # Python version — pinned to 3.11 for full scikit-learn/shap/umap compatibility
+  - python=3.11
+
+  # Data wrangling
+  - pandas>=2.0
+  - numpy>=1.25
+  - pyarrow>=14.0        # parquet read/write for feature matrices
+  - openpyxl             # Excel metadata files from NCBI
+
+  # Visualisation
+  - matplotlib>=3.8
+  - seaborn>=0.13
+  - plotly>=5.18         # interactive EDA
+
+  # Dimensionality reduction
+  - scikit-learn>=1.4
+  - umap-learn>=0.5.5
+  - scipy>=1.11
+
+  # Supervised ML
+  - xgboost>=2.0
+  - lightgbm>=4.1
+  - imbalanced-learn>=0.11   # SMOTE and class-weight utilities
+
+  # Model interpretation
+  - shap>=0.44
+
+  # Notebooks
+  - jupyter>=1.0
+  - jupyterlab>=4.0
+  - nbstripout>=0.7          # strip output before git commit
+
+  # Pipeline
+  - snakemake>=8.0
+  - snakemake-executor-plugin-cluster-generic
+
+  # Phylogenetics
+  - mash>=2.3                # genome distance sketching (bioconda)
+  - ete3>=3.1
+
+  # Code quality / pre-commit
+  - pre-commit>=3.6
+  - black>=24.0
+  - ruff>=0.3
+
+  # Testing
+  - pytest>=8.0
+  - pytest-cov
+
+  # Utilities
+  - tqdm>=4.66
+  - pyyaml>=6.0
+  - requests>=2.31
+  - biopython>=1.83
+
+  # pip-only packages (no conda build available)
+  - pip
+  - pip:
+    - quarto-cli           # reproducible reports

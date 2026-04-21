@@ -1,0 +1,20 @@
+# Snakefile — ESKAPE defence ML pipeline
+# Extends: github.com/vikos77/acinetobacter-defence-pipeline
+# Phase 2 will populate rules for each ESKAPE species.
+# This stub establishes the config loading pattern only.
+
+configfile: "../config/params.yaml"
+configfile: "../config/species.yaml"
+
+SPECIES = list(config["species"].keys())
+
+rule all:
+    input:
+        # populated in Phase 2
+        expand("../data/interim/{sp}/qc_done.flag", sp=SPECIES)
+
+rule placeholder:
+    output:
+        touch("../data/interim/{sp}/qc_done.flag")
+    shell:
+        "echo 'Phase 2 rules not yet implemented for {wildcards.sp}'"

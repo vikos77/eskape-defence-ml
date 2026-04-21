@@ -1,0 +1,56 @@
+# ESKAPE species configuration
+# Accession lists populated in Phase 2 after stratified sampling
+# Target: 150 complete genomes per species (floor: 100 for E. cloacae complex)
+# Quality gates: CheckM2 completeness >=95%, contamination <=5%
+
+species:
+  efaecium:
+    name: "Enterococcus faecium"
+    short: "Efm"
+    gram: positive
+    genome_size_mb_approx: 2.8
+    target_n: 150
+    accessions: []   # populated in Phase 2
+
+  saureus:
+    name: "Staphylococcus aureus"
+    short: "Sa"
+    gram: positive
+    genome_size_mb_approx: 2.8
+    target_n: 150
+    accessions: []
+
+  kpneumoniae:
+    name: "Klebsiella pneumoniae"
+    short: "Kp"
+    gram: negative
+    genome_size_mb_approx: 5.5
+    target_n: 150
+    accessions: []
+
+  abaumannii:
+    name: "Acinetobacter baumannii"
+    short: "Ab"
+    gram: negative
+    genome_size_mb_approx: 3.9
+    target_n: 150
+    note: "Reference species — published data from Muthuraman et al. 2026"
+    accessions: []
+
+  paeruginosa:
+    name: "Pseudomonas aeruginosa"
+    short: "Pa"
+    gram: negative
+    genome_size_mb_approx: 6.3
+    target_n: 150
+    accessions: []
+
+  ecloaceae:
+    name: "Enterobacter cloacae complex"
+    short: "Ec"
+    gram: negative
+    genome_size_mb_approx: 5.0
+    target_n: 150
+    floor_n: 100
+    note: "Floor of 100 if complete genomes are limiting"
+    accessions: []

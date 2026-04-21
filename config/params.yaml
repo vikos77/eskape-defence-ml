@@ -1,0 +1,60 @@
+# Pipeline and ML parameters
+# All ML parameters that affect results must live here, not hardcoded in notebooks
+# Change here = change everywhere. This is the single source of truth.
+
+# ── Data quality ──────────────────────────────────────────────────────────────
+qc:
+  checkm2_completeness_min: 95.0
+  checkm2_contamination_max: 5.0
+
+# ── Bioinformatics tools ───────────────────────────────────────────────────────
+tools:
+  defensefinder_version: "2.0.2"    # must match published Acinetobacter work
+  padloc_version: "2.0.0"           # must match published Acinetobacter work
+  resfinder_version: "4.3.3"
+
+# ── Random seeds ──────────────────────────────────────────────────────────────
+# Every stochastic step uses these. Reproducibility requires pinning.
+seeds:
+  global: 42
+  umap: 42
+  tsne: 42
+  train_test_split: 42
+  cross_validation: 42
+  random_forest: 42
+  xgboost: 42
+  lightgbm: 42
+
+# ── Cross-validation ──────────────────────────────────────────────────────────
+cv:
+  n_splits: 5
+  strategy: "stratified"            # overridden to "grouped" after Phase 9
+
+# ── Feature engineering ───────────────────────────────────────────────────────
+features:
+  arg_burden_tertile_labels: ["low", "mid", "high"]
+  ratio_pseudocount: 1              # added to denominator to avoid divide-by-zero
+
+# ── Dimensionality reduction ──────────────────────────────────────────────────
+umap:
+  n_neighbors: 15                   # tuned in Phase 5
+  min_dist: 0.1
+  n_components: 2
+  metric: "jaccard"                 # appropriate for binary presence/absence data
+
+# ── Random Forest ─────────────────────────────────────────────────────────────
+random_forest:
+  n_estimators: 500
+  max_features: "sqrt"
+  class_weight: "balanced"
+
+# ── XGBoost ───────────────────────────────────────────────────────────────────
+xgboost:
+  n_estimators: 1000
+  learning_rate: 0.05
+  early_stopping_rounds: 50
+  eval_metric: "mlogloss"
+
+# ── SHAP ──────────────────────────────────────────────────────────────────────
+shap:
+  max_display: 20                   # top N features in summary plots
