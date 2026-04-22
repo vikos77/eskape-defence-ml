@@ -69,12 +69,6 @@ rule all:
             acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
         ),
         expand(
-            "data/interim/{sp}/antidefensefinder/{acc_fn}/anti_defense_finder_systems.tsv",
-            zip,
-            sp=[s for s, a in SP_ACC],
-            acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
-        ),
-        expand(
             "data/interim/{sp}/iceberg/{acc_fn}_iceberg.tsv",
             zip,
             sp=[s for s, a in SP_ACC],
@@ -151,13 +145,16 @@ rule checkm2:
         """
 
 
-# ── 3. DefenseFinder ──────────────────────────────────────────────────────────
+# ── 3. DefenseFinder (+ AntiDefenseFinder via --anti flag) ───────────────────
+# AntiDefenseFinder is bundled in defense-finder; --anti writes additional
+# output files to the same directory. No separate tool or env needed.
 rule defensefinder:
     input:
         fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
     output:
-        systems = "data/interim/{sp}/defensefinder/{acc_fn}/defense_finder_systems.tsv",
-        genes   = "data/interim/{sp}/defensefinder/{acc_fn}/defense_finder_genes.tsv",
+        systems      = "data/interim/{sp}/defensefinder/{acc_fn}/defense_finder_systems.tsv",
+        genes        = "data/interim/{sp}/defensefinder/{acc_fn}/defense_finder_genes.tsv",
+        anti_systems = "data/interim/{sp}/defensefinder/{acc_fn}/anti_defense_finder_systems.tsv",
     params:
         outdir = "data/interim/{sp}/defensefinder/{acc_fn}",
     conda: "envs/defensefinder.yaml"
@@ -165,11 +162,12 @@ rule defensefinder:
         """
         mkdir -p {params.outdir}
         defense-finder run \
+            --anti \
             --out-dir {params.outdir} \
             {input.fasta}
-        # Ensure output files exist even if no systems found (touch empty TSV)
-        [ -f {output.systems} ] || touch {output.systems}
-        [ -f {output.genes}   ] || touch {output.genes}
+        [ -f {output.systems}      ] || touch {output.systems}
+        [ -f {output.genes}        ] || touch {output.genes}
+        [ -f {output.anti_systems} ] || touch {output.anti_systems}
         """
 
 
@@ -220,26 +218,7 @@ rule resfinder:
         """
 
 
-# ── 7. AntiDefenseFinder ──────────────────────────────────────────────────────
-rule antidefensefinder:
-    input:
-        fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
-    output:
-        systems = "data/interim/{sp}/antidefensefinder/{acc_fn}/anti_defense_finder_systems.tsv",
-    params:
-        outdir = "data/interim/{sp}/antidefensefinder/{acc_fn}",
-    conda: "envs/antidefensefinder.yaml"
-    shell:
-        """
-        mkdir -p {params.outdir}
-        anti-defense-finder run \
-            --out-dir {params.outdir} \
-            {input.fasta}
-        [ -f {output.systems} ] || touch {output.systems}
-        """
-
-
-# ── 8. ICEberg IME tBLASTn ────────────────────────────────────────────────────
+# ── 7. ICEberg IME tBLASTn ────────────────────────────────────────────────────
 # Searches for integrative mobile elements using protein sequences from ICEberg.
 # Same approach as published Acinetobacter pipeline.
 rule iceberg_tblastn:
