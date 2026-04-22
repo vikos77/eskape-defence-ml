@@ -63,12 +63,6 @@ rule all:
             acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
         ),
         expand(
-            "data/interim/{sp}/crisprcasfinder/{acc_fn}/done.flag",
-            zip,
-            sp=[s for s, a in SP_ACC],
-            acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
-        ),
-        expand(
             "data/interim/{sp}/resfinder/{acc_fn}/ResFinder_results_tab.txt",
             zip,
             sp=[s for s, a in SP_ACC],
@@ -198,29 +192,7 @@ rule padloc:
         """
 
 
-# ── 5. CRISPRCasFinder ────────────────────────────────────────────────────────
-rule crisprcasfinder:
-    input:
-        fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
-    output:
-        flag = "data/interim/{sp}/crisprcasfinder/{acc_fn}/done.flag",
-    params:
-        outdir = "data/interim/{sp}/crisprcasfinder/{acc_fn}",
-    conda: "envs/crisprcasfinder.yaml"
-    shell:
-        """
-        mkdir -p {params.outdir}
-        CRISPRCasFinder.pl \
-            -in {input.fasta} \
-            -out {params.outdir} \
-            -cas \
-            -keep \
-            -quiet
-        touch {output.flag}
-        """
-
-
-# ── 6. ResFinder (ARG detection) ──────────────────────────────────────────────
+# ── 5. ResFinder (ARG detection) ──────────────────────────────────────────────
 # Uses existing resfinder_env — matches published Acinetobacter pipeline version.
 rule resfinder:
     input:

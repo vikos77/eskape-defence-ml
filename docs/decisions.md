@@ -27,6 +27,13 @@ Reason: prevents species-identity bias from contaminating archetype discovery.
 
 ## 2026-04-22 — Phase 2 (sampling design)
 
+**CRISPRCasFinder removed from pipeline:**
+Reason: (1) no conda package available for osx-arm64 (M-series Mac), causing
+pipeline failure; (2) CRISPR-Cas systems are already captured via DefenseFinder
+and PADLOC, which are the primary defence system annotation tools. CRISPRCasFinder
+was redundant for the feature matrix. CRISPR arrays detected by DefenseFinder
+will be used as the CRISPR feature.
+
 **E. cloacae taxonomy expansion:** Expanded from taxid 550 (E. cloacae ss, 142
 genomes) to the full Enterobacter cloacae complex (6 genomospecies, 980 total
 complete genomes). Genomospecies recorded as a metadata column.
