@@ -86,12 +86,11 @@ rule all:
             sp=[s for s, a in SP_ACC],
             acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
         ),
-        expand(
-            "data/interim/{sp}/bacmet/{acc_fn}_bacmet.tsv",
-            zip,
-            sp=[s for s, a in SP_ACC],
-            acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
-        ),
+        # BacMet HMRG — temporarily disabled (server returning 502).
+        # Restore when BacMet2_EXP.fasta is available:
+        #   expand("data/interim/{sp}/bacmet/{acc_fn}_bacmet.tsv", zip,
+        #          sp=[s for s, a in SP_ACC],
+        #          acc_fn=[acc_to_fname(a) for s, a in SP_ACC]),
         expand("data/interim/{sp}/mlst/mlst_results.tsv", sp=SPECIES),
         # Consolidated per-species metadata tables
         expand("data/interim/{sp}/metadata.tsv", sp=SPECIES),
