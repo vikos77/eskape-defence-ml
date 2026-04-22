@@ -26,7 +26,7 @@ if [ -d "$RESFINDER_DB" ]; then
 else
     echo "[1/3] Cloning ResFinder database..."
     git clone --depth 1 \
-        https://git.sr.ht/~genomicepidemiology/resfinder_db \
+        https://bitbucket.org/genomicepidemiology/resfinder_db \
         "$RESFINDER_DB"
     echo "      Done."
 fi
@@ -39,29 +39,38 @@ if [ -f "$ICEBERG_FASTA" ]; then
     echo "[SKIP] ICEberg IME FASTA already exists"
 else
     echo "[2/3] Downloading ICEberg IME protein sequences..."
+    # Correct subdomain: bioinfo-mml.sjtu.edu.cn (not db-mml)
     curl -L --retry 3 --retry-delay 5 \
-        "https://db-mml.sjtu.edu.cn/ICEberg2/download/IME_aa_all.fas" \
+        "https://bioinfo-mml.sjtu.edu.cn/ICEberg2/download/IME_aa_all.fas" \
         -o "$ICEBERG_FASTA"
-    # Make BLAST database
     makeblastdb -in "$ICEBERG_FASTA" -dbtype prot \
         -out "${DB_DIR}/ICEberg_IME" -title "ICEberg2_IME"
     echo "      Done."
 fi
 
 # ── 3. BacMet2 experimentally confirmed HMRG sequences ───────────────────────
+# NOTE: bacmet.biomedicine.gu.se returns 502 intermittently.
+# If download fails, obtain BacMet2_EXP_database.fasta from the published
+# Acinetobacter pipeline HPC storage, or retry when server recovers.
 BACMET_FASTA="${DB_DIR}/BacMet2_EXP.fasta"
-if [ -f "$BACMET_FASTA" ]; then
+if [ -f "$BACMET_FASTA" ] && [ "$(wc -c < "$BACMET_FASTA")" -gt 10000 ]; then
     echo "[SKIP] BacMet2 EXP FASTA already exists"
 else
     echo "[3/3] Downloading BacMet2 experimental resistance gene sequences..."
-    curl -L --retry 3 --retry-delay 5 \
-        "http://bacmet.biomedicine.gu.se/download/BacMet2_EXP.fasta.gz" \
-        -o "${BACMET_FASTA}.gz"
-    gunzip "${BACMET_FASTA}.gz"
-    # Make BLAST database
-    makeblastdb -in "$BACMET_FASTA" -dbtype prot \
-        -out "${DB_DIR}/BacMet2_EXP" -title "BacMet2_EXP"
-    echo "      Done."
+    curl -Lk --retry 3 --retry-delay 5 \
+        "https://bacmet.biomedicine.gu.se/downloads/BacMet2_EXP_database.fasta" \
+        -o "$BACMET_FASTA"
+    # Verify it's a real FASTA (not an error page)
+    if grep -q "^>" "$BACMET_FASTA" 2>/dev/null; then
+        makeblastdb -in "$BACMET_FASTA" -dbtype prot \
+            -out "${DB_DIR}/BacMet2_EXP" -title "BacMet2_EXP"
+        echo "      Done."
+    else
+        echo "      WARNING: BacMet server returned an error page."
+        echo "      HMRG annotation will be skipped until this is resolved."
+        echo "      Retry: bash workflow/scripts/setup_databases.sh"
+        rm -f "$BACMET_FASTA"
+    fi
 fi
 
 echo ""
