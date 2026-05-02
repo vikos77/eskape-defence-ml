@@ -5,4 +5,7 @@ channels:
   - defaults
 dependencies:
   - python=3.10
-  - defense-finder=2.0.2
+  - defense-finder=2.0.1   # 2.0.2 not in bioconda; 2.0.1 is functionally identical
+  - pyrodigal=3.0.0        # defense-finder 2.0.1 calls pyrodigal.GeneFinder (3.x API)
+  - hmmer>=3.3
+  - prodigal>=2.6

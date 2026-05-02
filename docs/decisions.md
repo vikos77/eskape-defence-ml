@@ -50,3 +50,16 @@ E. kobei 10, E. ludwigii 10, E. roggenkampii 5 (total 150).
 - Isolation source: captured raw, classified post-download into 6 categories.
 - Random seed: 42 throughout.
 - E. cloacae complex: country cap applied per member, not across the combined pool.
+
+## Decision 2026-05-02 — E. cloacae complex ML label treatment
+
+**Decision:** Treat E. cloacae complex as a single ML class label ("ecloaceae") for Q1–Q4, consistent with the ESKAPE framework and WHO priority pathogen designation.
+
+**Alternatives considered:**
+1. Drop Enterobacter entirely, use 5 species — rejected: deviates from ESKAPE, loses clinical representativeness.
+2. Use only E. hormaechei as proxy — rejected: discards the within-complex diversity the per-member stratification was designed to capture.
+3. Run Q1 both with and without complex lumping — deferred as optional sensitivity analysis post-primary analysis.
+
+**Limitation acknowledged:** E. cloacae complex is polyphyletic (6 phylogenetically distinct species). Intra-class variance will be higher than for single-species classes. Reduced per-class recall for ecloaceae in Q1 should be interpreted as potentially reflecting label heterogeneity, not defence system uninformativeness. This must be stated explicitly in Methods/Limitations.
+
+**Follow-up in Phase 9:** Mash-based phylogroup clustering will reveal whether the six complex members cluster together or split. Report the internal structure of the "ecloaceae" embedding as a finding, not a confound.

@@ -235,3 +235,9 @@ results/models/*.json
 
 # OS
 .DS_Store
+
+# macOS conda/system dirs that leak into project directory
+.anaconda/
+.conda/
+.keras/
+Library/

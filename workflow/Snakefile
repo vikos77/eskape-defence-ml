@@ -39,7 +39,7 @@ def acc_to_fname(acc: str) -> str:
 
 
 # ── Reference databases (run workflow/scripts/setup_databases.sh first) ───────
-BACMET_DB   = "data/raw/databases/BacMet2_EXP.fasta"
+BACMET_DB   = "data/raw/databases/BacMet2_EXP_database.fasta"
 ICEBERG_DB  = "data/raw/databases/ICEberg_IME.fasta"
 RESFINDER_DB = "data/raw/databases/db_resfinder"
 
@@ -74,11 +74,15 @@ rule all:
             sp=[s for s, a in SP_ACC],
             acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
         ),
-        # BacMet HMRG — temporarily disabled (server returning 502).
-        # Restore when BacMet2_EXP.fasta is available:
-        #   expand("data/interim/{sp}/bacmet/{acc_fn}_bacmet.tsv", zip,
-        #          sp=[s for s, a in SP_ACC],
-        #          acc_fn=[acc_to_fname(a) for s, a in SP_ACC]),
+        expand(
+            "data/interim/{sp}/isescan/{acc_fn}_isescan.tsv",
+            zip,
+            sp=[s for s, a in SP_ACC],
+            acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
+        ),
+        expand("data/interim/{sp}/bacmet/{acc_fn}_bacmet.tsv", zip,
+               sp=[s for s, a in SP_ACC],
+               acc_fn=[acc_to_fname(a) for s, a in SP_ACC]),
         expand("data/interim/{sp}/mlst/mlst_results.tsv", sp=SPECIES),
         # Consolidated per-species metadata tables
         expand("data/interim/{sp}/metadata.tsv", sp=SPECIES),
@@ -93,28 +97,149 @@ rule download_genome:
     output:
         fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
     params:
-        acc = lambda wc: wc.acc_fn.replace("_", ".", 2),  # GCF_XXXXX_1 -> GCF_XXXXX.1
-        outdir = "data/raw/genomes/{sp}/tmp_{acc_fn}",
-    conda: "envs/blast.yaml"   # ncbi-datasets-cli bundled here
+        # GCF_043738335_1 → GCF_043738335.1 (only the last underscore becomes a dot)
+        acc = lambda wc: wc.acc_fn.rsplit("_", 1)[0] + "." + wc.acc_fn.rsplit("_", 1)[1],
+        outdir_prefix = "data/raw/genomes/{sp}/tmp_{acc_fn}",
+    conda: "envs/blast.yaml"
     retries: 3
     shell:
         """
-        mkdir -p {params.outdir}
-        datasets download genome accession {params.acc} \
-            --include genome \
-            --filename {params.outdir}/genome.zip
+        mkdir -p "$(dirname {output.fasta})"
+        tmpdir="$(mktemp -d {params.outdir_prefix}.XXXXXX)"
+        trap 'rm -rf "$tmpdir"' EXIT
 
-        unzip -o {params.outdir}/genome.zip \
-            'ncbi_dataset/data/{params.acc}/*.fna' \
-            -d {params.outdir}/
+        download_and_extract() {{
+            local acc="$1"
+            local archive="$2"
+            local attempt
 
-        # Move the FASTA to the expected output path
-        mv {params.outdir}/ncbi_dataset/data/{params.acc}/*.fna {output.fasta}
-        rm -rf {params.outdir}
+            for attempt in 1 2 3 4 5; do
+                rm -f "$archive"
+                rm -rf "$tmpdir/ncbi_dataset"
+
+                if datasets download genome accession "$acc" \
+                    --include genome \
+                    --filename "$archive"; then
+                    if unzip -tq "$archive" >/dev/null 2>&1; then
+                        unzip -oq "$archive" -d "$tmpdir/"
+                        return 0
+                    fi
+                    echo "Corrupt genome archive for $acc (attempt $attempt/5), retrying." >&2
+                else
+                    echo "datasets download failed for $acc (attempt $attempt/5), retrying." >&2
+                fi
+
+                sleep $((attempt * 5))
+            done
+
+            return 1
+        }}
+
+        if ! download_and_extract "{params.acc}" "$tmpdir/genome.zip"; then
+            echo "Failed to download a valid genome archive for {params.acc}." >&2
+            exit 1
+        fi
+
+        genome_fna="$(find "$tmpdir" -name "*.fna" -print -quit)"
+        if [ -z "$genome_fna" ]; then
+            paired_acc="$(python - "$tmpdir" <<'PY'
+import json
+from pathlib import Path
+import sys
+
+report_path = Path(sys.argv[1]) / "ncbi_dataset" / "data" / "assembly_data_report.jsonl"
+if not report_path.exists():
+    print("")
+    raise SystemExit
+
+with report_path.open() as handle:
+    report = json.loads(next(handle))
+
+assembly_info = report.get("assemblyInfo", {{}})
+paired_assembly = assembly_info.get("pairedAssembly", {{}}) or {{}}
+print(paired_assembly.get("accession") or report.get("pairedAccession") or "")
+PY
+)"
+
+            if [ -n "$paired_acc" ]; then
+                if ! download_and_extract "$paired_acc" "$tmpdir/paired_genome.zip"; then
+                    echo "Failed to download a valid paired genome archive for $paired_acc." >&2
+                    exit 1
+                fi
+                genome_fna="$(find "$tmpdir" -name "*.fna" -print -quit)"
+            fi
+        fi
+
+        if [ -z "$genome_fna" ]; then
+            echo "No genomic FASTA found for {params.acc} (or paired accession fallback)." >&2
+            exit 1
+        fi
+
+        mv "$genome_fna" {output.fasta}
         """
 
 
-# ── 2. CheckM2 QC (per species, runs on all genomes at once) ─────────────────
+# ── 2a. CheckM2 database setup (runs once) ────────────────────────────────────
+rule checkm2_db:
+    output:
+        db = "data/raw/databases/checkm2/CheckM2_database/uniref100.KO.1.dmnd",
+    params:
+        db_dir = "data/raw/databases/checkm2",
+        archive = "data/raw/databases/checkm2/checkm2_database.tar.gz",
+        url = "https://zenodo.org/api/records/14897628/files/checkm2_database.tar.gz/content",
+        md5 = "07c10655620843b517d0df0c160d911f",
+    conda:
+        "/Users/Vicky/crc/.conda_envs/checkm2"
+    shell:
+        """
+        mkdir -p {params.db_dir}
+        for attempt in 1 2 3 4 5 6 7 8; do
+            curl_status=0
+            curl -fL -C - --retry 5 --retry-delay 10 --retry-all-errors \
+                {params.url} \
+                -o {params.archive} || curl_status=$?
+
+            actual_md5="$(python - {params.archive} <<'PY'
+import hashlib
+import sys
+from pathlib import Path
+
+archive = Path(sys.argv[1])
+if not archive.exists():
+    print("")
+    raise SystemExit
+
+digest = hashlib.md5()
+with archive.open("rb") as handle:
+    for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+        digest.update(chunk)
+print(digest.hexdigest())
+PY
+)"
+
+            if [ "$actual_md5" = "{params.md5}" ]; then
+                break
+            fi
+
+            echo "CheckM2 database checksum mismatch or incomplete download on attempt $attempt/8." >&2
+            if [ "$curl_status" -eq 0 ]; then
+                rm -f {params.archive}
+            fi
+            sleep $((attempt * 30))
+        done
+
+        if [ "$actual_md5" != "{params.md5}" ]; then
+            echo "Failed to download a valid CheckM2 database archive." >&2
+            exit 1
+        fi
+
+        rm -rf {params.db_dir}/CheckM2_database
+        tar -xzf {params.archive} -C {params.db_dir}
+        test -f {output.db}
+        """
+
+
+# ── 2b. CheckM2 QC (per species, runs on all genomes at once) ─────────────────
 # CheckM2 is more accurate than CheckM1 and does not require a reference tree.
 # We run it per-species in batch mode rather than per-genome for speed.
 
@@ -125,6 +250,7 @@ rule checkm2:
             sp=wc.sp,
             acc_fn=[acc_to_fname(a) for a in ACCESSIONS[wc.sp]],
         ),
+        db = "data/raw/databases/checkm2/CheckM2_database/uniref100.KO.1.dmnd",
     output:
         report = "data/interim/{sp}/qc/checkm2_quality_report.tsv",
     params:
@@ -137,44 +263,130 @@ rule checkm2:
         "/Users/Vicky/crc/.conda_envs/checkm2"
     shell:
         """
-        checkm2 predict \
-            --input {params.genome_dir}/*.fna \
-            --output-directory {params.out_dir} \
-            --threads {threads} \
-            --force
+        python - <<'PY'
+import multiprocessing as mp
+import sys
+
+# macOS defaults to spawn, which breaks CheckM2 1.1.0 private multiprocessing
+# targets. Fork mode matches the Linux behavior CheckM2 expects.
+mp.set_start_method("fork", force=True)
+
+from checkm2.main import main
+
+sys.argv = [
+    "checkm2",
+    "predict",
+    "--input", "{params.genome_dir}",
+    "--output-directory", "{params.out_dir}",
+    "--database_path", "{input.db}",
+    "--threads", "{threads}",
+    "--force",
+]
+sys.exit(main())
+PY
+        mv -f {params.out_dir}/quality_report.tsv {output.report}
         """
 
 
-# ── 3. DefenseFinder (+ AntiDefenseFinder via --anti flag) ───────────────────
-# AntiDefenseFinder is bundled in defense-finder; --anti writes additional
-# output files to the same directory. No separate tool or env needed.
+# ── 3a. DefenseFinder models (runs once) ──────────────────────────────────────
+# defense-finder 2.0.1 currently installs CasFinder 3.1.1, whose XML grammar
+# (vers=2.1) is rejected by the bundled macsyfinder 2.1.4 parser. We replace it
+# with the last 2.0-compatible release.
+rule defensefinder_models:
+    output:
+        flag = "data/raw/databases/defensefinder_models_ready.flag",
+    params:
+        models_dir = "data/raw/databases/defensefinder_models",
+        casfinder_url = "https://github.com/macsy-models/CasFinder/archive/refs/tags/3.1.0.tar.gz",
+    conda: "envs/defensefinder.yaml"
+    shell:
+        """
+        rm -rf {params.models_dir}
+        mkdir -p {params.models_dir}
+        defense-finder update --models-dir {params.models_dir}
+        rm -rf {params.models_dir}/CasFinder
+        curl -fL {params.casfinder_url} -o {params.models_dir}/CasFinder-3.1.0.tar.gz
+        tar -xzf {params.models_dir}/CasFinder-3.1.0.tar.gz -C {params.models_dir}
+        mv {params.models_dir}/CasFinder-3.1.0 {params.models_dir}/CasFinder
+        rm -f {params.models_dir}/CasFinder-3.1.0.tar.gz
+        touch {output.flag}
+        """
+
+
+# ── 3b. DefenseFinder (+ AntiDefenseFinder via --antidefensefinder flag) ─────
+# defense-finder 2.0.1 crashes on nucleotide FASTA input in the pyhmmer parsing
+# path. We precompute proteins with the same pyrodigal logic defense-finder uses,
+# then run on the protein FASTA against a workflow-owned, version-compatible
+# model bundle.
 rule defensefinder:
     input:
         fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
+        models_flag = "data/raw/databases/defensefinder_models_ready.flag",
     output:
-        systems      = "data/interim/{sp}/defensefinder/{acc_fn}/defense_finder_systems.tsv",
-        genes        = "data/interim/{sp}/defensefinder/{acc_fn}/defense_finder_genes.tsv",
-        anti_systems = "data/interim/{sp}/defensefinder/{acc_fn}/anti_defense_finder_systems.tsv",
+        systems = "data/interim/{sp}/defensefinder/{acc_fn}/defense_finder_systems.tsv",
+        genes   = "data/interim/{sp}/defensefinder/{acc_fn}/defense_finder_genes.tsv",
     params:
         outdir = "data/interim/{sp}/defensefinder/{acc_fn}",
+        proteins = "data/interim/{sp}/defensefinder/{acc_fn}/{acc_fn}.prt",
+        models_dir = "data/raw/databases/defensefinder_models",
     conda: "envs/defensefinder.yaml"
     shell:
         """
         mkdir -p {params.outdir}
+        python - <<'PY'
+from pyhmmer.easel import Alphabet, SequenceFile, TextSequence
+import pyrodigal
+
+input_fasta = "{input.fasta}"
+protein_fasta = "{params.proteins}"
+
+with SequenceFile(input_fasta) as sf, open(protein_fasta, "w") as protein_out:
+    seq = TextSequence()
+    if sf.guess_alphabet() != Alphabet.dna():
+        raise ValueError(f"Expected nucleotide FASTA for DefenseFinder preprocessing: {{input_fasta}}")
+
+    while sf.readinto(seq) is not None:
+        sseq = bytes(seq.sequence, encoding="utf-8")
+        sname = seq.name.decode() if isinstance(seq.name, (bytes, bytearray)) else str(seq.name)
+        if len(sseq) < 100000:
+            gene_finder = pyrodigal.GeneFinder(meta=True)
+            genes = gene_finder.find_genes(sseq)
+        else:
+            gene_finder = pyrodigal.GeneFinder()
+            gene_finder.train(sseq)
+            genes = gene_finder.find_genes(sseq)
+        genes.write_translations(protein_out, sname)
+        seq.clear()
+PY
         defense-finder run \
-            --anti \
+            --models-dir {params.models_dir} \
+            --antidefensefinder \
             --out-dir {params.outdir} \
-            {input.fasta}
-        [ -f {output.systems}      ] || touch {output.systems}
-        [ -f {output.genes}        ] || touch {output.genes}
-        [ -f {output.anti_systems} ] || touch {output.anti_systems}
+            {params.proteins}
+        # defense-finder prefixes outputs with genome name — rename to fixed names
+        mv -f {params.outdir}/{wildcards.acc_fn}_defense_finder_systems.tsv {output.systems} 2>/dev/null \
+            || touch {output.systems}
+        mv -f {params.outdir}/{wildcards.acc_fn}_defense_finder_genes.tsv {output.genes} 2>/dev/null \
+            || touch {output.genes}
         """
 
 
-# ── 4. PADLOC ─────────────────────────────────────────────────────────────────
+# ── 4a. PADLOC database setup (runs once) ────────────────────────────────────
+rule padloc_db_update:
+    output:
+        flag = "data/raw/databases/padloc_db_ready.flag",
+    conda: "envs/padloc.yaml"
+    shell:
+        """
+        padloc --db-update
+        touch {output.flag}
+        """
+
+# ── 4b. PADLOC annotation ─────────────────────────────────────────────────────
 rule padloc:
     input:
-        fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
+        fasta   = "data/raw/genomes/{sp}/{acc_fn}.fna",
+        db_flag = "data/raw/databases/padloc_db_ready.flag",
     output:
         csv = "data/interim/{sp}/padloc/{acc_fn}_padloc.csv",
     params:
@@ -212,9 +424,39 @@ rule resfinder:
             -s "Other" \
             --acquired \
             -l 0.6 \
-            -t 0.9 \
-            --nanopore false
+            -t 0.9
         [ -f {output.tab} ] || touch {output.tab}
+        """
+
+
+# ── 6. ISEScan — insertion sequence detection ────────────────────────────────
+# IS elements are distinct from IMEs/ICEs (caught by ICEberg tBLASTn).
+# ISEScan creates output in {run_dir}/{sp}/{acc_fn}.fna.{tsv,sum} — the
+# subdirectory is derived from the input file's parent directory name.
+# Intermediate proteome and HMM files (~25 MB per genome) are deleted after
+# the TSV and sum are extracted to keep disk usage manageable.
+rule isescan:
+    input:
+        fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
+    output:
+        tsv = "data/interim/{sp}/isescan/{acc_fn}_isescan.tsv",
+        sum = "data/interim/{sp}/isescan/{acc_fn}_isescan.sum",
+    params:
+        run_dir = "data/interim/{sp}/isescan/{acc_fn}_run",
+    threads: 2
+    conda: "envs/isescan.yaml"
+    shell:
+        """
+        mkdir -p {params.run_dir}
+        isescan.py \
+            --seqfile {input.fasta} \
+            --output {params.run_dir} \
+            --nthread {threads}
+        mv -f {params.run_dir}/{wildcards.sp}/{wildcards.acc_fn}.fna.tsv {output.tsv} 2>/dev/null \
+            || touch {output.tsv}
+        mv -f {params.run_dir}/{wildcards.sp}/{wildcards.acc_fn}.fna.sum {output.sum} 2>/dev/null \
+            || touch {output.sum}
+        rm -rf {params.run_dir}
         """
 
 
@@ -229,7 +471,8 @@ rule iceberg_tblastn:
         tsv = "data/interim/{sp}/iceberg/{acc_fn}_iceberg.tsv",
     params:
         evalue  = 1e-5,
-        perc_id = 40,
+        # pident >= 40 filter applied in Phase 3 post-processing (tblastn 2.17.0
+        # does not support -perc_identity; same fix as bacmet_tblastn)
     conda: "envs/blast.yaml"
     shell:
         """
@@ -238,9 +481,9 @@ rule iceberg_tblastn:
             -query {input.db} \
             -subject {input.fasta} \
             -evalue {params.evalue} \
-            -perc_identity {params.perc_id} \
             -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore" \
-            -out {output.tsv}
+            -out {output.tsv} 2>/dev/null || true
+        [ -f {output.tsv} ] || touch {output.tsv}
         """
 
 
@@ -253,7 +496,6 @@ rule bacmet_tblastn:
         tsv = "data/interim/{sp}/bacmet/{acc_fn}_bacmet.tsv",
     params:
         evalue  = 1e-5,
-        perc_id = 40,
     conda: "envs/blast.yaml"
     shell:
         """
@@ -262,7 +504,6 @@ rule bacmet_tblastn:
             -query {input.db} \
             -subject {input.fasta} \
             -evalue {params.evalue} \
-            -perc_identity {params.perc_id} \
             -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore" \
             -out {output.tsv}
         """

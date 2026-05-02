@@ -4,5 +4,6 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - blast>=2.14
+  - blast>=2.13
   - mlst>=2.23
+  - ncbi-datasets-cli>=16.0
