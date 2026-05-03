@@ -1,0 +1,449 @@
+canonical_name,df_type,df_subtype,padloc_system,source,df_genome_count,padloc_genome_count,notes
+AbiC,AbiC,AbiC,AbiC,both,19,13,exact_name_match
+AbiD,AbiD,AbiD,AbiD,both,81,97,exact_name_match
+AbiE,AbiE,AbiE,AbiE,both,219,384,exact_name_match
+AbiL,AbiL,AbiL,AbiL,both,5,25,exact_name_match
+AbiQ,AbiQ,AbiQ,AbiQ,both,17,2,exact_name_match
+AbiU,AbiU,AbiU,AbiU,both,50,10,exact_name_match
+Azaca,Azaca,Azaca,Azaca,both,6,6,exact_name_match
+BREX_I,BREX,BREX_I,brex_type_I,both,65,62,naming convention differs between tools
+BREX_II,BREX,BREX_II,brex_type_II,both,1,1,naming convention differs between tools
+BREX_III,BREX,BREX_III,brex_type_III,both,7,4,naming convention differs between tools
+Borvo,Borvo,Borvo,Borvo,both,11,12,exact_name_match
+BstA,BstA,BstA,BstA,both,20,18,exact_name_match
+Bunzi,Bunzi,Bunzi,Bunzi,both,4,4,exact_name_match
+CAS_I-C,Cas,CAS_Class1-Subtype-I-C,cas_type_I-C,both,5,5,naming convention differs between tools
+CAS_I-E,Cas,CAS_Class1-Subtype-I-E,cas_type_I-E,both,64,63,naming convention differs between tools
+CAS_I-F,Cas,CAS_Class1-Subtype-I-F,cas_type_I-F1,both,113,110,DF uses I-F; PADLOC uses I-F1 — same CRISPR-Cas subtype
+CAS_II-A,Cas,CAS_Class2-Subtype-II-A,cas_type_II-A,both,2,2,naming convention differs between tools
+CAS_III-A,Cas,CAS_Class1-Subtype-III-A,cas_type_III-A,both,6,6,naming convention differs between tools
+CAS_IV-A,Cas,CAS_Class1-Subtype-IV-A,cas_type_IV-A,both,32,24,naming convention differs between tools
+CBASS_I,CBASS,CBASS_I,cbass_type_I,both,62,65,naming convention differs between tools
+CBASS_II,CBASS,CBASS_II,cbass_type_II,both,94,54,naming convention differs between tools
+CBASS_III,CBASS,CBASS_III,cbass_type_III,both,48,50,naming convention differs between tools
+DISARM_I,DISARM,DISARM_1,disarm_type_I,both,17,10,DISARM_1(DF)=disarm_type_I(PADLOC)
+DRT_2,DRT,DRT_2,DRT_class_I,both,16,65,DRT_2(DF)=DRT_class_I(PADLOC)
+DRT_3,DRT,DRT_3,DRT_class_II,both,15,39,DRT_3(DF)=DRT_class_II(PADLOC)
+DRT_4,DRT,DRT_4,DRT_class_III,both,1,21,DRT_4(DF)=DRT_class_III(PADLOC)
+DarTG,DarTG,DarTG,darTG,both,16,11,case_insensitive_match
+Dazbog,Dazbog,Dazbog,Dazbog,both,1,1,exact_name_match
+Dnd_ABCDE,Dnd,Dnd_ABCDE,PT_DndABCDE,both,3,8,naming convention differs between tools
+Dnd_ABCDEFGH,Dnd,Dnd_ABCDEFGH,PT_DndFGH,both,4,4,naming convention differs between tools
+Dodola,Dodola,Dodola,Dodola,both,48,48,exact_name_match
+Dpd,Dpd,Dpd,Dpd,both,13,13,exact_name_match
+Druantia_I,Druantia,Druantia_I,druantia_type_I,both,5,5,naming convention differs between tools
+Druantia_II,Druantia,Druantia_II,druantia_type_II,both,14,14,naming convention differs between tools
+Druantia_III,Druantia,Druantia_III,druantia_type_III,both,40,38,naming convention differs between tools
+Gabija,Gabija,Gabija,gabija,both,245,336,case_insensitive_match
+Gao_Hhe,Gao_Hhe,Gao_Hhe,hhe,both,15,14,Gao_Hhe(DF)=hhe(PADLOC); Gao et al. 2020
+Gao_Mza,Gao_Mza,Gao_Mza,mza,both,29,25,Gao_Mza(DF)=mza(PADLOC)
+Gao_Ppl,Gao_Ppl,Gao_Ppl,ppl,both,12,12,Gao_Ppl(DF)=ppl(PADLOC)
+Gao_Qat,Gao_Qat,Gao_Qat,qatABCD,both,78,77,Gao_Qat(DF)=qatABCD(PADLOC) — key FACILITATE system in published paper
+Gao_TerY,Gao_TerY,Gao_TerY,TerY-P,both,3,3,Gao_TerY(DF)=TerY-P(PADLOC)
+Gao_Tmn,Gao_Tmn,Gao_Tmn,tmn,both,18,19,Gao_Tmn(DF)=tmn(PADLOC)
+Gao_Upx,Gao_Upx,Gao_Upx,upx,both,3,3,Gao_Upx(DF)=upx(PADLOC)
+HEC-01,HEC-01,HEC-01,HEC-01,both,6,12,exact_name_match
+HEC-02,HEC-02,HEC-02,HEC-02,both,5,1,exact_name_match
+HEC-04,HEC-04,HEC-04,HEC-04,both,4,9,exact_name_match
+HEC-05,HEC-05,HEC-05,HEC-05,both,29,40,exact_name_match
+HEC-07,HEC-07,HEC-07,HEC-07,both,8,8,exact_name_match
+HEC-08,HEC-08,HEC-08,HEC-08,both,6,19,exact_name_match
+HEC-09,HEC-09,HEC-09,HEC-09,both,22,20,exact_name_match
+Hachiman,Hachiman,Hachiman,hachiman_type_I,both,79,92,naming convention differs between tools
+Hma,Hma,Hma,hma,both,5,6,case_insensitive_match
+Kiwa,Kiwa,Kiwa,kiwa,both,34,34,case_insensitive_match
+Lamassu,Lamassu-Fam,Lamassu-Cap4_nuclease,Lamassu_Family,both,59,114,DF has subtypes; PADLOC uses family level; merged to family level
+MADS,MADS,MADS,mads,both,1,1,case_insensitive_match
+Menshen,Menshen,Menshen,Menshen,both,13,13,exact_name_match
+Mokosh_TypeII,Mokosh,Mokosh_TypeII,Mokosh_TypeII,both,19,224,exact_name_match
+Mokosh_TypeI_A,Mokosh,Mokosh_Type_I_A,Mokosh_TypeI,both,46,68,Mokosh_Type_I_A(DF)=Mokosh_TypeI(PADLOC)
+Olokun,Olokun,Olokun,Olokun,both,19,20,exact_name_match
+PARIS_I,Paris,PARIS_I,Paris,both,32,30,PARIS_I(DF)=Paris(PADLOC)
+PARIS_II,Paris,PARIS_II,Paris_fused,both,7,5,PARIS_II(DF)=Paris_fused(PADLOC)
+PD-Lambda-1,PD-Lambda-1,PD-Lambda-1,PD-Lambda-1,both,129,72,exact_name_match
+PD-Lambda-2,PD-Lambda-2,PD-Lambda-2,PD-Lambda-2,both,12,12,exact_name_match
+PD-Lambda-3,PD-Lambda-3,PD-Lambda-3,PD-Lambda-3,both,16,11,exact_name_match
+PD-Lambda-4,PD-Lambda-4,PD-Lambda-4,PD-Lambda-4,both,1,1,exact_name_match
+PD-Lambda-5,PD-Lambda-5,PD-Lambda-5,PD-Lambda-5,both,16,19,exact_name_match
+PD-T4-1,PD-T4-1,PD-T4-1,PD-T4-1,both,2,2,exact_name_match
+PD-T4-2,PD-T4-2,PD-T4-2,PD-T4-2,both,1,2,exact_name_match
+PD-T4-3,PD-T4-3,PD-T4-3,PD-T4-3,both,97,97,exact_name_match
+PD-T4-4,PD-T4-4,PD-T4-4,PD-T4-4,both,1,1,exact_name_match
+PD-T4-5,PD-T4-5,PD-T4-5,PD-T4-5,both,81,32,exact_name_match
+PD-T4-6,PD-T4-6,PD-T4-6,PD-T4-6,both,2,322,exact_name_match
+PD-T4-7,PD-T4-7,PD-T4-7,PD-T4-7,both,6,4,exact_name_match
+PD-T7-3,PD-T7-3,PD-T7-3,PD-T7-3,both,32,31,exact_name_match
+PD-T7-4,PD-T7-4,PD-T7-4,PD-T7-4,both,19,18,exact_name_match
+Pif,Pif,Pif,PifA,both,47,53,Pif(DF)=PifA(PADLOC)
+PrrC,PrrC,PrrC,PrrC,both,52,29,exact_name_match
+PsyrTA,PsyrTA,PsyrTA,PsyrTA,both,16,17,exact_name_match
+Pycsar,Pycsar,Pycsar,pycsar_effector,both,37,38,naming convention differs between tools
+RM_Type_I,RM,RM_Type_I,RM_type_I,both,876,585,case_insensitive_match
+RM_Type_II,RM,RM_Type_II,RM_type_II,both,290,209,case_insensitive_match
+RM_Type_IIG,RM,RM_Type_IIG,RM_type_IIG,both,80,68,case_insensitive_match
+RM_Type_III,RM,RM_Type_III,RM_type_III,both,85,76,case_insensitive_match
+RM_Type_IV,RM,RM_Type_IV,RM_type_IV,both,345,130,case_insensitive_match
+Retron_I-A,Retron,Retron_I_A,retron_I-A,both,17,15,naming convention differs between tools
+Retron_I-B,Retron,Retron_I_B,retron_I-B,both,34,41,naming convention differs between tools
+Retron_I-C,Retron,Retron_I_C,retron_I-C,both,9,8,naming convention differs between tools
+Retron_II-A,Retron,Retron_II,retron_II-A,both,18,18,naming convention differs between tools
+Retron_III-A,Retron,Retron_III,retron_III-A,both,52,52,naming convention differs between tools
+Retron_IV,Retron,Retron_IV,retron_IV,both,10,9,case_insensitive_match
+Retron_VI,Retron,Retron_VI,retron_VI,both,7,3,case_insensitive_match
+RexAB,RexAB,RexAB,RexAB,both,1,1,exact_name_match
+RosmerTA,RosmerTA,RosmerTA,RosmerTA,both,204,204,exact_name_match
+Rst_3HP,Rst_3HP,Rst_3HP,3HP,both,39,35,Rst_3HP(DF)=3HP(PADLOC)
+Rst_DUF4238,Rst_DUF4238,Rst_DUF4238,DUF4238,both,1,1,naming convention differs between tools
+Rst_Helicase,Rst_HelicaseDUF2290,Rst_HelicaseDUF2290,Helicase-DUF2290,both,25,25,naming convention differs between tools
+Rst_Hydrolase,Rst_Hydrolase-3Tm,Rst_Hydrolase-Tm,Hydrolase-TM,both,1,1,naming convention differs between tools
+Rst_TIR-NLR,Rst_TIR-NLR,Rst_TIR-NLR,TIR-NLR,both,18,2,naming convention differs between tools
+SEFIR,SEFIR,SEFIR,SEFIR,both,17,32,exact_name_match
+Septu,Septu,Septu,septu_type_I,both,70,60,naming convention differs between tools
+Shango,Shango,Shango,Shango,both,51,51,exact_name_match
+Shedu,Shedu,Shedu,shedu,both,44,40,case_insensitive_match
+ShosTA,ShosTA,ShosTA,ShosTA,both,21,19,exact_name_match
+SspBCDE,SspBCDE,SspBCDE,PT_SspABCD,both,82,81,SspBCDE(DF)=PT_SspABCD(PADLOC) — key FACILITATE system in published paper
+Stk2,Stk2,Stk2,Stk2,both,18,18,exact_name_match
+Thoeris_I,Thoeris,Thoeris_I,thoeris_type_I,both,37,43,naming convention differs between tools
+Thoeris_II,Thoeris,Thoeris_II,thoeris_type_II,both,11,5,naming convention differs between tools
+Tiamat,Tiamat,Tiamat,Tiamat,both,7,9,exact_name_match
+Wadjet_I,Wadjet,Wadjet_I,wadjet_type_I,both,39,38,naming convention differs between tools
+Zorya_I,Zorya,Zorya_TypeI,zorya_type_I,both,48,48,naming convention differs between tools
+Zorya_II,Zorya,Zorya_TypeII,zorya_type_II,both,3,3,naming convention differs between tools
+pAgo_I,pAgo,pAgo_S1B,argonaute_type_I,both,1,5,naming convention differs between tools
+pAgo_III,pAgo,pAgo_S2B,argonaute_type_III,both,4,10,naming convention differs between tools
+adf_Aca_alone,Anti_CRISPR,Aca_alone,,df_antidefense,194,0,antidefense_system
+adf_Adnd_p0020_p0021,Anti_Dnd,Adnd_p0020_p0021,,df_antidefense,119,0,antidefense_system
+adf_NARP1,NADP,NARP1,,df_antidefense,140,0,antidefense_system
+adf_abc1,Anti_RecBCD,abc1,,df_antidefense,16,0,antidefense_system
+adf_acb1,Anti_CBASS,acb1,,df_antidefense,8,0,antidefense_system
+adf_acb2,Anti_CBASS,acb2,,df_antidefense,62,0,antidefense_system
+adf_acrie1,Anti_CRISPR,acrie1,,df_antidefense,27,0,antidefense_system
+adf_acrie2,Anti_CRISPR,acrie2,,df_antidefense,5,0,antidefense_system
+adf_acrie3,Anti_CRISPR,acrie3,,df_antidefense,15,0,antidefense_system
+adf_acrie8,Anti_CRISPR,acrie8,,df_antidefense,11,0,antidefense_system
+adf_acrie9,Anti_CRISPR,acrie9,,df_antidefense,106,0,antidefense_system
+adf_acrif11,Anti_CRISPR,acrif11,,df_antidefense,1,0,antidefense_system
+adf_acrif12,Anti_CRISPR,acrif12,,df_antidefense,24,0,antidefense_system
+adf_acrif14,Anti_CRISPR,acrif14,,df_antidefense,2,0,antidefense_system
+adf_acrif23,Anti_CRISPR,acrif23,,df_antidefense,2,0,antidefense_system
+adf_acrif24,Anti_CRISPR,acrif24,,df_antidefense,2,0,antidefense_system
+adf_acrif2_c2,Anti_CRISPR,acrif2_c2,,df_antidefense,3,0,antidefense_system
+adf_acrif3,Anti_CRISPR,acrif3,,df_antidefense,29,0,antidefense_system
+adf_acrif4,Anti_CRISPR,acrif4,,df_antidefense,8,0,antidefense_system
+adf_acrif5,Anti_CRISPR,acrif5,,df_antidefense,18,0,antidefense_system
+adf_acrif6,Anti_CRISPR,acrif6,,df_antidefense,3,0,antidefense_system
+adf_acrif7,Anti_CRISPR,acrif7,,df_antidefense,5,0,antidefense_system
+adf_acriia21,Anti_CRISPR,acriia21,,df_antidefense,393,0,antidefense_system
+adf_apyc1,Anti_Pycsar,apyc1,,df_antidefense,152,0,antidefense_system
+adf_arda_ardu,Anti_RM,arda_ardu,,df_antidefense,418,0,antidefense_system
+adf_ardb_klca_acric11,Anti_RM,ardb_klca_acric11,,df_antidefense,541,0,antidefense_system
+adf_ardc,Anti_RM,ardc,,df_antidefense,163,0,antidefense_system
+adf_ardk,Anti_RM,ardk,,df_antidefense,37,0,antidefense_system
+adf_ardr,Anti_RM,ardr,,df_antidefense,20,0,antidefense_system
+adf_dam,Anti_RM,dam,,df_antidefense,8,0,antidefense_system
+adf_lar,Anti_RM,lar,,df_antidefense,5,0,antidefense_system
+adf_mom,Anti_RM,mom,,df_antidefense,1,0,antidefense_system
+adf_psiab,Other,psiab,,df_antidefense,233,0,antidefense_system
+adf_rad,Anti_Retron,rad,,df_antidefense,7,0,antidefense_system
+adf_ral,Anti_RM,ral,,df_antidefense,1,0,antidefense_system
+adf_rexb,Anti_TA,rexb,,df_antidefense,2,0,antidefense_system
+adf_tad1,Anti_Thoeris,tad1,,df_antidefense,90,0,antidefense_system
+adf_tad2_acriia7,Anti_Thoeris,tad2_acriia7,,df_antidefense,14,0,antidefense_system
+adf_vcrx089_090,Anti_RM,vcrx089_090,,df_antidefense,19,0,antidefense_system
+adf_vcrx091_093,Anti_CRISPR,vcrx091_093,,df_antidefense,27,0,antidefense_system
+BREX_unsubtyped,BREX,BREX,,df_only,4,0,DF unsubtyped BREX call
+CAS_IV-E,Cas,CAS_Class1-Subtype-IV-E,,df_only,1,0,DF-only CAS subtype
+DRT8,DRT,DRT8,,df_only,5,0,DF-only DRT subtype
+DRT9,DRT,DRT9,,df_only,7,0,DF-only DRT subtype
+Gao_Iet_df,Gao_Iet,Gao_Iet,,df_only,10,0,"UNCERTAIN: Gao_Iet(DF=10) vs ietAS(PADLOC=89) — large count discrepancy, kept separate pending manual check"
+PARIS_II_merge,Paris,PARIS_II_merge,,df_only,6,0,DF-only PARIS variant
+df_6A_MBL,6A_MBL,6A_MBL,,df_only,27,0,automated_df_only
+df_Abi2,Abi2,Abi2,,df_only,151,0,automated_df_only
+df_AbiA_large,AbiA,AbiA_large,,df_only,1,0,automated_df_only
+df_AbiAlpha,AbiAlpha,AbiAlpha,,df_only,24,0,automated_df_only
+df_AbiB,AbiB,AbiB,,df_only,1,0,automated_df_only
+df_AbiH,AbiH,AbiH,,df_only,124,0,automated_df_only
+df_AbiJ,AbiJ,AbiJ,,df_only,91,0,automated_df_only
+df_AbiK,AbiK,AbiK,,df_only,1,0,automated_df_only
+df_AbiP2,AbiP2,AbiP2,,df_only,53,0,automated_df_only
+df_AbiZ,AbiZ,AbiZ,,df_only,11,0,automated_df_only
+df_AspAB,AspAB,AspAB,,df_only,3,0,automated_df_only
+df_Avs_II,Avs,Avs_II,,df_only,47,0,automated_df_only
+df_Avs_III,Avs,Avs_III,,df_only,4,0,automated_df_only
+df_Avs_IV,Avs,Avs_IV,,df_only,4,0,automated_df_only
+df_Avs_V,Avs,Avs_V,,df_only,5,0,automated_df_only
+df_Belisama,Belisama,Belisama,,df_only,2,0,automated_df_only
+df_CapRel,CapRel,CapRel,,df_only,15,0,automated_df_only
+df_Ceres,Ceres,Ceres,,df_only,1,0,automated_df_only
+df_CoCoNut_I-A,CoCoNut,CoCoNut_I-A,,df_only,6,0,automated_df_only
+df_CoCoNut_I-B,CoCoNut,CoCoNut_I-B,,df_only,1,0,automated_df_only
+df_CoCoNut_I-C,CoCoNut,CoCoNut_I-C,,df_only,4,0,automated_df_only
+df_CoCoNut_II,CoCoNut,CoCoNut_II,,df_only,10,0,automated_df_only
+df_CoCoNut_III-A,CoCoNut,CoCoNut_III-A,,df_only,8,0,automated_df_only
+df_DS-1,DS-1,DS-1,,df_only,29,0,automated_df_only
+df_DS-10,DS-10,DS-10,,df_only,5,0,automated_df_only
+df_DS-12B,DS-12B,DS-12B,,df_only,7,0,automated_df_only
+df_DS-14,DS-14,DS-14,,df_only,7,0,automated_df_only
+df_DS-15,DS-15,DS-15,,df_only,2,0,automated_df_only
+df_DS-16,DS-16,DS-16,,df_only,4,0,automated_df_only
+df_DS-17,DS-17,DS-17,,df_only,6,0,automated_df_only
+df_DS-18,DS-18,DS-18,,df_only,1,0,automated_df_only
+df_DS-19,DS-19,DS-19,,df_only,8,0,automated_df_only
+df_DS-2,DS-2,DS-2,,df_only,5,0,automated_df_only
+df_DS-20,DS-20,DS-20,,df_only,4,0,automated_df_only
+df_DS-22,DS-22,DS-22,,df_only,1,0,automated_df_only
+df_DS-23,DS-23,DS-23,,df_only,3,0,automated_df_only
+df_DS-24,DS-24,DS-24,,df_only,51,0,automated_df_only
+df_DS-28,DS-28,DS-28,,df_only,24,0,automated_df_only
+df_DS-29,DS-29,DS-29,,df_only,1,0,automated_df_only
+df_DS-3,DS-3,DS-3,,df_only,1,0,automated_df_only
+df_DS-31,DS-31,DS-31,,df_only,5,0,automated_df_only
+df_DS-32,DS-32,DS-32,,df_only,16,0,automated_df_only
+df_DS-33,DS-33,DS-33,,df_only,14,0,automated_df_only
+df_DS-34,DS-34,DS-34,,df_only,31,0,automated_df_only
+df_DS-35,DS-35,DS-35,,df_only,1,0,automated_df_only
+df_DS-36,DS-36,DS-36,,df_only,21,0,automated_df_only
+df_DS-37,DS-37,DS-37,,df_only,17,0,automated_df_only
+df_DS-38,DS-38,DS-38,,df_only,6,0,automated_df_only
+df_DS-39,DS-39,DS-39,,df_only,5,0,automated_df_only
+df_DS-4,DS-4,DS-4,,df_only,11,0,automated_df_only
+df_DS-40,DS-40,DS-40,,df_only,12,0,automated_df_only
+df_DS-42,DS-42,DS-42,,df_only,2,0,automated_df_only
+df_DS-45,DS-45,DS-45,,df_only,2,0,automated_df_only
+df_DS-6,DS-6,DS-6,,df_only,9,0,automated_df_only
+df_DS-7,DS-7,DS-7,,df_only,4,0,automated_df_only
+df_DS-9,DS-9,DS-9,,df_only,14,0,automated_df_only
+df_Damona,Damona,Damona,,df_only,4,0,automated_df_only
+df_Detocs,Detocs,Detocs,,df_only,4,0,automated_df_only
+df_Detocs_hydrolase,Detocs,Detocs_hydrolase,,df_only,2,0,automated_df_only
+df_Divona,Divona,Divona,,df_only,1,0,automated_df_only
+df_Dsr_I,Dsr,Dsr_I,,df_only,6,0,automated_df_only
+df_Dsr_II,Dsr,Dsr_II,,df_only,2,0,automated_df_only
+df_Eleos,Eleos,Eleos,,df_only,15,0,automated_df_only
+df_Epona,Epona,Epona,,df_only,1,0,automated_df_only
+df_Erebus,Erebus,Erebus,,df_only,13,0,automated_df_only
+df_FS_GIY_YIG,FS_GIY_YIG,FS_GIY_YIG,,df_only,6,0,automated_df_only
+df_FS_HP,FS_HP,FS_HP,,df_only,4,0,automated_df_only
+df_FS_HsdR_like,FS_HsdR_like,FS_HsdR_like,,df_only,3,0,automated_df_only
+df_FS_Sma,FS_Sma,FS_Sma,,df_only,147,0,automated_df_only
+df_GAPS1,GAPS1,GAPS1,,df_only,58,0,automated_df_only
+df_GAPS4,GAPS4,GAPS4,,df_only,2,0,automated_df_only
+df_GAPS6,GAPS6,GAPS6,,df_only,2,0,automated_df_only
+df_Gao_Her_DUF,Gao_Her,Gao_Her_DUF,,df_only,5,0,automated_df_only
+df_Gao_RL,Gao_RL,Gao_RL,,df_only,5,0,automated_df_only
+df_Hna,Hna,Hna,,df_only,10,0,automated_df_only
+df_Hypnos,Hypnos,Hypnos,,df_only,16,0,automated_df_only
+df_JukAB,JukAB,JukAB,,df_only,23,0,automated_df_only
+df_Lamassu-DS-30,Lamassu-Fam,Lamassu-DS-30,,df_only,6,0,automated_df_only
+df_Lamassu-Hydrolase_Protease,Lamassu-Fam,Lamassu-Hydrolase_Protease,,df_only,3,0,automated_df_only
+df_Lamassu-Hypothetical,Lamassu-Fam,Lamassu-Hypothetical,,df_only,2,0,automated_df_only
+df_Lamassu-Lipase,Lamassu-Fam,Lamassu-Lipase,,df_only,8,0,automated_df_only
+df_Lamassu-Mrr,Lamassu-Fam,Lamassu-Mrr,,df_only,43,0,automated_df_only
+df_Lamassu-PDDEXK,Lamassu-Fam,Lamassu-PDDEXK,,df_only,2,0,automated_df_only
+df_Lit,Lit,Lit,,df_only,2,0,automated_df_only
+df_MADS3-4,MADS3-4,MADS3-4,,df_only,1,0,automated_df_only
+df_MazEF,MazEF,MazEF,,df_only,170,0,automated_df_only
+df_Mok_Hok_Sok,Mok_Hok_Sok,Mok_Hok_Sok,,df_only,189,0,automated_df_only
+df_Mokosh_Type_I,Mokosh,Mokosh_Type_I,,df_only,1,0,automated_df_only
+df_Mokosh_Type_I_C,Mokosh,Mokosh_Type_I_C,,df_only,13,0,automated_df_only
+df_NLR_like_bNACHT01,NLR,NLR_like_bNACHT01,,df_only,19,0,automated_df_only
+df_NLR_like_bNACHT09,NLR,NLR_like_bNACHT09,,df_only,1,0,automated_df_only
+df_Nantosuelta,Nantosuelta,Nantosuelta,,df_only,9,0,automated_df_only
+df_Nhi,Nhi,Nhi,,df_only,8,0,automated_df_only
+df_Ogmios,Ogmios,Ogmios,,df_only,5,0,automated_df_only
+df_Old_exonuclease,Old_exonuclease,Old_exonuclease,,df_only,6,0,automated_df_only
+df_Oshun,Oshun,Oshun,,df_only,1,0,automated_df_only
+df_PD-T4-8,PD-T4-8,PD-T4-8,,df_only,8,0,automated_df_only
+df_PD-T4-9,PD-T4-9,PD-T4-9,,df_only,3,0,automated_df_only
+df_PD-T7-1,PD-T7-1,PD-T7-1,,df_only,65,0,automated_df_only
+df_PD-T7-2,PD-T7-2,PD-T7-2,,df_only,70,0,automated_df_only
+df_PD-T7-5,PD-T7-5,PD-T7-5,,df_only,29,0,automated_df_only
+df_PfiAT,PfiAT,PfiAT,,df_only,11,0,automated_df_only
+df_Prithvi,Prithvi,Prithvi,,df_only,34,0,automated_df_only
+df_Prometheus,Prometheus,Prometheus,,df_only,69,0,automated_df_only
+df_RM_Type_IIG_2,RM,RM_Type_IIG_2,,df_only,30,0,automated_df_only
+df_RM_Type_IV_1,RM,RM_Type_IV_1,,df_only,22,0,automated_df_only
+df_RloC,RloC,RloC,,df_only,131,0,automated_df_only
+df_RnlAB,RnlAB,RnlAB,,df_only,8,0,automated_df_only
+df_Rst_RT-Tm,Rst_RT-nitrilase-Tm,Rst_RT-Tm,,df_only,1,0,automated_df_only
+df_SDIC1,SDIC1,SDIC1,,df_only,2,0,automated_df_only
+df_SDIC3,SDIC3,SDIC3,,df_only,159,0,automated_df_only
+df_SDIC4,SDIC4,SDIC4,,df_only,15,0,automated_df_only
+df_SanaTA,SanaTA,SanaTA,,df_only,9,0,automated_df_only
+df_Sirona,Sirona,Sirona,,df_only,13,0,automated_df_only
+df_SoFic,SoFIC,SoFic,,df_only,6,0,DISCREPANCY: DF=6 vs PADLOC=410; detection threshold differs substantially; kept separate
+df_SpbK,SpbK,SpbK,,df_only,6,0,automated_df_only
+df_Sucellos,Sucellos,Sucellos,,df_only,7,0,automated_df_only
+df_TIR-I,TIR-I,TIR-I,,df_only,3,0,automated_df_only
+df_TIR-III,TIR-III,TIR-III,,df_only,38,0,automated_df_only
+df_TIR-IV,TIR-IV,TIR-IV,,df_only,14,0,automated_df_only
+df_Taranis,Taranis,Taranis,,df_only,12,0,automated_df_only
+df_TgvAB,TgvAB,TgvAB,,df_only,51,0,automated_df_only
+df_Tha,Tha,Tha,,df_only,2,0,automated_df_only
+df_Thoeris_III,Thoeris,Thoeris_III,,df_only,5,0,automated_df_only
+df_Thoeris_IV,Thoeris,Thoeris_IV,,df_only,2,0,automated_df_only
+df_Toutatis,Toutatis,Toutatis,,df_only,2,0,automated_df_only
+df_UG1,All_UG,UG1,,df_only,3,0,automated_df_only
+df_UG14,All_UG,UG14,,df_only,2,0,automated_df_only
+df_UG17,All_UG,UG17,,df_only,16,0,automated_df_only
+df_UG3,All_UG,UG3,,df_only,3,0,automated_df_only
+df_UG4,All_UG,UG4,,df_only,23,0,automated_df_only
+df_UG7,All_UG,UG7,,df_only,1,0,automated_df_only
+df_UG9_small,All_UG,UG9_small,,df_only,2,0,automated_df_only
+df_VP1839,VP1839,VP1839,,df_only,31,0,automated_df_only
+df_VP1840,VP1840,VP1840,,df_only,36,0,automated_df_only
+df_VP1851,VP1851,VP1851,,df_only,14,0,automated_df_only
+df_VP1853,VP1853,VP1853,,df_only,2,0,automated_df_only
+df_Wadjet_III,Wadjet,Wadjet_III,,df_only,4,0,automated_df_only
+df_dCTPdeaminase,dCTPdeaminase,dCTPdeaminase,,df_only,16,0,automated_df_only
+df_dGTPase,dGTPase,dGTPase,,df_only,25,0,automated_df_only
+df_gcu233,gcu233,gcu233,,df_only,189,0,automated_df_only
+df_gcu24,gcu24,gcu24,,df_only,14,0,automated_df_only
+df_pAgo_LongB,pAgo,pAgo_LongB,,df_only,1,0,automated_df_only
+df_radar_II,RADAR,radar_II,,df_only,7,0,automated_df_only
+EXCLUDE_DMS_other,,,DMS_other,exclude,0,886,Uninformative PADLOC catch-all; 886/900 genomes; excluded from feature matrix
+AVAST_II,,,AVAST_type_II,padloc_only,0,52,PADLOC-only
+AVAST_III,,,AVAST_type_III,padloc_only,0,4,PADLOC-only
+AVAST_IV,,,AVAST_type_IV,padloc_only,0,4,PADLOC-only
+AVAST_V,,,AVAST_type_V,padloc_only,0,4,PADLOC-only
+BREX_V,,,brex_type_V,padloc_only,0,4,PADLOC-only BREX subtype
+DISARM_II,,,disarm_type_II,padloc_only,0,3,PADLOC-only DISARM subtype
+DRT_other,,,DRT_other,padloc_only,0,22,PADLOC-only DRT catch-all
+DRT_type_III,,,DRT_type_III,padloc_only,0,15,PADLOC-only DRT subtype
+GAO_19,,,GAO_19,padloc_only,0,68,PADLOC-only GAO system (Gao et al. 2020)
+GAO_20,,,GAO_20,padloc_only,0,5,PADLOC-only GAO system
+GAO_29,,,GAO_29,padloc_only,0,5,PADLOC-only GAO system
+PT_SspE,,,PT_SspE,padloc_only,0,1,PADLOC-only
+PT_SspFGH,,,PT_SspFGH,padloc_only,0,2,PADLOC-only
+RADAR,,,RADAR,padloc_only,0,10,PADLOC-only
+Retron_VIII,,,retron_VIII,padloc_only,0,1,PADLOC-only retron subtype
+Retron_XII,,,retron_XII,padloc_only,0,2,PADLOC-only retron subtype
+TerY-P_other,,,TerY-P_other,padloc_only,0,2,PADLOC-only TerY-P variant
+VSPR,,,VSPR,padloc_only,0,310,PADLOC-only; no DF equivalent found
+argonaute_II,,,argonaute_type_II,padloc_only,0,1,PADLOC-only
+argonaute_other,,,argonaute_other,padloc_only,0,1,PADLOC-only catch-all
+cas_type_other,,,cas_type_other,padloc_only,0,33,PADLOC-only Cas catch-all
+cbass_IIs,,,cbass_type_IIs,padloc_only,0,9,PADLOC-only CBASS subtype
+cbass_other,,,cbass_other,padloc_only,0,42,PADLOC catch-all CBASS
+dXTPase,,,dXTPase,padloc_only,0,28,PADLOC-only
+druantia_other,,,druantia_other,padloc_only,0,5,PADLOC-only
+hachiman_other,,,hachiman_other,padloc_only,0,1,PADLOC-only
+mza_other,,,mza_other,padloc_only,0,3,PADLOC-only mza variant
+padloc_AbiO-Nhi_family,,,AbiO-Nhi_family,padloc_only,0,8,automated_padloc_only
+padloc_Dynamins,,,Dynamins,padloc_only,0,14,automated_padloc_only
+padloc_HEC-06,,,HEC-06,padloc_only,0,36,automated_padloc_only
+padloc_Juk,,,Juk,padloc_only,0,7,automated_padloc_only
+padloc_Menshen_other,,,Menshen_other,padloc_only,0,1,automated_padloc_only
+padloc_Old,,,Old,padloc_only,0,6,automated_padloc_only
+padloc_PD-T7-1or5,,,PD-T7-1or5,padloc_only,0,93,automated_padloc_only
+padloc_PDC-M01,,,PDC-M01,padloc_only,0,21,automated_padloc_only
+padloc_PDC-M03,,,PDC-M03,padloc_only,0,3,automated_padloc_only
+padloc_PDC-M04,,,PDC-M04,padloc_only,0,3,automated_padloc_only
+padloc_PDC-M06,,,PDC-M06,padloc_only,0,12,automated_padloc_only
+padloc_PDC-M09,,,PDC-M09,padloc_only,0,3,automated_padloc_only
+padloc_PDC-M11,,,PDC-M11,padloc_only,0,10,automated_padloc_only
+padloc_PDC-M13,,,PDC-M13,padloc_only,0,7,automated_padloc_only
+padloc_PDC-M15,,,PDC-M15,padloc_only,0,1,automated_padloc_only
+padloc_PDC-M16,,,PDC-M16,padloc_only,0,1,automated_padloc_only
+padloc_PDC-M18,,,PDC-M18,padloc_only,0,44,automated_padloc_only
+padloc_PDC-M21,,,PDC-M21,padloc_only,0,2,automated_padloc_only
+padloc_PDC-M23,,,PDC-M23,padloc_only,0,8,automated_padloc_only
+padloc_PDC-M24,,,PDC-M24,padloc_only,0,125,automated_padloc_only
+padloc_PDC-M26,,,PDC-M26,padloc_only,0,6,automated_padloc_only
+padloc_PDC-M27,,,PDC-M27,padloc_only,0,2,automated_padloc_only
+padloc_PDC-M28,,,PDC-M28,padloc_only,0,1,automated_padloc_only
+padloc_PDC-M30,,,PDC-M30,padloc_only,0,78,automated_padloc_only
+padloc_PDC-M31,,,PDC-M31,padloc_only,0,1,automated_padloc_only
+padloc_PDC-M34,,,PDC-M34,padloc_only,0,1,automated_padloc_only
+padloc_PDC-M38,,,PDC-M38,padloc_only,0,20,automated_padloc_only
+padloc_PDC-M40,,,PDC-M40,padloc_only,0,4,automated_padloc_only
+padloc_PDC-M43,,,PDC-M43,padloc_only,0,2,automated_padloc_only
+padloc_PDC-M46,,,PDC-M46,padloc_only,0,1,automated_padloc_only
+padloc_PDC-M49,,,PDC-M49,padloc_only,0,3,automated_padloc_only
+padloc_PDC-M51,,,PDC-M51,padloc_only,0,1,automated_padloc_only
+padloc_PDC-M53,,,PDC-M53,padloc_only,0,6,automated_padloc_only
+padloc_PDC-M55,,,PDC-M55,padloc_only,0,1,automated_padloc_only
+padloc_PDC-M60,,,PDC-M60,padloc_only,0,2,automated_padloc_only
+padloc_PDC-M62,,,PDC-M62,padloc_only,0,6,automated_padloc_only
+padloc_PDC-M63,,,PDC-M63,padloc_only,0,4,automated_padloc_only
+padloc_PDC-M65,,,PDC-M65,padloc_only,0,1,automated_padloc_only
+padloc_PDC-M66,,,PDC-M66,padloc_only,0,8,automated_padloc_only
+padloc_PDC-M67,,,PDC-M67,padloc_only,0,2,automated_padloc_only
+padloc_PDC-M68,,,PDC-M68,padloc_only,0,1,automated_padloc_only
+padloc_PDC-S01,,,PDC-S01,padloc_only,0,14,automated_padloc_only
+padloc_PDC-S02,,,PDC-S02,padloc_only,0,169,automated_padloc_only
+padloc_PDC-S04,,,PDC-S04,padloc_only,0,335,automated_padloc_only
+padloc_PDC-S05,,,PDC-S05,padloc_only,0,90,automated_padloc_only
+padloc_PDC-S06,,,PDC-S06,padloc_only,0,136,automated_padloc_only
+padloc_PDC-S07,,,PDC-S07,padloc_only,0,716,automated_padloc_only
+padloc_PDC-S08,,,PDC-S08,padloc_only,0,35,automated_padloc_only
+padloc_PDC-S09,,,PDC-S09,padloc_only,0,100,automated_padloc_only
+padloc_PDC-S11,,,PDC-S11,padloc_only,0,60,automated_padloc_only
+padloc_PDC-S12,,,PDC-S12,padloc_only,0,322,automated_padloc_only
+padloc_PDC-S13,,,PDC-S13,padloc_only,0,111,automated_padloc_only
+padloc_PDC-S14,,,PDC-S14,padloc_only,0,18,automated_padloc_only
+padloc_PDC-S15,,,PDC-S15,padloc_only,0,99,automated_padloc_only
+padloc_PDC-S16,,,PDC-S16,padloc_only,0,103,automated_padloc_only
+padloc_PDC-S18,,,PDC-S18,padloc_only,0,8,automated_padloc_only
+padloc_PDC-S19,,,PDC-S19,padloc_only,0,6,automated_padloc_only
+padloc_PDC-S20,,,PDC-S20,padloc_only,0,42,automated_padloc_only
+padloc_PDC-S21,,,PDC-S21,padloc_only,0,49,automated_padloc_only
+padloc_PDC-S22,,,PDC-S22,padloc_only,0,3,automated_padloc_only
+padloc_PDC-S23,,,PDC-S23,padloc_only,0,1,automated_padloc_only
+padloc_PDC-S24,,,PDC-S24,padloc_only,0,13,automated_padloc_only
+padloc_PDC-S25,,,PDC-S25,padloc_only,0,21,automated_padloc_only
+padloc_PDC-S26,,,PDC-S26,padloc_only,0,37,automated_padloc_only
+padloc_PDC-S27,,,PDC-S27,padloc_only,0,6,automated_padloc_only
+padloc_PDC-S28,,,PDC-S28,padloc_only,0,10,automated_padloc_only
+padloc_PDC-S29,,,PDC-S29,padloc_only,0,16,automated_padloc_only
+padloc_PDC-S30,,,PDC-S30,padloc_only,0,2,automated_padloc_only
+padloc_PDC-S31,,,PDC-S31,padloc_only,0,59,automated_padloc_only
+padloc_PDC-S32,,,PDC-S32,padloc_only,0,12,automated_padloc_only
+padloc_PDC-S33,,,PDC-S33,padloc_only,0,15,automated_padloc_only
+padloc_PDC-S34,,,PDC-S34,padloc_only,0,2,automated_padloc_only
+padloc_PDC-S35,,,PDC-S35,padloc_only,0,14,automated_padloc_only
+padloc_PDC-S36,,,PDC-S36,padloc_only,0,32,automated_padloc_only
+padloc_PDC-S37,,,PDC-S37,padloc_only,0,6,automated_padloc_only
+padloc_PDC-S38,,,PDC-S38,padloc_only,0,1,automated_padloc_only
+padloc_PDC-S39,,,PDC-S39,padloc_only,0,26,automated_padloc_only
+padloc_PDC-S41,,,PDC-S41,padloc_only,0,1,automated_padloc_only
+padloc_PDC-S42,,,PDC-S42,padloc_only,0,16,automated_padloc_only
+padloc_PDC-S43,,,PDC-S43,padloc_only,0,5,automated_padloc_only
+padloc_PDC-S45,,,PDC-S45,padloc_only,0,11,automated_padloc_only
+padloc_PDC-S46,,,PDC-S46,padloc_only,0,5,automated_padloc_only
+padloc_PDC-S47,,,PDC-S47,padloc_only,0,21,automated_padloc_only
+padloc_PDC-S49,,,PDC-S49,padloc_only,0,5,automated_padloc_only
+padloc_PDC-S50,,,PDC-S50,padloc_only,0,6,automated_padloc_only
+padloc_PDC-S51,,,PDC-S51,padloc_only,0,3,automated_padloc_only
+padloc_PDC-S52,,,PDC-S52,padloc_only,0,5,automated_padloc_only
+padloc_PDC-S53,,,PDC-S53,padloc_only,0,10,automated_padloc_only
+padloc_PDC-S54,,,PDC-S54,padloc_only,0,1,automated_padloc_only
+padloc_PDC-S55,,,PDC-S55,padloc_only,0,5,automated_padloc_only
+padloc_PDC-S56,,,PDC-S56,padloc_only,0,2,automated_padloc_only
+padloc_PDC-S58,,,PDC-S58,padloc_only,0,4,automated_padloc_only
+padloc_PDC-S59,,,PDC-S59,padloc_only,0,4,automated_padloc_only
+padloc_PDC-S60,,,PDC-S60,padloc_only,0,2,automated_padloc_only
+padloc_PDC-S61,,,PDC-S61,padloc_only,0,1,automated_padloc_only
+padloc_PDC-S64,,,PDC-S64,padloc_only,0,1,automated_padloc_only
+padloc_PDC-S65,,,PDC-S65,padloc_only,0,6,automated_padloc_only
+padloc_PDC-S66,,,PDC-S66,padloc_only,0,7,automated_padloc_only
+padloc_PDC-S67,,,PDC-S67,padloc_only,0,53,automated_padloc_only
+padloc_PDC-S70,,,PDC-S70,padloc_only,0,1,automated_padloc_only
+padloc_PDC-S71,,,PDC-S71,padloc_only,0,1,automated_padloc_only
+padloc_PDC-S73,,,PDC-S73,padloc_only,0,7,automated_padloc_only
+padloc_RM_type_HNH,,,RM_type_HNH,padloc_only,0,62,automated_padloc_only
+padloc_SoFic,,,SoFic,padloc_only,0,410,DISCREPANCY: DF=6 vs PADLOC=410; detection threshold differs substantially; kept separate
+padloc_Tin,,,Tin,padloc_only,0,1,automated_padloc_only
+padloc_Uzume,,,Uzume,padloc_only,0,24,automated_padloc_only
+padloc_cas_type_V,,,cas_type_V,padloc_only,0,2,automated_padloc_only
+padloc_dsr1,,,dsr1,padloc_only,0,7,automated_padloc_only
+padloc_dsr2,,,dsr2,padloc_only,0,2,automated_padloc_only
+padloc_ietAS,,,ietAS,padloc_only,0,89,"UNCERTAIN: ietAS(PADLOC=89) vs Gao_Iet(DF=10) — large count discrepancy, kept separate pending manual check"
+padloc_viperin_solo,,,viperin_solo,padloc_only,0,3,automated_padloc_only
+padloc_zorya_other,,,zorya_other,padloc_only,0,6,automated_padloc_only
+pycsar_other,,,pycsar_other,padloc_only,0,1,PADLOC-only
+pycsar_unknown,,,pycsar_unknown,padloc_only,0,1,PADLOC-only
+qatABCD_other,,,qatABCD_other,padloc_only,0,1,PADLOC-only qat variant
+septu_other,,,septu_other,padloc_only,0,1,PADLOC-only
+wadjet_other,,,wadjet_other,padloc_only,0,6,PADLOC-only
