@@ -134,6 +134,35 @@ E. kobei 10, E. ludwigii 10, E. roggenkampii 5 (total 150).
 
 **Known tool issue — FINAL COUNT:** `amr_report` v4.2.7 crashes on certain HMM domain alignments. Affected: 82/900 genomes — S. aureus 53/150 (35%), E. faecium 28/150 (19%), A. baumannii 1/150 (<1%). A 3-tier fallback was implemented: organism-specific → pan-bacterial (no `--organism`) → header-only TSV. The pan-bacterial fallback recovered zero additional genomes; all 82 crash regardless of `--organism`, confirming the bug is triggered by specific protein sequences in those genomes, not the organism-specific HMM profiles. Affected genomes are coded as zero metal resistance genes in Phase 3. For SA and EF, the metal resistance analysis must carry a Methods caveat: ~35% and ~19% respectively have missing data due to tool failure, not confirmed absence.
 
-**Feature engineering in Phase 3 (Section 7 or new section):** Filter `Subtype == "METAL"`. Derive: `hmrg_metal_classes` (distinct Class values per genome), plus per-metal counts (`hmrg_mercury`, `hmrg_arsenic`, `hmrg_copper`, `hmrg_silver`, `hmrg_zinc`, `hmrg_tellurium`). These replace the single `hmrg_count_unique` column from the original BacMet plan.
+**Feature engineering in Phase 3 (Section 6b):** Filter `Subtype == "METAL"`. Derive `hmrg_metal_classes` (distinct Class values per genome, NA excluded) + `hmrg_metal_total` + per-metal counts. See 2026-05-13 decision below for actual Class values.
+
+---
+
+## Decision 2026-05-13 — AMRFinderPlus METAL Class values differ from pre-registered plan
+
+**Decision:** Use all 12 observed Class values as feature columns (exact match, compound classes kept intact). Column naming: `hmrg_<class_lowercase_slash_replaced_by_underscore>` (e.g. `hmrg_copper_silver`).
+
+**Deviation from plan:** Pre-registered plan listed 6 classes: MERCURY, ARSENIC, COPPER, SILVER, ZINC, TELLURIUM. Actual AMRFinderPlus output across 900 genomes shows 12 distinct Class values:
+
+| Class | Total hits | Notes |
+|---|---|---|
+| MERCURY | 1684 | *mer* operon |
+| COPPER/SILVER | 1349 | *pco/sil* co-resistance cluster on IncH plasmids |
+| COPPER | 1231 | *cup/cop* standalone |
+| ARSENIC | 1092 | *ars* operon |
+| TELLURIUM | 358 | *ter* operon |
+| SILVER | 354 | *sil* standalone |
+| NA | 348 | Gene detected, no class (e.g. fieF) — tracked as `hmrg_unclassified` |
+| NICKEL | 230 | *nik/rcn* — absent from original plan |
+| CADMIUM | 56 | *cad* — SA/EF-specific, absent from original plan |
+| COPPER/NICKEL | 34 | *czc* variant |
+| CADMIUM/LEAD/ZINC | 5 | *czc/cad* variant |
+| CHROMATE | 4 | *chr* operon |
+
+No standalone ZINC class — zinc resistance appears only in the CADMIUM/LEAD/ZINC compound. NICKEL and CADMIUM added (not in original plan). COPPER/SILVER compound class is a real genetic locus (*pco/sil*), not annotation ambiguity.
+
+**Rationale for keeping compound classes intact (not splitting):** COPPER/SILVER and COPPER/NICKEL are annotated as compound because the underlying gene operons encode resistance to multiple metals via the same proteins. Splitting would misrepresent the biology.
+
+**Impact on feature matrix:** 11 `hmrg_*` feature columns (excluding NA/unclassified from class columns) + `hmrg_unclassified` + `hmrg_metal_total` + `hmrg_metal_classes`. Sparsity filter in Section 9 will drop columns present in <5 genomes (CADMIUM/LEAD/ZINC and CHROMATE candidates).
 
 **Soil ecology angle:** Positive correlation between per-metal HMRG counts and ARG counts tests co-carriage or co-selection on mobile elements under dual antibiotic + heavy metal selective pressure. Paper framing: "co-occurrence consistent with co-carriage or co-selection" — do not assert causal direction from correlation.

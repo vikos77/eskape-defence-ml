@@ -1,6 +1,6 @@
 # Phase 3 Comprehension Check Review
 
-All questions issued during Phase 3 notebook construction (Sessions 4–5, 2026-05-02 to 2026-05-10).  
+All questions issued during Phase 3 notebook construction (Sessions 4–6, 2026-05-02 to 2026-05-13).  
 Format: question → user attempt → model answer + key correction if any.
 
 ---
@@ -257,6 +257,57 @@ Correction: "No other way this plays out" is too strong. Co-selection without co
 
 ---
 
+---
+
+## Sections 6b and 7 — AMRFinderPlus + ISEScan (Session 6, 2026-05-13)
+
+**Q1. AMRFinderPlus `--organism` mechanism: why do SA copper resistance genes (CopA/CopZ) produce zero hits without the flag?**
+
+Score: 6/10
+
+User attempt: The organism flag adds organism-specific proteins/genes during the run, which is not the case without the flag. Hence, we get targeted specified hits.
+
+Model answer: `--organism` loads an entirely separate HMM profile library — the species-specific profile set — that is not part of the pan-bacterial core database. SA copper resistance genes (CopA, CopZ, Mco) do not exist in the pan-bacterial HMM library at all. They are defined exclusively in the SA-specific profile set. Without `--organism Staphylococcus_aureus`, AMRFinderPlus does not search these profiles — there is nothing to hit. The zero is not diluted signal at lower confidence; the search space simply does not contain those gene families. This is why adding `--organism` for gram-positive species is not optional — it is the only way to detect gram-positive-specific resistance gene families.
+
+Correction: "Targeted specified hits" implies the same genes are found but at higher confidence without the flag. The correct framing: the genes are not in the pan-bacterial database at all and require organism-specific profiles to exist in the search.
+
+---
+
+**Q2. Why does AMRFinderPlus report copper and silver resistance as a compound COPPER/SILVER class rather than two separate entries?**
+
+Score: 7/10
+
+User attempt: The compound class has some shared locus or genetic data. To have two separate entries, some criteria would need to be met which is not happening here.
+
+Model answer: The *pco/sil* gene cluster is a single co-resistance operon on IncH plasmids (and some integrons). The same set of proteins — PcoA, PcoB, PcoC, PcoD, PcoE on the copper side and SilA, SilB, SilC, SilE, SilP on the silver side — are encoded in a single chromosomal/plasmid region and transcribed together. Copper-transporting ATPases in this cluster have measurable silver efflux activity and vice versa; the two metals compete for the same binding sites on some Pco/Sil proteins. AMRFinderPlus's compound Class annotation reflects the reference gene family's biological reality — these genes evolved as a co-resistance unit, not two independent loci that happen to sit nearby.
+
+Correction: User had the right idea ("shared locus") but needed to name the *pco/sil* operon specifically and explain that the compound annotation is a biological fact about the operon, not an annotation gap.
+
+---
+
+**Q3. Why should ISEScan's `new` family IS elements be included in the feature matrix despite not matching a known family?**
+
+Score: 0/10 — user requested a detailed explanation of ISEScan.
+
+ISEScan explanation provided in session:
+ISEScan identifies IS elements using two independent criteria: (1) transposase ORF detection via HMM profile library built from all known IS transposase families in ISfinder; (2) Terminal Inverted Repeat (TIR) detection — ISEScan scans for the short reverse-complement IR sequences (8–40 bp) that flank every IS element in the correct orientation. A `new`-family element passes BOTH criteria — it has a transposase-like ORF (detected by HMM, just not confidently classifiable to a known family) AND correctly positioned flanking IRs. Failure to classify reflects incomplete reference database coverage of IS transposase diversity, not a structural false positive. In *A. baumannii*, novel IS elements outside known families have been documented carrying ARG cassettes.
+
+Model 2-sentence rebuttal: ISEScan identifies `new`-family elements using two independent lines of evidence — a transposase ORF detected by HMM search and flanking terminal inverted repeats in the correct orientation — which are the defining structural features of all IS elements regardless of family. The `new` label reflects the limits of current reference databases, not a detection artefact; these elements have the same transposition machinery and genomic impact as classified IS elements and cannot be excluded without discarding real biology.
+
+---
+
+**Q4. Genome A (IS=90) vs Genome B (IS=10), both with IME=5. Which has higher predicted ARG burden and why?**
+
+Score: 6/10
+
+User attempt: Higher IS element count could be due to higher transposition activity around ARG genes, so genome A would have higher ARG burden.
+
+Model answer: Genome A is predicted to have higher ARG burden. The mechanism is more specific than general transposition activity: IS6/IS26 family elements directly flank ARG cassettes to form composite transposons — the architecture is `IS26 → [ARG + promoter] → IS26`. Each IS26 insertion flanking an ARG cassette creates a discrete mobile unit that can circularise, transfer to a new replicon, and integrate. High IS26 copy number in KP is a validated clinical marker for extensive resistance cassette accumulation. Additionally, a genome with 90 IS elements has undergone far more transposition events, indicating a history of MGE-intensive HGT activity — the same genetic environment that selects for ARG accumulation. Caution: the causality is not directional from IS count alone — both high IS count and high ARG burden may reflect the same selective environment (clinical, high antibiotic and HGT pressure) rather than IS elements causing ARG acquisition.
+
+Correction: The answer was directionally correct but needed the IS6/IS26 composite transposon architecture and the co-selection caveat.
+
+---
+
 ## Summary of patterns across all questions
 
 | Area | Correct | Partially correct | Missed/wrong |
@@ -266,13 +317,17 @@ Correction: "No other way this plays out" is too strong. Co-selection without co
 | Feature engineering | ✓ sparsity filter rationale | | SoFic sparsity interaction |
 | Statistical tests | ✓ non-parametric justification | Wilcoxon vs Spearman confusion | |
 | ML mechanics | ✓ max_features; ✓ spurious splits | Overestimate/correct scenarios | |
-| Biological interpretation | ✓ IME as vehicle; ✓ Q2 label pooling | HMRG gram-stain confounding | |
+| Biological interpretation | ✓ IME as vehicle; ✓ Q2 label pooling | HMRG gram-stain confounding; pco/sil operon identity | |
+| MGE ecology | ✓ IS vs ICE distinction (after explanation); IS count → ARG burden direction | IS6/IS26 composite transposon mechanism | ISEScan `new` family biology |
 
 **Items to revisit:**
 1. Wilcoxon rank-sum (group comparison) vs Spearman (correlation) — know when to use each
 2. Count table kept alongside P/A — both go into the matrix, both have use cases
 3. Coverage filter conservatism: max_protein_length underestimates coverage (harder to pass, not easier)
-4. BacMet: gram-positive vs gram-negative constitutive protein landscape drives HMRG count differences (RESOLVED — BacMet removed; AMRFinderPlus added)
-5. **Noisy features hurt ML models** — more hits ≠ more information; features measuring the wrong thing inflate dimensions, encode phylogenetic signal, and dilute true signal in tree-based importance scores (revisit at Phase 7 SHAP)
-6. **Co-carriage vs co-selection** — correlation between two resistance types is consistent with both; cannot distinguish without genomic context (same plasmid vs separate elements)
-7. **AMRFinderPlus --organism mechanism** — adds organism-specific HMM profiles; does not filter to "top hits"; without the flag, gram-positive resistance gene families are simply absent from the search
+4. BacMet gram-stain confounding (RESOLVED — BacMet removed; AMRFinderPlus added)
+5. **Noisy features hurt ML models** — more hits ≠ more information; wrong-biology features inflate dimensions and dilute true signal (revisit at Phase 7 SHAP)
+6. **Co-carriage vs co-selection** — correlation consistent with both; cannot distinguish without genomic context
+7. **AMRFinderPlus `--organism` mechanism** — organism-specific genes are absent from pan-bacterial DB entirely; `--organism` loads a separate profile set, not a confidence filter
+8. **ISEScan `new` family** — structural IS element (transposase HMM + flanking IRs), not a false positive; unclassified by database coverage; include in feature matrix
+9. **IS6/IS26 composite transposon architecture** — IS26 flanks ARG cassettes forming `IS26 → ARG → IS26` mobile units; high IS26 = clinical marker of resistance accumulation in KP
+10. **pco/sil co-resistance operon** — COPPER/SILVER is a single genetic locus on IncH plasmids, not two separate genes that happen to co-occur
