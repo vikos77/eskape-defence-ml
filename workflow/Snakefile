@@ -43,6 +43,20 @@ BACMET_DB   = "data/raw/databases/BacMet2_EXP_database.fasta"
 ICEBERG_DB  = "data/raw/databases/ICEberg_IME.fasta"
 RESFINDER_DB = "data/raw/databases/db_resfinder"
 
+# ── AMRFinderPlus: database flag + species → organism lookup ──────────────────
+# amrfinder -u only writes to the default location within its conda env.
+# The flag file records that the download completed; subsequent runs reuse it.
+AMRFINDER_FLAG = "data/raw/databases/amrfinderplus_ready.flag"
+
+AMRFINDER_ORGANISM = {
+    "abaumannii":  "Acinetobacter_baumannii",
+    "ecloaceae":   "Enterobacter_cloacae",
+    "efaecium":    "Enterococcus_faecium",
+    "kpneumoniae": "Klebsiella_pneumoniae",
+    "paeruginosa": "Pseudomonas_aeruginosa",
+    "saureus":     "Staphylococcus_aureus",
+}
+
 
 # ── Rule all: final targets ───────────────────────────────────────────────────
 rule all:
@@ -86,6 +100,13 @@ rule all:
         expand("data/interim/{sp}/mlst/mlst_results.tsv", sp=SPECIES),
         # Consolidated per-species metadata tables
         expand("data/interim/{sp}/metadata.tsv", sp=SPECIES),
+        # AMRFinderPlus metal resistance (replaces BacMet — cross-species safe)
+        expand(
+            "data/interim/{sp}/amrfinderplus/{acc_fn}_amrfinder.tsv",
+            zip,
+            sp=[s for s, a in SP_ACC],
+            acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
+        ),
 
 
 # ── 1. Download genomes ───────────────────────────────────────────────────────
@@ -548,3 +569,56 @@ rule collect_metadata:
                                extrasaction="ignore")
             w.writeheader()
             w.writerows(records)
+
+
+# ── 12a. AMRFinderPlus database (runs once per conda env lifetime) ────────────
+# amrfinder -u only writes to the default path inside its own conda env;
+# --database is not permitted with -u.  The flag file serves as Snakemake's
+# dependency marker so this step runs once and is skipped on re-runs.
+rule amrfinderplus_db:
+    output:
+        flag = AMRFINDER_FLAG,
+    conda: "envs/amrfinderplus.yaml"
+    shell:
+        """
+        amrfinder -u && touch {output.flag}
+        """
+
+
+# ── 12b. AMRFinderPlus per genome ─────────────────────────────────────────────
+# Uses the .prt protein predictions already produced by the DefenseFinder rule
+# (pyrodigal-translated, Prodigal-format headers) — no re-annotation needed.
+# --plus activates the METAL/BIOCIDE/STRESS gene families.
+# --organism applies species-specific HMM profiles; critical for correct
+# gram-positive metal resistance detection (SA CopAZ, EF cadmium, etc.).
+# Filter for metal resistance genes in Phase 3: Subtype == "METAL".
+rule amrfinderplus:
+    input:
+        proteins = "data/interim/{sp}/defensefinder/{acc_fn}/{acc_fn}.prt",
+        db_flag  = AMRFINDER_FLAG,
+    output:
+        tsv = "data/interim/{sp}/amrfinderplus/{acc_fn}_amrfinder.tsv",
+    params:
+        organism = lambda wc: AMRFINDER_ORGANISM[wc.sp],
+    conda: "envs/amrfinderplus.yaml"
+    shell:
+        """
+        mkdir -p data/interim/{wildcards.sp}/amrfinderplus
+        AMR_HEADER='Protein id\tElement symbol\tElement name\tScope\tType\tSubtype\tClass\tSubclass\tMethod\tTarget length\tReference sequence length\t%% Coverage of reference\t%% Identity to reference\tAlignment length\tClosest reference accession\tClosest reference name\tHMM accession\tHMM description'
+        if amrfinder \
+                --protein {input.proteins} \
+                --plus \
+                --organism {params.organism} \
+                --output {output.tsv} 2>/dev/null; then
+            : # organism-specific run succeeded
+        elif amrfinder \
+                --protein {input.proteins} \
+                --plus \
+                --output {output.tsv} 2>/dev/null; then
+            : # fallback: pan-bacterial run succeeded (no organism-specific profiles)
+        else
+            # Both runs crashed (known amr_report v4.2.7 HMM domain parsing bug).
+            # Write header-only TSV; genome coded as zero metal resistance in Phase 3.
+            printf "${{AMR_HEADER}}\n" > {output.tsv}
+        fi
+        """

@@ -106,3 +106,34 @@ E. kobei 10, E. ludwigii 10, E. roggenkampii 5 (total 150).
 **Sensitivity analysis:** a pident=30% and pident=50% sweep will be reported as Supplementary to address reviewer queries.
 
 **Citation:** Pal C, Bengtsson-Palme J, Rensing C, Kristiansson E, Larsson DJ. BacMet: antibacterial biocide and metal resistance genes database. *Nucleic Acids Res.* 2014;42(Database issue):D737-43.
+
+## Decision 2026-05-12 — BacMet removed from feature matrix
+
+**Decision:** Remove BacMet tBLASTn output (`hmrg_count_unique`, `hmrg_count_total`) from the Phase 3 feature matrix entirely.
+
+**Reason:** BacMet EXP at pident ≥ 40% captures structural RND efflux pump homologs (40–65% identity), not specifically acquired metal resistance genes. Median `hmrg_count_unique` across species: K. pneumoniae 330, E. cloacae 307, P. aeruginosa 282, A. baumannii 177, S. aureus 61, E. faecium 55. This 6× gram-negative/gram-positive split reflects constitutive RND pump diversity, not MGE burden. Raising pident to 80% does not fix this — the fold-difference grows to 28× because BacMet EXP reference proteins are predominantly from gram-negative organisms, making gram-positive genuine metal resistance genes (e.g. SA CopA/CopZ/Mco) invisible at any pident threshold. BacMet was valid in the published Acinetobacter-only paper (single gram-negative species, constant baseline) but is structurally inappropriate for cross-species comparison in this project.
+
+**Alternatives considered and rejected:**
+1. Raise pident to 80% — reference bias persists; gram-positive resistance genes invisible.
+2. Keep as phylogenetic covariate only — adds confounding without interpretable signal; AMRFinderPlus replaces it cleanly.
+3. Per-species z-score normalisation — removes the baseline but changes the biological interpretation to "above-average HMRG for this species," which is a different and weaker question.
+
+**Impact on Q1–Q4:** None to Q1–Q3. HMRG was never a pre-registered primary feature. Q4 SHAP analysis is unaffected. The soil co-selection angle (ARG/HMRG co-carriage) is addressed by AMRFinderPlus.
+
+---
+
+## Decision 2026-05-12 — AMRFinderPlus added as HMRG replacement
+
+**Decision:** Add AMRFinderPlus v4.2.7 with `--plus --organism` flags to the pipeline. Output: `data/interim/{sp}/amrfinderplus/{acc}_amrfinder.tsv`. Database version: 2026-03-24.1. Phase 3 filter: `Subtype == "METAL"`.
+
+**Reason:** AMRFinderPlus resolves both BacMet failures:
+1. **Organism-aware HMM profiles:** separate curated profiles per species. SA copper resistance (CopA/CopZ/Mco) found by SA-specific HMMs; EF cadmium resistance found by EF-specific HMMs. Without `--organism`, these gram-positive resistance genes are absent from the search entirely — they are not in the pan-bacterial database.
+2. **Gene families, not structural homologs:** detects specific annotated operons (mer, ars, pco/sil, czc, ter) classified by metal subclass (MERCURY, ARSENIC, COPPER, ZINC, SILVER, TELLURIUM). KP example: 33 METAL hits including complete mer and ars operons. SA example: arsB + cadD. These reflect real acquired resistance, not RND pump diversity.
+
+**Implementation:** Protein FASTAs (`.prt`) already existed from DefenseFinder's internal pyrodigal step — no re-annotation required. New Snakemake rules: `amrfinderplus_db` (one-time database download) + `amrfinderplus` (per genome).
+
+**Known tool issue — FINAL COUNT:** `amr_report` v4.2.7 crashes on certain HMM domain alignments. Affected: 82/900 genomes — S. aureus 53/150 (35%), E. faecium 28/150 (19%), A. baumannii 1/150 (<1%). A 3-tier fallback was implemented: organism-specific → pan-bacterial (no `--organism`) → header-only TSV. The pan-bacterial fallback recovered zero additional genomes; all 82 crash regardless of `--organism`, confirming the bug is triggered by specific protein sequences in those genomes, not the organism-specific HMM profiles. Affected genomes are coded as zero metal resistance genes in Phase 3. For SA and EF, the metal resistance analysis must carry a Methods caveat: ~35% and ~19% respectively have missing data due to tool failure, not confirmed absence.
+
+**Feature engineering in Phase 3 (Section 7 or new section):** Filter `Subtype == "METAL"`. Derive: `hmrg_metal_classes` (distinct Class values per genome), plus per-metal counts (`hmrg_mercury`, `hmrg_arsenic`, `hmrg_copper`, `hmrg_silver`, `hmrg_zinc`, `hmrg_tellurium`). These replace the single `hmrg_count_unique` column from the original BacMet plan.
+
+**Soil ecology angle:** Positive correlation between per-metal HMRG counts and ARG counts tests co-carriage or co-selection on mobile elements under dual antibiotic + heavy metal selective pressure. Paper framing: "co-occurrence consistent with co-carriage or co-selection" — do not assert causal direction from correlation.
