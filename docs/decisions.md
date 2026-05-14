@@ -228,11 +228,12 @@ should be testable.
 - The rule generalises to any future species with the same floor structure.
 
 *Result:* PA: low_ARG = 56 (ARG < 6), mid_ARG = 30 (ARG = 6, excluded from Q2),
-high_ARG = 64 (ARG > 6). Q2 now runs on all 6 species, 778 eligible genomes.
+high_ARG = 64 (ARG > 6). Q2 now runs on all 6 species, 614 eligible genomes
+(low_ARG=325 + high_ARG=289; was 494 across 5 species before this amendment).
 
 **Final dataset after all exclusions:**
 - Total genomes: 878 (900 − 22 MLST mismatches)
 - Species counts: KP=132, EC=146, AB=150, EF=150, PA=150, SA=150
 - Feature matrix: 878 × 631 columns (625 feature + 7 label/metadata)
 - Feature breakdown: 274 dp_* + 274 dc_* + 29 ad_* + 43 count + 5 summary/ratio
-- Q2 eligible genomes: 778 (mid_ARG dropped at classifier stage; PA uses binary split)
+- Q2 eligible genomes: 614 (low_ARG=325 + high_ARG=289; mid_ARG=264 dropped at classifier stage; PA uses binary split)

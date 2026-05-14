@@ -198,7 +198,8 @@ not biology.
 
 **Result for PA:** `low_ARG` = 56 genomes (ARG < 6), `mid_ARG` = 30 genomes (ARG = 6,
 excluded from Q2), `high_ARG` = 64 genomes (ARG > 6). PA participates in Q2 with 120
-genomes (56 + 64). Q2 now runs on all 6 ESKAPE species, 778 eligible genomes.
+genomes (56 + 64). Q2 now runs on all 6 ESKAPE species, 614 eligible genomes
+(low_ARG=325 + high_ARG=289; was 494 across 5 species before this amendment).
 
 **Required manuscript statement (Methods):** "For *P. aeruginosa*, 37% of genomes sit
 at the species ARG minimum (arg = 5), making tertile boundaries degenerate (0th = 33rd
