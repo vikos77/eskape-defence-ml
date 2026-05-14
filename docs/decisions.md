@@ -187,3 +187,20 @@ These genomes passed CheckM2 QC (≥95% complete, ≤5% contaminated) but are al
 **Alternative considered:** Retain with flag and let the classifier handle them. Rejected — including species-misidentified genomes in a species classification task (Q1) would introduce known label noise. The correct action is exclusion with documentation.
 
 **Note on scheme "-" (ecloaceae, n=1):** One ecloaceae genome had scheme "-" (typing failure) and was not flagged as a mismatch. It is retained in the dataset; its `sequence_type` is NaN and it will be assigned to a singleton phylogroup in Phase 9.
+
+---
+
+## 2026-05-14 — Phase 3 Section 9 (feature matrix assembly)
+
+**P. aeruginosa excluded from Q2 ARG burden analysis:**
+
+`pd.qcut(q=3)` on PA `arg_count_unique` produces bin edges [5.0, 5.0, 8.0, 29.0] — the 0th and 33rd percentiles are both 5.0 because 56/150 PA genomes (37%) sit at the species ARG floor. After `duplicates='drop'`, only 2 distinct bins remain, which cannot accept 3 labels. The ValueError fallback assigns `mid_ARG` to all 150 PA genomes, effectively excluding PA from Q2.
+
+Biological interpretation: PA has insufficient ARG variance at the bottom of its distribution to support a three-way split. Any forced `low_ARG` bin would contain only floor-level genomes (ARG = 5), not a biologically meaningful contrast with `high_ARG`. Q2 will therefore run on 5 species (KP, AB, EF, SA, EC; 728 genomes after removing mid_ARG rows). PA is excluded from Q2 conclusions.
+
+**Final dataset after all exclusions:**
+- Total genomes: 878 (900 - 22 MLST mismatches)
+- Species counts: KP=132, EC=146, AB=150, EF=150, PA=150, SA=150
+- Feature matrix: 878 rows × 631 columns (625 feature + 7 label/metadata)
+- Feature breakdown: 274 dp_* (defence P/A) + 274 dc_* (defence count) + 29 ad_* (anti-defence) + 43 count columns + 5 summary/ratio columns
+- Q2 eligible genomes: 728 (PA excluded; mid_ARG rows dropped at classifier stage)
