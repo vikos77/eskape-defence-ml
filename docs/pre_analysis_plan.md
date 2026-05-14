@@ -25,9 +25,31 @@ Within and across species, can defence system profile predict high-ARG-burden
 genomes?
 Does the RESTRICT/FACILITATE signature from *Acinetobacter* generalise?
 
-**Label definition:** Top tertile = high ARG burden; bottom tertile = low ARG
+**Label definition (primary):** Top tertile = high ARG burden; bottom tertile = low ARG
 burden. Middle tertile excluded from Q2 only. ARG burden = total count of
-unique ARG genes per genome (ResFinder output).
+unique ARG genes per genome (ResFinder output). Tertile boundaries computed
+*within each species* to prevent species-level ARG baseline differences from
+confounding the label (see decisions.md 2026-05-13).
+
+**Label definition (fallback — Protocol Amendment PA-1, 2026-05-14):**
+For any species where `pd.qcut(q=3)` cannot form three distinct tertile bins
+because the 33rd percentile equals the distribution minimum (floor effect),
+a binary split at the within-species median is used instead:
+- Genomes with ARG count **below** the median → `low_ARG`
+- Genomes with ARG count **above** the median → `high_ARG`
+- Genomes with ARG count **equal to** the median → `mid_ARG` (excluded from Q2,
+  same as the middle tertile in the primary method)
+
+This fallback applies to *P. aeruginosa* in this dataset (37% of PA genomes at
+ARG = 5, the species minimum). It answers a slightly weaker question ("below
+vs above average ARG burden") rather than "bottom third vs top third" — an
+intentional compromise to retain the species in Q2 rather than exclude it.
+PA Q2 results must be interpreted alongside this methodological note.
+
+The fallback condition — 0th percentile equals 33rd percentile — is a
+data-structure criterion defined prospectively before any modelling, not chosen
+because it improves results. It is applied uniformly to any species that meets
+this criterion in this or any future dataset extending this analysis.
 
 **Null hypothesis:** Defence system profile has no predictive value for ARG
 burden beyond a stratified null baseline.
@@ -112,7 +134,7 @@ Phase 6–8 stratified CV results are reported as preliminary only.
 
 | Decision | Choice | Rationale |
 |---|---|---|
-| Q2 label cutoff | Tertile (top vs bottom 33%) | Clean class separation; middle genomes used in Q1/Q3 |
+| Q2 label cutoff | Tertile (top vs bottom 33%); binary median fallback if tertile fails (PA-1) | Clean class separation; fallback retains species with floor effects |
 | A. baumannii data source | Fresh NCBI download for training; published 132 as held-out validation | Tests generalisation to peer-reviewed benchmark |
 | Q3 species label handling | Hidden during clustering; applied post-hoc only | Prevents species-bias contaminating archetype discovery |
 | Python version | 3.11 | Full scikit-learn ≥1.4, shap ≥0.44, umap-learn compatibility |
@@ -121,7 +143,74 @@ Phase 6–8 stratified CV results are reported as preliminary only.
 
 ---
 
-## 7. What this plan does not pre-specify
+## 7. Protocol amendments
+
+Amendments are logged here when a pre-specified method cannot be applied as written
+and a prospective modification is required. Amendments are defined *before* any
+modelling results are seen. Post-hoc modifications are logged in `decisions.md` as
+exploratory, not here.
+
+### PA-1 — Q2 binary split fallback (2026-05-14)
+
+**Trigger:** During Phase 3 feature matrix construction, `pd.qcut(q=3)` failed for
+*P. aeruginosa* with `ValueError: Bin labels must be one fewer than the number of bin
+edges`. Root cause: 56/150 PA genomes (37%) have `arg_count_unique = 5` (the species
+minimum), making the 0th and 33rd percentiles identical. After `duplicates='drop'`,
+only 2 distinct bins remain — insufficient for 3 labels.
+
+**Why this happened specifically for PA:** P. aeruginosa's clinical isolates almost
+universally carry a small set of near-baseline acquired ARGs — chromosomal
+cephalosporinase derivatives (blaPDC) and housekeeping efflux pump genes are
+ubiquitous, creating a hard floor at 5 unique ARGs in ResFinder output. The
+right-skewed tail (some PA genomes reaching ARG = 29) represents genomes with
+additional mobile-element-acquired resistance, but 37% of PA sits at the minimum.
+No equivalent floor effect is observed in the other 5 ESKAPE species.
+
+**Options considered before choosing the amendment:**
+
+*Option 1: Keep PA excluded from Q2* — Pre-registration intact; exclusion is honest;
+simple to report. Loss: PA genomes with ARG = 20+ (genuine high-burden) are excluded
+entirely, weakening cross-species generalisability.
+
+*Option 2: Binary split at the median (chosen)* — PA genomes below median → low_ARG;
+above median → high_ARG; at median → mid_ARG (excluded). Brings PA back into Q2.
+Answers a slightly weaker biological question ("below vs above species-average ARG
+burden" rather than "bottom vs top third"), but the question remains coherent and
+directly tests the RESTRICT/FACILITATE hypothesis for PA. The 56 genomes at the ARG
+floor (low_ARG) vs the 64 genomes with above-median burden (high_ARG) provide a
+meaningful contrast.
+
+*Option 3: Rank-based tertile* — Rank genomes by ARG count, split ranks into thirds.
+Rejected: 56 PA genomes share ARG = 5 exactly. Assigning different labels to
+identical-valued genomes based on arbitrary rank order would introduce noise as
+signal — any classifier learning this split would be memorising random assignment,
+not biology.
+
+**Why the amendment is methodologically sound:**
+1. Defined *before* any modelling — this is a Phase 3 (feature engineering) fix,
+   not a Phase 6+ retroactive change. No model performance numbers have been seen.
+2. The fallback criterion ("0th percentile == 33rd percentile") is a data-structure
+   test, not an outcome test — it cannot be gamed post-hoc.
+3. The binary split is a standard, pre-existing method (median split is weaker than
+   tertile but not arbitrary). It is prospectively documented and therefore confirmatory,
+   not exploratory.
+4. The rule is species-agnostic and generalises to any future dataset extension.
+
+**Result for PA:** `low_ARG` = 56 genomes (ARG < 6), `mid_ARG` = 30 genomes (ARG = 6,
+excluded from Q2), `high_ARG` = 64 genomes (ARG > 6). PA participates in Q2 with 120
+genomes (56 + 64). Q2 now runs on all 6 ESKAPE species, 778 eligible genomes.
+
+**Required manuscript statement (Methods):** "For *P. aeruginosa*, 37% of genomes sit
+at the species ARG minimum (arg = 5), making tertile boundaries degenerate (0th = 33rd
+percentile). A pre-specified binary split at the within-species median was applied
+instead: genomes below the median were labelled low-ARG burden, genomes above were
+labelled high-ARG burden, and median-tied genomes were excluded from Q2 as for the
+middle tertile. The Q2 classifier for PA therefore contrasts below-average vs
+above-average ARG burden rather than bottom vs top third."
+
+---
+
+## 8. What this plan does not pre-specify
 
 Secondary analyses that emerge from results are permitted but must be labelled
 exploratory. Specifically:

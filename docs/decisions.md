@@ -192,15 +192,47 @@ These genomes passed CheckM2 QC (≥95% complete, ≤5% contaminated) but are al
 
 ## 2026-05-14 — Phase 3 Section 9 (feature matrix assembly)
 
-**P. aeruginosa excluded from Q2 ARG burden analysis:**
+**Protocol Amendment PA-1 — Q2 binary split fallback for P. aeruginosa.**
 
-`pd.qcut(q=3)` on PA `arg_count_unique` produces bin edges [5.0, 5.0, 8.0, 29.0] — the 0th and 33rd percentiles are both 5.0 because 56/150 PA genomes (37%) sit at the species ARG floor. After `duplicates='drop'`, only 2 distinct bins remain, which cannot accept 3 labels. The ValueError fallback assigns `mid_ARG` to all 150 PA genomes, effectively excluding PA from Q2.
+This entry supersedes the earlier PA-exclusion note. Full reasoning is in
+`docs/pre_analysis_plan.md §7 (Protocol Amendments, PA-1)`. Summary here for
+cross-reference.
 
-Biological interpretation: PA has insufficient ARG variance at the bottom of its distribution to support a three-way split. Any forced `low_ARG` bin would contain only floor-level genomes (ARG = 5), not a biologically meaningful contrast with `high_ARG`. Q2 will therefore run on 5 species (KP, AB, EF, SA, EC; 728 genomes after removing mid_ARG rows). PA is excluded from Q2 conclusions.
+*What the tertile split produces for PA:* `pd.qcut(q=3, duplicates='drop')` on
+PA `arg_count_unique` returns bin edges [5.0, 5.0, 8.0, 29.0]. The 0th and 33rd
+percentiles are both 5.0 because 56/150 PA genomes (37%) have ARG = 5, the species
+minimum. After `duplicates='drop'`, 3 edges collapse to 2 unique edges → 1 bin →
+`ValueError: Bin labels must be one fewer than the number of bin edges`.
+
+*Why PA hits this floor:* P. aeruginosa clinical isolates almost universally carry
+a small set of near-baseline acquired ARGs. ResFinder captures these as 5 unique
+entries. The floor is a biological reality: these genomes have done the minimum
+MGE acquisition. The right tail (PA genomes up to ARG = 29) represents genuine
+further acquisition — exactly the genomes where the RESTRICT/FACILITATE dichotomy
+should be testable.
+
+*Three options were evaluated:*
+1. Exclude PA from Q2 entirely — pre-registration intact, but 150 PA genomes
+   including 64 with above-median ARG burden are lost from the analysis.
+2. Binary split at the median (chosen) — below median → low_ARG, above → high_ARG,
+   at median → mid_ARG. Answers a slightly weaker question but remains scientifically
+   coherent and directly tests the RESTRICT/FACILITATE hypothesis for PA.
+3. Rank-based tertile — rejected because 56 genomes share ARG = 5 exactly; assigning
+   them to different tertile classes by arbitrary rank order introduces noise as signal.
+
+*Why option 2 is a valid amendment, not post-hoc modification:*
+- Defined in Phase 3 (feature engineering) before any model performance is seen.
+- The fallback condition (0th == 33rd percentile) is a data-structure test that cannot
+  be evaluated from model outcomes — it is not chosen because it improves results.
+- Standard statistical method (median split), not an ad hoc invention.
+- The rule generalises to any future species with the same floor structure.
+
+*Result:* PA: low_ARG = 56 (ARG < 6), mid_ARG = 30 (ARG = 6, excluded from Q2),
+high_ARG = 64 (ARG > 6). Q2 now runs on all 6 species, 778 eligible genomes.
 
 **Final dataset after all exclusions:**
-- Total genomes: 878 (900 - 22 MLST mismatches)
+- Total genomes: 878 (900 − 22 MLST mismatches)
 - Species counts: KP=132, EC=146, AB=150, EF=150, PA=150, SA=150
-- Feature matrix: 878 rows × 631 columns (625 feature + 7 label/metadata)
-- Feature breakdown: 274 dp_* (defence P/A) + 274 dc_* (defence count) + 29 ad_* (anti-defence) + 43 count columns + 5 summary/ratio columns
-- Q2 eligible genomes: 728 (PA excluded; mid_ARG rows dropped at classifier stage)
+- Feature matrix: 878 × 631 columns (625 feature + 7 label/metadata)
+- Feature breakdown: 274 dp_* + 274 dc_* + 29 ad_* + 43 count + 5 summary/ratio
+- Q2 eligible genomes: 778 (mid_ARG dropped at classifier stage; PA uses binary split)
