@@ -166,3 +166,24 @@ No standalone ZINC class — zinc resistance appears only in the CADMIUM/LEAD/ZI
 **Impact on feature matrix:** 11 `hmrg_*` feature columns (excluding NA/unclassified from class columns) + `hmrg_unclassified` + `hmrg_metal_total` + `hmrg_metal_classes`. Sparsity filter in Section 9 will drop columns present in <5 genomes (CADMIUM/LEAD/ZINC and CHROMATE candidates).
 
 **Soil ecology angle:** Positive correlation between per-metal HMRG counts and ARG counts tests co-carriage or co-selection on mobile elements under dual antibiotic + heavy metal selective pressure. Paper framing: "co-occurrence consistent with co-carriage or co-selection" — do not assert causal direction from correlation.
+
+---
+
+## 2026-05-14 — Phase 3 Section 8 (MLST QC)
+
+**Exclusion of 22 MLST-scheme-mismatch genomes from the feature matrix:**
+
+MLST (via the `mlst` tool) identified 22 genomes whose core housekeeping genes type under a scheme inconsistent with their labeled species:
+
+| Species folder | Expected scheme | Observed scheme | N genomes |
+|---------------|----------------|-----------------|-----------|
+| kpneumoniae | klebsiella | ecoli_achtman_4 | 18 |
+| ecloaceae | ecloacae | cronobacter | 4 |
+
+These genomes passed CheckM2 QC (≥95% complete, ≤5% contaminated) but are almost certainly NCBI species-misidentification entries. CheckM2 checks completeness using marker genes present in a pan-bacterial marker set — it does not verify that the marker genes belong to the expected species. A genome assembled entirely from *E. coli* DNA would score 100% complete and 0% contaminated by CheckM2; MLST independently demonstrates that the core housekeeping loci are *E. coli*, not *Klebsiella*.
+
+**Action:** These 22 genomes are excluded at the Section 9 join step. Dataset reduced from 900 to 878 genomes (kpneumoniae: 132 retained, ecloaceae: 146 retained, all others: 150 retained).
+
+**Alternative considered:** Retain with flag and let the classifier handle them. Rejected — including species-misidentified genomes in a species classification task (Q1) would introduce known label noise. The correct action is exclusion with documentation.
+
+**Note on scheme "-" (ecloaceae, n=1):** One ecloaceae genome had scheme "-" (typing failure) and was not flagged as a mismatch. It is retained in the dataset; its `sequence_type` is NaN and it will be assigned to a singleton phylogroup in Phase 9.
