@@ -231,6 +231,45 @@ should be testable.
 high_ARG = 64 (ARG > 6). Q2 now runs on all 6 species, 614 eligible genomes
 (low_ARG=325 + high_ARG=289; was 494 across 5 species before this amendment).
 
+---
+
+## 2026-05-15 — Phase 4 EDA (observational finding, shapes manuscript framing)
+
+**Finding: RESTRICT/FACILITATE dichotomy is A. baumannii-specific, not pan-ESKAPE.**
+
+Spearman correlations (BH-corrected, per species) between RM system counts and
+arg_count_unique:
+
+| Species | RM_Type_I ρ | RM_Type_II ρ | defence_total ρ | SspBCDE ρ |
+|---------|------------|-------------|----------------|-----------|
+| K. pneumoniae | +0.334* | +0.355* | +0.498* | -0.087 |
+| E. cloacae | -0.003 | +0.364* | +0.324* | n/a |
+| A. baumannii | -0.287* | -0.169* | -0.324* | +0.583* |
+| E. faecium | +0.125 | -0.037 | +0.158 | n/a |
+| P. aeruginosa | +0.417* | +0.026 | +0.423* | -0.170† |
+| S. aureus | -0.031 | -0.082 | +0.312* | n/a |
+
+AB is the only species where total defence count is negatively correlated with ARG
+burden. KP and PA show significantly *positive* RM_Type_I vs ARG correlations.
+
+*Interpretation:* In KP and PA, RM systems are frequently plasmid-encoded and
+co-located with ARG cassettes on the same mobile resistance element. The RM module
+protects the plasmid from competing elements rather than functioning as a chromosomal
+gatekeeper. In AB IC2 clones, RM systems were chromosomal gatekeepers that were
+selectively lost to enable MGE acquisition — a mechanism specific to the IC2 lineage.
+
+*Implication for manuscript:* The RESTRICT/FACILITATE dichotomy is not a universal
+ESKAPE defence principle. It is an Acinetobacter (specifically IC2) phenomenon.
+Q4 SHAP comparisons must acknowledge this scope limitation. The cross-species finding
+is that IME-ARG co-acquisition is universal (ρ = +0.65–0.77 in all species), while
+RM-gated restriction is specific to AB.
+
+*No action required in pre-analysis plan (this is an observational EDA finding, not
+a protocol deviation). Will be labelled confirmatory for AB, exploratory for other
+species per §8 of the pre-analysis plan.*
+
+---
+
 **Final dataset after all exclusions:**
 - Total genomes: 878 (900 − 22 MLST mismatches)
 - Species counts: KP=132, EC=146, AB=150, EF=150, PA=150, SA=150
