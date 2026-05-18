@@ -329,3 +329,101 @@ Script: `_create_phylo_nb.py`.
 - Feature matrix: 878 × 631 columns (625 feature + 7 label/metadata)
 - Feature breakdown: 274 dp_* + 274 dc_* + 29 ad_* + 43 count + 5 summary/ratio
 - Q2 eligible genomes: 614 (low_ARG=325 + high_ARG=289; mid_ARG=264 dropped at classifier stage; PA uses binary split)
+
+---
+
+## 2026-05-18 — Side investigation: PDC feature quality + Q1 accuracy validity check
+
+### PDC system analysis
+
+**Finding:** PADLOC PDC-type systems (Phage Defence Clusters) present two distinct
+problems for the ML feature matrix:
+
+1. **Mechanistic ambiguity.** PDC subtypes are PADLOC predictions based on HMM hits
+   to defence-associated protein families where the precise molecular mechanism has
+   not been experimentally characterised. They are analogous to `DMS_other` (excluded
+   in Phase 3) in this respect. However, unlike `DMS_other` (a single catch-all column),
+   PDC systems are split into 58 named subtypes (13 PDC-M, 45 PDC-S), each a binary
+   feature — this is why they were retained.
+
+2. **Sparsity.** 39 of 58 PDC binary features have fewer than 25 hits across all 878
+   genomes (prevalence <2.8%). These contribute variance without reliable signal and will
+   not pass permutation importance thresholds in Phase 8 RF.
+
+3. **Species-specificity.** Three of the most prevalent PDC subtypes are near-universal
+   in specific species: PDC-S07 (100% KP, 99.3% EC, 82% SA), PDC-S04 (99.2% KP, 74%
+   EF), PDC-S12 (99.2% KP, 97.9% EC). These function as de facto taxonomic markers
+   rather than defence architecture signals in Q1.
+
+**Decision:** Retain all 58 PDC features in the matrix for Phases 6–8. Apply the
+following constraints:
+- Run sensitivity analysis (see below) before any Q1 accuracy claim is finalised.
+- Do not interpret individual PDC features in SHAP outputs without checking their
+  species-specificity score first (a high SHAP value for a species-specific PDC
+  feature reflects taxonomic signal, not defence biology).
+- Flag the 39 sparse PDC features (<25 hits) as candidates for removal in the
+  pre-modelling sensitivity sweep.
+
+**Rationale for not dropping now:** Dropping features pre-emptively on subjective
+grounds (poorly characterised) introduces arbitrary exclusion bias. The sensitivity
+analysis quantifies exactly how much they contribute, making any exclusion decision
+evidence-based rather than opinion-based.
+
+---
+
+### Q1 accuracy validity check — sensitivity analysis
+
+**Context:** The preliminary LR baseline classifier (04_baseline_classifier.ipynb,
+stratified CV, standard features) achieved Q1 balanced accuracy = 0.984. Several
+defence features are near-universal in exactly one species, raising the question of
+whether the classifier is learning defence architecture or reading species-specific
+annotation markers.
+
+**Two distinct validity problems identified:**
+
+| Problem | What it inflates | How to detect | How to fix |
+|---|---|---|---|
+| Clone contamination | Within-species CV accuracy | Standard vs grouped CV comparison | Phylogenetic GroupedStratifiedKFold (Phase 6) |
+| Taxonomic markers | Cross-species classification accuracy | Species-specificity sensitivity analysis | Remove high-specificity features; compare accuracy |
+
+These are orthogonal. Phylogenetic CV does not correct for taxonomic markers.
+Sensitivity analysis does not correct for clone contamination. Both are required.
+
+**Metric used:** Standard deviation of per-species prevalence, normalised by 0.5
+(theoretical maximum std for a binary variable across 6 equal groups). Ranges from
+0 (feature equally prevalent in all species) to ~1 (feature present in exactly one
+species, absent in all others). This is preferred over the fraction-of-hits metric
+(which underestimates features shared across 2–3 species, e.g. PDC-S07 shared across
+KP/EC/SA scores only 0.36 by hits but has strong discriminative power).
+
+**Results (stratified CV, LR, C=1.0):**
+
+| Feature set | N features | Balanced accuracy | 95% CI |
+|---|---|---|---|
+| All dp_* features | 274 | 0.984 ± 0.010 | [0.971, 0.997] |
+| Specificity std < 0.70 | 266 | 0.936 ± 0.013 | [0.919, 0.952] |
+| Specificity std < 0.50 | 259 | 0.902 ± 0.010 | [0.890, 0.914] |
+| Specificity std < 0.35 | 252 | 0.874 ± 0.012 | [0.859, 0.890] |
+| Specificity std < 0.20 | 225 | 0.744 ± 0.026 | [0.712, 0.776] |
+| Null baseline | — | 0.184 | — |
+
+**Key findings:**
+- Removing 8 features with std ≥ 0.70 (the strongest clade-specific markers) drops
+  accuracy from 0.984 to 0.936 — a 4.8pp contribution from those 8 features alone.
+- Even at the most aggressive filter (std < 0.20, 225 features with near-uniform
+  species distribution), accuracy remains at 0.744 — well above chance (0.184).
+- Conclusion: The 0.984 is not entirely driven by taxonomic markers. Genuine defence
+  architecture signal is present and accounts for most of the classification performance.
+  However, the honest Q1 number (without clade-specific markers) is ~0.936.
+
+**Correct order of corrections for Q1 reporting:**
+1. Sensitivity analysis first — establishes the "clean" feature set.
+2. Phylogenetic grouped CV on both full and cleaned feature sets.
+3. Report accuracy at each combination in a 2×2 table (full vs cleaned features ×
+   standard vs grouped CV). The cell for [cleaned features, grouped CV] is the
+   primary reported result.
+
+**This is a pre-modelling validity check, not a post-hoc analysis.** It was run on
+the preliminary baseline classifier (04_baseline_classifier.ipynb) before any Phase
+7 modelling. Protocol Amendment PA-2 in pre_analysis_plan.md documents its
+prospective status and the required reporting format.
