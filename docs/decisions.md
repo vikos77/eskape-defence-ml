@@ -270,6 +270,59 @@ species per §8 of the pre-analysis plan.*
 
 ---
 
+---
+
+## 2026-05-18 — Pipeline restructuring: phylogenetic control moved to Phase 6
+
+**Decision:** Mash-based phylogroup assignment is moved from Phase 9 to Phase 6 (before
+all classifier training). All cross-validation in Phases 7–11 will use `GroupedStratifiedKFold`
+with Mash-derived phylogroups as the grouping variable, not standard `StratifiedKFold`.
+
+**Reason:** The original Phase 9 placement was a pedagogical choice (teach standard CV first,
+then show why grouped CV is needed by contrast). A supervisor review identified this as
+scientifically backwards: presenting Phases 6–8 results under known-flawed methodology and
+then correcting them in Phase 9 is inappropriate for a publication-quality pipeline. Every
+model trained in this project must use the methodologically correct CV from the start.
+
+**Why this was missed earlier:** Step-by-step phase-by-phase construction prevented a
+big-picture review of whether phase ordering reflected scientific rather than pedagogical
+priorities. The meticulous approach was correct for each individual phase; the ordering
+priority was wrong.
+
+**What is not affected:** Phases 0–5 (data acquisition, feature engineering, EDA,
+dimensionality reduction) are completely unaffected — they do not involve classifier training
+or cross-validation. No work is wasted.
+
+**What changes:**
+
+| Old numbering | New numbering | Change |
+|---|---|---|
+| Phase 6: Baseline classifiers (04_baseline_classifier.ipynb) | Phase 7: Baseline classifiers (05_baseline_classifier.ipynb) | Re-run with GroupedStratifiedKFold |
+| Phase 7: Random Forest (05_random_forest.ipynb) | Phase 8: Random Forest (06_random_forest.ipynb) | Uses grouped CV from the start |
+| Phase 8: Gradient boosting (06_gradient_boosting.ipynb) | Phase 9: Gradient boosting (07_gradient_boosting.ipynb) | Uses grouped CV from the start |
+| Phase 9: Phylogenetic control (08_phylogenetic_control.ipynb) | Phase 6: Phylogenetic grouping (04_phylogenetic_grouping.ipynb) | NOW FIRST modelling step |
+| Phase 10: Model interpretation (07_model_interpretation.ipynb) | Phase 10: Model interpretation (08_model_interpretation.ipynb) | Unchanged |
+| Phase 11: Unsupervised archetypes (09_unsupervised_archetypes.ipynb) | Phase 11: Unsupervised archetypes (09_unsupervised_archetypes.ipynb) | Unchanged |
+
+**04_baseline_classifier.ipynb status:** Executed without grouped CV (2026-05-18) and committed
+to git. This version is kept in history as a reference for the standard-vs-grouped comparison
+but is superseded by 05_baseline_classifier.ipynb. It will not be cited in any paper section
+as a primary result.
+
+**Phase 6 (phylogenetic grouping) plan:**
+1. `mash sketch` all 878 genome FASTA files (one sketch per genome, kmer k=21, sketch size s=1000)
+2. `mash dist` pairwise distances (878×878/2 ≈ 385k pairs; fast — Mash is designed for this)
+3. Load distance matrix in Python; hierarchical clustering (average linkage, distance threshold
+   to be determined empirically — target 50–150 phylogroups to balance group size and resolution)
+4. Sanity check: MLST sequence types should cluster within the same phylogroup (>90% agreement)
+5. Add `phylogroup` column to `data/processed/feature_matrix.parquet`
+6. Define `GroupedStratifiedKFold` split object; save group assignments to
+   `data/processed/cv_groups.parquet`
+
+**Tool:** Mash v2.3 (already available in conda environment via `mash` package).
+Notebook: `notebooks/04_phylogenetic_grouping.ipynb`.
+Script: `_create_phylo_nb.py`.
+
 **Final dataset after all exclusions:**
 - Total genomes: 878 (900 − 22 MLST mismatches)
 - Species counts: KP=132, EC=146, AB=150, EF=150, PA=150, SA=150
