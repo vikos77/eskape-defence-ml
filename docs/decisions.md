@@ -427,3 +427,36 @@ KP/EC/SA scores only 0.36 by hits but has strong discriminative power).
 the preliminary baseline classifier (04_baseline_classifier.ipynb) before any Phase
 7 modelling. Protocol Amendment PA-2 in pre_analysis_plan.md documents its
 prospective status and the required reporting format.
+
+---
+
+## 2026-05-19 — Phase 6: within-species clustering for phylogroup assignment
+
+**Decision:** Use within-species hierarchical clustering (t=0.010, average linkage) rather
+than global clustering across all 878 genomes.
+
+**Why global clustering failed:** SA, PA, and KP are highly clonal in this clinical
+surveillance dataset. At t=0.020 globally, SA collapses to 1 phylogroup, PA to 2,
+KP to 2. In 5-fold GroupedStratifiedKFold, this would place all 150 SA genomes in a
+single test fold with no SA training data — effectively leave-one-species-out CV for SA.
+The goal of phylogenetic CV is to prevent within-species clone contamination, not to
+hold out entire species.
+
+**Fix:** Subset the 878×878 Mash distance matrix per species; run hierarchical clustering
+independently within each species at t=0.010. No Mash reruns required.
+
+**Threshold selection (t=0.010):** Within-species sweep across t ∈ {0.005, 0.010, 0.015,
+0.020, 0.030}. At t=0.010 every species produces ≥8 groups before singleton merging
+(SA=10, PA=8, EF=17, KP=28, AB=35, EC=95). At t=0.015, KP collapses to 3 groups and
+PA to 3 groups — insufficient for stable 5-fold CV. At t=0.005, EC produces 113 groups
+from 146 genomes (~73 singletons) — too fragmented.
+
+**Final result:**
+- 74 phylogroups after singleton merging (119 singletons merged into nearest same-species group)
+- Per-species: AB=13, EC=22, EF=7, KP=18, PA=5, SA=9 — all ≥5 groups for 5-fold CV
+- MLST concordance: 99.1% (108/109 STs fully co-assigned) — PASS
+- Cross-species contamination: 0%
+
+**One discordant ST:** 1 ST split across 2 phylogroups. Acceptable — within-ST diversity
+slightly exceeds 0.010 Mash distance for this ST (genuine genomic divergence within the ST,
+not a clustering error). Does not affect CV validity.
