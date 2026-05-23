@@ -36,11 +36,11 @@ Machine learning extension of Muthuraman et al. (2026), *Journal of Applied Micr
 | 3 | 02_feature_engineering | Feature matrix construction (878 × 631) | **COMPLETE** |
 | 4 | 01_eda | Exploratory data analysis | **COMPLETE** |
 | 5 | 03_dimensionality_reduction | PCA, UMAP, t-SNE | **COMPLETE** |
-| **6** | **04_phylogenetic_grouping** | **Mash distances → phylogroups (GroupedKFold)** | **IN PROGRESS** |
-| 7 | 05_baseline_classifier | Null baseline, Logistic Regression, KNN | pending |
-| 8 | 06_random_forest | Random Forest + feature importance | pending |
+| 6 | 04_phylogenetic_grouping | Mash distances → phylogroups (GroupedKFold) | **COMPLETE** |
+| 7 | 05_baseline_classifier | Null baseline, Logistic Regression | **COMPLETE** |
+| **8** | **06_random_forest** | **Random Forest + SHAP feature importance** | **COMPLETE** |
 | 9 | 07_gradient_boosting | XGBoost / LightGBM + calibration | pending |
-| 10 | 08_model_interpretation | SHAP + biological synthesis | pending |
+| 10 | 08_model_interpretation | SHAP biological synthesis | pending |
 | 11 | 09_unsupervised_archetypes | K-means archetypes + publication figures | pending |
 
 ### Key findings so far
@@ -51,6 +51,16 @@ Machine learning extension of Muthuraman et al. (2026), *Journal of Applied Micr
 - **Dimensionality reduction (Phase 5):** Species separate cleanly in UMAP (Jaccard metric).
   AB clusters far left (depauperate IC2 profile); EF far bottom-right (gram-positive); KP
   and EC consistently adjacent (Enterobacterales). 103 PCs required for 80% variance.
+- **Phylogenetic grouping (Phase 6):** 95 Mash-derived phylogroups across 878 genomes.
+  MLST concordance 99.1% (108/109 STs co-assigned). All subsequent CV uses GroupedStratifiedKFold.
+- **Baseline classifiers (Phase 7):** LR primary Q1 result: BA=0.837 [0.813–0.859] (grouped CV,
+  filtered features). AB Q2 AUROC inverted (0.231 → 0.769 for low-ARG), replicating the
+  published RESTRICT phenotype. EC and KP show strong Q2 signal (AUROC 0.846, 0.830).
+- **Random Forest (Phase 8):** RF Q1 BA=0.878 [0.859–0.898] vs LR 0.837 (+0.04 delta, marginal
+  CI overlap). Best params: max_depth=20, n_estimators=100, max_features=sqrt. AB has lowest
+  recall (0.700) — IC2 defence-depauperate clones confused with EF in feature space. SspBCDE
+  recovered at SHAP rank 10, cross-validating the published Fisher's exact signal. For Q2, LR
+  outperforms RF in 4/6 species (RF overfits at n~150); RF wins for EF (AUROC 0.900 vs 0.578).
 
 ### Pipeline restructuring note (2026-05-18)
 
