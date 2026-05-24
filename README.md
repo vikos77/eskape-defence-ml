@@ -1,4 +1,4 @@
-# ESKAPE Defence Systems — ML Extension
+# ESKAPE Defence Systems - ML Extension
 
 Machine learning extension of Muthuraman et al. (2026), *Journal of Applied Microbiology*.
 
@@ -68,7 +68,7 @@ Phylogenetic control was originally Phase 9 (after modelling). This has been cor
 **Mash-based phylogroup assignment now precedes all classifier training.** All cross-validation
 uses `GroupedStratifiedKFold` with phylogroups as the grouping variable from Phase 6 onwards.
 This ensures results are not inflated by relatedness between training and test genomes.
-See `docs/decisions.md` (2026-05-18 entry) for full rationale.
+See `docs/decisions.md` for full rationale.
 
 ## Setup
 
