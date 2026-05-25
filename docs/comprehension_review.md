@@ -953,3 +953,81 @@ be locked in: EC, KP, AB, PA = Gram-NEGATIVE. SA, EF = Gram-POSITIVE.
   needs to be connected to specific mobile element classes (conjugative plasmids,
   genomic islands) in Phase 8 manuscript framing.
 
+
+---
+
+## Session 13 — Phase 8 Random Forest (2026-05-21 to 2026-05-25)
+
+### Pre-code questions (abstract, before running notebook)
+
+**Q1 — Can a feature appear at multiple nodes on a path in a decision tree?**
+Score: 5/10
+User attempt: "a feature can appear multiple times based on how many values it has; for binary data it can appear for presence and absence."
+Correct answer: Yes, a feature can appear on different branches. The key point is *conditional interactions*: the tree can encode "SspBCDE matters only in genomes lacking RM systems." For a binary feature on the SAME path, a second split is redundant (all remaining samples have the same value). But across different branches the same feature can appear. LR cannot represent these interactions without manual feature engineering.
+Gap: User understood the surface answer (yes, multiple times) but not the mechanism (conditional interactions across branches, not repeated splits on the same path).
+
+**Q2 — Two reasons OOB is optimistic vs grouped CV:**
+Score: 7/10
+User attempt: "clonal leakage and taxonomic leakage because phylogroups were not used."
+Correct answer: (1) Phylogenetic leakage — related genomes appear in training for some trees and OOB for others; the model has seen the genome's relatives. (2) OOB uses all 878 genomes for training across all trees (vs ~700 in grouped CV folds) — more training data = better model = higher score.
+Gap: Reason 1 correct and well articulated. Reason 2 not mentioned.
+
+**Q3 — Gini vs Permutation for dp_ARG_count:**
+Score: 7/10
+User attempt: "Gini biased toward count features; permutation on test data equalises this; SHAP as third arbiter."
+Correct answer: Trust permutation over Gini because (a) Gini is biased toward high-cardinality features (more possible thresholds) and (b) permutation evaluates on held-out data. SHAP as a third arbitrator is the right approach. Approach confirmed by Section 10 output.
+Gap: User was equivocal about which to trust; should commit to permutation > Gini for this specific case.
+
+**Q4 — max_depth=None overfitting:**
+Score: 6/10
+User attempt: "unlimited depth → overfitting → inflates accuracy and OOB score; try different depths."
+Correct answer: Unlimited depth → training accuracy 1.0 (memorisation). This hurts generalisation. OOB is held-out data — overfitting HURTS OOB, it does not inflate it. The solution (GridSearchCV over depths) is correct.
+Gap: Error — user stated overfitting inflates OOB. Overfitting inflates training accuracy; it penalises OOB. Ensemble averaging partially mitigates tree-level memorisation, which is why OOB remains reasonable despite training accuracy = 1.0.
+
+**Q5 — GridSearchCV CV object and what to pass:**
+Score: 5/10
+User attempt: "StratifiedGroupKFold; also specify class_weight=balanced."
+Correct answer: StratifiedGroupKFold is correct. You must pass `groups=groups` in `.fit(X, y_q1, groups=groups)` — without this, the splitter has no group assignments and defaults to random splits. class_weight="balanced" is a model hyperparameter, not what makes the CV work.
+Gap: Correct CV object. Missed the `groups=groups` parameter in .fit() — the key technical point.
+
+---
+
+### Grounded questions (from actual output)
+
+**Grounded Q1 — AB→EF confusion (22% of AB predicted as EF):**
+Score: 6/10
+User attempt: "both have few defence systems and similar ones; IME activity similar; both might antagonise ARG integration; saw them as neighbours in UMAP."
+Correct answer: IC2 AB clones are defence-depauperate (SspBCDE-only pattern — published finding). EF has low defence density (small 2.8 Mb Gram-positive genome). In 265-feature space, sparse-defence AB is indistinguishable from sparse-defence EF. The model confuses not the species biology but the *feature representation*.
+Errors: (1) User said AB and EF were UMAP neighbours — incorrect. AB is far left, EF is far bottom-right in our UMAP. The confusion happens in 265-D feature space, not 2D projection. (2) Direction of confusion stated backwards ("model falsely identifies EF as AB") — the model takes AB genomes and predicts EF, not the reverse.
+
+**Grounded Q2 — LR property vs RF property for Q2 EC:**
+Score: 4/10
+User attempt: "LR assumes linear relationship; different species create noise for RF."
+Correct answer:
+- LR property: L2 regularisation — penalises large coefficients, pulls all 265 weights toward zero, prevents overfitting at n=146.
+- RF property: min_samples_leaf=1 — trees can grow leaves containing single genomes, memorising training data. With 146 samples and 265 features, RF has more parameters than samples.
+Gap: Q2 is a within-species analysis — there are no "different species" in the EC model. The explanation was for the wrong experimental design. The mechanism (regularisation) was not identified.
+
+---
+
+### Summary table — Session 13
+
+| Q | Topic | Score | Key gap |
+|---|---|---|---|
+| Pre-Q1 | Feature at multiple nodes / interactions | 5/10 | Knew answer; missed mechanism (conditional interactions across branches) |
+| Pre-Q2 | OOB optimism (two reasons) | 7/10 | Reason 1 correct; missed reason 2 (more training data in OOB) |
+| Pre-Q3 | Gini vs Permutation | 7/10 | Correct; equivocal about commitment |
+| Pre-Q4 | max_depth=None overfitting | 6/10 | Error: said overfitting inflates OOB (it doesn't) |
+| Pre-Q5 | GridSearchCV groups argument | 5/10 | CV object correct; missed groups=groups in .fit() |
+| G-Q1 | AB→EF confusion biology | 6/10 | Core correct; UMAP neighbour error; confusion direction reversed |
+| G-Q2 | LR L2 vs RF min_samples_leaf | 4/10 | Wrong mechanism; missed within-species design |
+
+Session average: 5.7/10
+
+### Items to revisit
+
+- **UMAP distance ≠ classification confusion:** 2D UMAP preserves local structure but loses global distances. Confusion in a 265-D classifier does not imply proximity in 2D UMAP.
+- **Regularisation as the primary LR advantage at small n:** L2 shrinks all coefficients toward zero. This is the specific mechanism that makes LR robust when features >> samples.
+- **OOB and overfitting direction:** Overfitting inflates TRAINING accuracy. OOB is held-out — overfitting hurts OOB (mitigated here by ensemble averaging).
+- **Confusion matrix direction:** Rows = true class. Off-diagonal in a row = that true-class genome was predicted as another class.
+- EC gram stain: Gram-NEGATIVE (third mention — must be locked in).
