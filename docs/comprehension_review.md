@@ -1031,3 +1031,129 @@ Session average: 5.7/10
 - **OOB and overfitting direction:** Overfitting inflates TRAINING accuracy. OOB is held-out — overfitting hurts OOB (mitigated here by ensemble averaging).
 - **Confusion matrix direction:** Rows = true class. Off-diagonal in a row = that true-class genome was predicted as another class.
 - EC gram stain: Gram-NEGATIVE (third mention — must be locked in).
+
+---
+
+## Session 14 — Phase 10: Model Interpretation (2026-05-26)
+
+Topics: C3 holdout validation, SHAP global beeswarm, per-class SHAP, alignment table (Fisher's exact vs SHAP ranks).
+
+---
+
+### Section 1: C3 Holdout Validation
+
+**C3-Q1. CV recall for AB was 0.700; holdout recall on the 33 published AB genomes was 0.939. Name two reasons why holdout recall is higher than CV recall.**
+
+Score: 6/10
+
+User attempt: CV recall lower because CV has different phylogroups; IC2 similarity to EF minimal defence is small. Holdout higher because no IC2 clone lineage present.
+
+Model answer: Two correct reasons are: (1) The CV training set contains ~46% IC2 (ST2) AB genomes — sparse-defence genomes that the model often confuses with EF. In the holdout (published AB cohort), IC2 are proportionally fewer, so the confusable class is less prevalent. (2) The holdout is drawn from the published paper's curated, complete-genome set, which skews toward diverse Acinetobacter species (20 spp.) rather than AB-only clinical isolates — the defence diversity in the published set is higher, making AB genomes more distinguishable. User identified the IC2 mechanism correctly but stated it as "not present" (wrong) rather than "proportionally lower". Overall: got the key mechanism, missed the second reason cleanly.
+
+---
+
+**C3-Q2. One AB genome in the holdout was predicted as PA. What is the most biologically plausible explanation?**
+
+Score: 7/10
+
+User attempt: Outlier AB genome with diverse defence similar to PA, possibly due to HGT from co-inhabitation.
+
+Model answer: Correct. A genome predicted as PA likely carries a defence profile atypically rich in CRISPR-Cas and/or Pycsar/Thoeris systems — systems that are rare in AB but prevalent in PA. HGT from environmental or clinical co-occurrence with PA is the mechanistic explanation. "Co-inhabitation" is the correct framing (shared ICU environment → same plasmid/phage pool).
+
+---
+
+**C3-Q3. The holdout balanced accuracy is computed across all 123 Acinetobacter genomes (6 species), not just the 33 AB. But we report AB recall separately. Why is this the correct analytical split?**
+
+Score: 6/10
+
+User attempt: BA calculated across CV folds with all species; recall right because testing only AB genomes.
+
+Model answer: BA across all 123 genomes reflects overall multi-class performance in the holdout and is comparable to the CV BA (which also covers all 6 species). AB-specific recall is reported separately because the C3 hypothesis is specifically about AB: does the model generalise to published AB genomes it was not trained on? The two metrics answer different questions — BA answers "does the model work on new Acinetobacter data overall?", recall answers "specifically for AB, does it transfer?" Reporting both is required to avoid cherry-picking. User got the separation correct but didn't articulate the distinct hypotheses.
+
+---
+
+### Section 2: SHAP Global + Per-class
+
+**SHAP-Q1. The beeswarm shows SspBCDE at rank 1. What does the dot colour and dot position tell you? Why does this dominate AB class prediction?**
+
+Score: 8/10
+
+User attempt: SspBCDE at top with large bar, positive SHAP means dominating feature for AB prediction. Large bar = high impact on model output.
+
+Model answer: Red dots (feature present = 1) spread to the right (positive SHAP) means: when SspBCDE is present in a genome, the model's predicted probability for AB class increases substantially. Blue dots (feature absent) cluster near 0. This dominates AB prediction because 46% of AB training genomes are IC2/ST2, which carry SspBCDE at 100% prevalence while no other ESKAPE species carries it above ~5%. It is the strongest discriminative signal for the AB class, even without being a hard taxonomic marker (spec_score 0.408 — present in ~50% of AB, not all).
+
+---
+
+**SHAP-Q2. The per-class bar plot shows AbiH as the top feature for EF. Biologically, why might an Abi system dominate EF classification?**
+
+Score: 7/10
+
+User attempt: Abi systems dominant in Gram-positive; different phage receptors vs Gram-negative.
+
+Model answer: Correct direction. AbiH is a Gram-positive abortive infection system (Lactococcus-lineage origin). EF is Gram-positive and has a different phage biology: the phage receptor landscape differs (wall teichoic acids vs LPS), so the Abi system portfolio evolved under different selective pressure. AbiH prevalence in EF genomes is high enough that its presence is highly informative for predicting EF vs the 5 Gram-negative ESKAPE species. User identified the Gram-stain biology correctly but could have been more precise about why Abi prevalence specifically is high in EF.
+
+---
+
+**SHAP-Q3. For the AB class SHAP bar plot, SspBCDE appears with a large positive bar. When SspBCDE is present in a genome, which direction does the model's AB prediction move, and why does this check out biologically?**
+
+Score: 8/10
+
+User attempt: When SspBCDE present, ML model prediction probability for AB class increases positively. Checks out because IC2 are 46% of training AB, and SspBCDE = 100% in IC2.
+
+Model answer: Correct. Positive SHAP for SspBCDE = presence increases log-odds of AB class. This validates against the biology: SspBCDE is 100% in IC2, 8.6% in non-IC2 AB, and <5% in any other species. The model has learned this pattern without being told the species label of SspBCDE.
+
+---
+
+### Section 3: Alignment Table (Fisher's exact vs SHAP ranks)
+
+**A-Q1. If Fisher's exact and SHAP were capturing identical biological signal, what would the scatter look like? What do you actually see, and what does that tell you?**
+
+Score: 6/10
+
+User attempt: Top-right corner shows RM, SspBCDE, Gao_Qat — agreement for key systems. 4 other Fisher's pairs are low in SHAP rank. There are high-SHAP features not visible in the published paper. "Biological signal is not similar."
+
+Model answer: Perfect agreement would be a tight positive diagonal (high Fisher's log2OR → high SHAP rank, low Fisher's → low SHAP rank). What you actually see: agreement at the top end for the 3 anchor systems (RM, SspBCDE, Gao_Qat), scatter/divergence below. The critical missed mechanism: Fisher's exact was computed WITHIN AB genomes only (pairwise system co-occurrence among 132 AB). SHAP is from a 6-SPECIES classifier — it asks which features distinguish AB from KP, PA, EC, EF, SA. Different questions → expected divergence. A system pair could co-occur strongly within AB but be unremarkable for between-species classification (and vice versa). The divergence is not a failure; it is interpretable information about which AB-internal signals generalise to cross-species discrimination.
+
+---
+
+**A-Q2. RM vs SspBCDE has log2OR = −6.09 in the published paper. Does the ML model agree with this pair's importance? Why?**
+
+Score: 8/10
+
+User attempt: Both high in SHAP and Fisher's; agreement because both systems are pivotal — RM for environmental AB, SspBCDE for clinical AB. Co-occurrence is rare as both have their own survival advantages.
+
+Model answer: Correct. The mutual exclusivity (OR=0.015) means AB genomes are partitioned into RM+ / SspBCDE− (environmental, diverse niches) and RM− / SspBCDE+ (IC2 clinical clones). This partitioning is maximally informative for a classifier: the model has essentially learned that AB splits into two defence archetypes, and both features jointly define that split. Rarity of co-occurrence is the key mechanistic reason.
+
+---
+
+**A-Q3. Some S16 systems were filtered as taxonomic markers before modelling. If included in the alignment comparison, what happens to the correlation, and why is exclusion methodologically correct?**
+
+Score: 8/10
+
+User attempt: Correct to remove for ESKAPE (multi-species) analysis. For AB-only analysis it would be different. Taxonomic markers track species identity not functional architecture.
+
+Model answer: Including them would inflate the apparent Fisher's–SHAP correlation: those systems would score high in Fisher's (AB-internal signal) AND high in SHAP (taxonomic leakage boosting class prediction). The correlation would look artificially strong. Excluding them ensures the alignment is comparing functional defence architecture signals only — the question we actually want to answer. User identified the multi-species vs single-species distinction correctly but missed the specific direction of bias (inflation).
+
+---
+
+### Summary table — Session 14
+
+| Q | Topic | Score | Key gap |
+|---|---|---|---|
+| C3-Q1 | CV vs holdout recall | 6/10 | IC2 mechanism correct; missed second reason (holdout diversity) |
+| C3-Q2 | AB→PA prediction | 7/10 | HGT/co-habitation correct |
+| C3-Q3 | BA vs recall split | 6/10 | Separation correct; different hypotheses not articulated |
+| SHAP-Q1 | Beeswarm dot meaning | 8/10 | Good; IC2 fraction integrated |
+| SHAP-Q2 | AbiH in EF | 7/10 | Gram stain correct; AbiH mechanism imprecise |
+| SHAP-Q3 | SspBCDE SHAP direction | 8/10 | Correct with biological grounding |
+| A-Q1 | Fisher's vs SHAP scatter | 6/10 | Pattern correct; within-AB vs between-species framing missed |
+| A-Q2 | RM vs SspBCDE agreement | 8/10 | Solid biological reasoning |
+| A-Q3 | Taxonomic marker exclusion | 8/10 | Correct; inflation direction not stated |
+
+Session average: 7.1/10 (+1.4 vs Session 13)
+
+### Items to revisit
+
+- **Within-vs-between method divergence:** Fisher's exact (within AB) and SHAP (between species) are different questions. Expected divergence is interpretable, not a failure.
+- **Holdout BA vs per-class recall:** Always articulate which hypothesis each metric tests — they are not interchangeable.
+- **Inflation bias from taxonomic markers:** Including species-specific features in an alignment comparison inflates the correlation in a predictable direction. Know which direction and why.
