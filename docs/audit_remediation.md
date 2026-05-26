@@ -366,6 +366,38 @@ within-species archetype marker rather than a cross-species predictor."
 
 ---
 
+---
+
+## M4 — McNemar tests for Q2 per-species model comparisons (FIXED 2026-05-26)
+
+**What was wrong:** Q2 cross-model comparisons reported as point-estimate BA differences only.
+
+**Fix:** Added Section 12c to `build_gb_notebook.py`. Re-ran all four models (LR, RF, XGB, LGBM)
+on identical GroupedStratifiedKFold splits per species (same H1 filter, same folds). McNemar
+pairwise test: LR vs RF, LR vs XGB, LR vs LGBM, RF vs XGB.
+
+**Results:**
+
+| Species | n   | LR    | RF    | XGB   | LGBM  | Significant pairs           |
+|---------|-----|-------|-------|-------|-------|-----------------------------|
+| EC      | 97  | 0.721 | 0.753 | 0.824 | 0.681 | none (LR vs XGB p=0.055)    |
+| KP      | 86  | 0.777 | 0.707 | 0.789 | 0.756 | none                        |
+| PA      | 120 | 0.638 | 0.677 | 0.568 | 0.596 | RF > XGB p=0.021 *          |
+| EF      | 99  | 0.593 | 0.489 | 0.486 | 0.493 | LR > RF p=0.034 *, LR > XGB p=0.022 * |
+| SA      | 106 | 0.496 | 0.514 | 0.508 | 0.491 | none                        |
+| AB      | 89  | 0.500 | 0.489 | 0.500 | 0.500 | none                        |
+
+Note: LR BAs in this table are from re-runs using H1-filtered features (not the Phase 7
+all-265-feature model). EF LR=0.593 here vs 0.512 in the main table — the H1 filter
+(23 features) changes the task and LR handles the reduction better than tree methods.
+
+**Conclusion:** No species has a model that significantly beats all others. EF is the
+only species where a model hierarchy is statistically detectable (LR > trees under
+H1-filtered features). PA shows RF > XGB only. All EC/KP pairwise differences are
+not statistically significant despite EC XGB BA=0.824 — sample size limits power.
+
+---
+
 ## Pending remediation items
 
 Items to address in order:
@@ -384,7 +416,7 @@ Items to address in order:
 | H8  | HIGH     | DONE    | Learning curves generated for Q1 (RF vs LR) and Q2 (EC, KP, PA) |
 | H6  | HIGH     | DONE    | RM_Type_I framing logged in decisions.md; Phase 10 action items defined |
 | M1  | MODERATE | DONE    | Deviation amendment logged in pre_analysis_plan.md §9; required manuscript statement written |
-| M4  | MODERATE | pending | McNemar tests for Q2 per-species model comparisons |
+| M4  | MODERATE | DONE    | McNemar Q2: EF LR>RF/XGB (p<0.05); PA RF>XGB (p=0.02); EC/KP/SA/AB no sig pairs |
 | M5  | MODERATE | pending | Explicit framing of OOB=0.932 vs CV=0.878 delta |
 | M6  | MODERATE | pending | Flag dp_df_Gabija spurious Gini inflation in Phase 10 narrative |
 | O2  | OPTIONAL | pending | Expanded max_depth grid for GB |

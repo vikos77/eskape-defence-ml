@@ -1008,6 +1008,116 @@ for sp in sp_order:
     print(f"  {sp:<22} {ba_v:.3f}   {n_f:>7}  {p_r:.4f}    {p_a:.4f}      {sig}")
 """)
 
+# ── SECTION 12c: M4 — MCNEMAR TESTS FOR Q2 PER-SPECIES MODEL COMPARISON ────────
+md("""\
+## Section 12c — M4: McNemar tests for Q2 per-species model comparisons
+
+**Audit finding M4:** Q2 cross-model comparisons were reported as point-estimate BA
+differences only. With per-species n ~60--100, point estimates alone are uninformative.
+
+**Approach:** Re-run all four models (LR, RF, XGB, LGBM) on the same GroupedStratifiedKFold
+splits per species, collecting aligned per-genome predictions. McNemar pairwise test
+for each species: LR vs RF, LR vs XGB, LR vs LGBM, RF vs XGB.
+
+Same H1 sparsity filter (>=5% prevalence) applied. XGB/LGBM use early stopping (inner
+80/20 split) consistent with the main Q2 run.
+""")
+
+code("""\
+from sklearn.linear_model import LogisticRegression as LR_cls
+from sklearn.ensemble import RandomForestClassifier as RF_cls
+
+mc_q2 = {}  # sp -> {model_name: pred_array, "y_true": array}
+
+for sp in sorted(fm["species"].unique()):
+    sp_mask = fm["species"].to_numpy(dtype=str) == sp
+    fm_sp   = fm[sp_mask]
+    mask_q2 = fm_sp["arg_burden_tertile"].isin(["low_ARG", "high_ARG"])
+    fm_q2   = fm_sp[mask_q2]
+    if len(fm_q2) < 20 or fm_q2["arg_burden_tertile"].nunique() < 2:
+        continue
+    y_sp   = (fm_q2["arg_burden_tertile"] == "high_ARG").astype(int).values
+
+    feat_prev_sp = fm_q2[FEAT_COLS].mean()
+    feat_q2_sp   = feat_prev_sp[feat_prev_sp >= 0.05].index.tolist()
+    X_sp         = fm_q2[feat_q2_sp].values
+    grp_sp       = fm_q2["phylogroup"].to_numpy(dtype=str)
+    cv_sp        = StratifiedGroupKFold(n_splits=N_SPLITS, shuffle=True,
+                                        random_state=RANDOM_STATE)
+
+    n_sp = len(y_sp)
+    # sentinel -1 for genomes never in a valid test fold
+    preds  = {m: np.full(n_sp, -1, dtype=int)
+              for m in ["lr", "rf", "xgb", "lgbm"]}
+    y_true = np.full(n_sp, -1, dtype=int)
+
+    for tr, te in cv_sp.split(X_sp, y_sp, groups=grp_sp):
+        if len(set(y_sp[te])) < 2:
+            continue
+        y_true[te] = y_sp[te]
+
+        # LR
+        lr_m = LR_cls(max_iter=1000, class_weight="balanced",
+                      C=0.1, solver="saga", random_state=RANDOM_STATE)
+        lr_m.fit(X_sp[tr], y_sp[tr])
+        preds["lr"][te] = lr_m.predict(X_sp[te])
+
+        # RF -- extract params from saved model (best_params not in GB scope)
+        rf_q2_params = {k: v for k, v in rf_best.get_params().items()
+                        if k in ["n_estimators", "max_depth", "min_samples_leaf",
+                                 "max_features", "random_state", "n_jobs"]}
+        rf_m = RF_cls(**rf_q2_params, class_weight="balanced")
+        rf_m.fit(X_sp[tr], y_sp[tr])
+        preds["rf"][te] = rf_m.predict(X_sp[te])
+
+        # XGB + LGBM share inner split
+        inner_ss = StratifiedShuffleSplit(n_splits=1, test_size=0.2,
+                                          random_state=RANDOM_STATE)
+        tr_rel, val_rel = next(inner_ss.split(X_sp[tr], y_sp[tr]))
+        tr_i, val_i = tr[tr_rel], tr[val_rel]
+        sw_i = compute_sample_weight("balanced", y_sp[tr_i])
+
+        xgb_m = XGBClassifier(**best_params_xgb, n_estimators=300,
+                               early_stopping_rounds=20, colsample_bytree=0.8,
+                               eval_metric="logloss", verbosity=0,
+                               random_state=RANDOM_STATE, n_jobs=-1)
+        xgb_m.fit(X_sp[tr_i], y_sp[tr_i], sample_weight=sw_i,
+                  eval_set=[(X_sp[val_i], y_sp[val_i])], verbose=False)
+        preds["xgb"][te] = xgb_m.predict(X_sp[te])
+
+        lgbm_m = LGBMClassifier(
+            **{k: v for k, v in lgbm_params.items() if k != "n_estimators"},
+            n_estimators=300)
+        lgbm_m.fit(X_sp[tr_i], y_sp[tr_i],
+                   eval_set=[(X_sp[val_i], y_sp[val_i])],
+                   callbacks=[lgb.early_stopping(20, verbose=False),
+                               lgb.log_evaluation(-1)])
+        preds["lgbm"][te] = lgbm_m.predict(X_sp[te])
+
+    mask = y_true >= 0
+    if mask.sum() < 10:
+        continue
+    yt = y_true[mask]
+    mc_q2[sp] = {"y_true": yt}
+    for m in ["lr", "rf", "xgb", "lgbm"]:
+        mc_q2[sp][m] = preds[m][mask]
+
+    bas = {m: balanced_accuracy_score(yt, mc_q2[sp][m]) for m in ["lr", "rf", "xgb", "lgbm"]}
+    print(f"\\n{sp} (n={mask.sum()}):")
+    print(f"  {'Model':<8}  BA")
+    for m in ["lr", "rf", "xgb", "lgbm"]:
+        print(f"  {m.upper():<8}  {bas[m]:.3f}")
+
+    pairs = [("LR", "RF"), ("LR", "XGB"), ("LR", "LGBM"), ("RF", "XGB")]
+    print(f"  {'Comparison':<16}  {'delta':>6}  {'b':>4}  {'c':>4}  {'p':>7}  Sig?")
+    print("  " + "-" * 52)
+    for ma, mb in pairs:
+        p, b, c, _ = mcnemar_test(yt, mc_q2[sp][ma.lower()], mc_q2[sp][mb.lower()])
+        delta = bas[ma.lower()] - bas[mb.lower()]
+        sig = "*" if p < 0.05 else "ns"
+        print(f"  {ma + ' vs ' + mb:<16}  {delta:+.3f}   {b:>4}  {c:>4}  {p:.4f}  {sig}")
+""")
+
 # ── SECTION 13: SAVE RESULTS ───────────────────────────────────────────────────
 md("## Section 13 — Save results")
 
