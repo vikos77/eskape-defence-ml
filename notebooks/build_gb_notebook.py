@@ -133,13 +133,17 @@ The key constraint: all genomes from one phylogroup land in the same fold.
 code("""\
 cv = StratifiedGroupKFold(n_splits=N_SPLITS, shuffle=True, random_state=RANDOM_STATE)
 
-def bootstrap_ci(scores, n_boot=N_BOOT, alpha=0.95, rng=42):
-    rng = np.random.default_rng(rng)
-    boot = [np.mean(rng.choice(scores, size=len(scores), replace=True))
-            for _ in range(n_boot)]
-    lo = np.percentile(boot, (1 - alpha) / 2 * 100)
-    hi = np.percentile(boot, (1 + alpha) / 2 * 100)
-    return np.mean(scores), lo, hi
+def bootstrap_ci(y_true, y_pred, metric_fn=None, n_boot=N_BOOT, seed=42):
+    # Bootstrap 95% CI over pooled per-genome predictions (M2 fix: n=878, not n=5)
+    if metric_fn is None:
+        metric_fn = balanced_accuracy_score
+    rng = np.random.default_rng(seed)
+    n = len(y_true)
+    scores = []
+    for _ in range(n_boot):
+        idx = rng.integers(0, n, size=n)
+        scores.append(metric_fn(y_true[idx], y_pred[idx]))
+    return metric_fn(y_true, y_pred), np.percentile(scores, 2.5), np.percentile(scores, 97.5)
 
 # Quick fold-size check
 fold_sizes = [len(te) for _, te in cv.split(X, y_q1, groups=groups)]
@@ -218,13 +222,17 @@ xgb_quick = XGBClassifier(
 )
 
 ba_scores = []
+yt_quick = np.empty(len(y_q1), dtype=int)
+yp_quick = np.empty(len(y_q1), dtype=int)
 for tr, te in cv.split(X, y_q1, groups=groups):
     sw = compute_sample_weight("balanced", y_q1[tr])
     xgb_quick.fit(X[tr], y_q1[tr], sample_weight=sw)
     pred = xgb_quick.predict(X[te])
+    yt_quick[te] = y_q1[te]
+    yp_quick[te] = pred
     ba_scores.append(balanced_accuracy_score(y_q1[te], pred))
 
-mean_ba, lo, hi = bootstrap_ci(np.array(ba_scores))
+mean_ba, lo, hi = bootstrap_ci(yt_quick, yp_quick)
 print(f"XGBoost quickrun (grouped CV): BA={mean_ba:.4f} [{lo:.4f}-{hi:.4f}]")
 print(f"RF Phase 8 reference:          BA=0.8780 [0.8590-0.8980]")
 print(f"Delta XGB_quick vs RF:         {mean_ba - 0.8780:+.4f}")
@@ -369,9 +377,11 @@ grid_xgb = GridSearchCV(
     refit      = True,
 )
 
-# sample_weight must be passed as fit_params; sklearn routes it to the estimator's fit()
-sw_all = compute_sample_weight("balanced", y_q1)
-grid_xgb.fit(X, y_q1, groups=groups, sample_weight=sw_all)
+# M3 fix: sample_weight NOT passed to GridSearchCV — weights computed once on full data
+# encode class imbalance of held-out test genomes, a minor form of leakage.
+# Hyperparameter tuning uses balanced_accuracy scoring which is already imbalance-aware.
+# Per-fold sample weights are correctly computed inside the early-stopping CV loop below.
+grid_xgb.fit(X, y_q1, groups=groups)
 
 print("\\nBest hyperparameters (XGBoost, GridSearchCV):")
 for k, v in grid_xgb.best_params_.items():
@@ -450,8 +460,9 @@ for tr, te in cv.split(X, y_q1, groups=groups):
     mc_true_xgb[te] = y_q1[te]
     mc_pred_xgb[te] = pred
 
-mean_ba_xgb, lo_xgb, hi_xgb = bootstrap_ci(np.array(ba_scores_xgb))
-mean_f1_xgb, lo_f1_xgb, hi_f1_xgb = bootstrap_ci(np.array(f1_scores_xgb))
+mean_ba_xgb, lo_xgb, hi_xgb = bootstrap_ci(mc_true_xgb, mc_pred_xgb)
+mean_f1_xgb, lo_f1_xgb, hi_f1_xgb = bootstrap_ci(mc_true_xgb, mc_pred_xgb,
+    metric_fn=lambda yt, yp: f1_score(yt, yp, average="macro"))
 
 print(f"=== XGBoost Q1 (best params + early stopping, grouped CV) ===")
 print(f"Balanced accuracy: {mean_ba_xgb:.4f} [{lo_xgb:.4f}-{hi_xgb:.4f}]")
@@ -543,8 +554,9 @@ for tr, te in cv.split(X, y_q1, groups=groups):
     mc_true_lgbm[te] = y_q1[te]
     mc_pred_lgbm[te] = pred
 
-mean_ba_lgbm, lo_lgbm, hi_lgbm = bootstrap_ci(np.array(ba_scores_lgbm))
-mean_f1_lgbm, lo_f1_lgbm, hi_f1_lgbm = bootstrap_ci(np.array(f1_scores_lgbm))
+mean_ba_lgbm, lo_lgbm, hi_lgbm = bootstrap_ci(mc_true_lgbm, mc_pred_lgbm)
+mean_f1_lgbm, lo_f1_lgbm, hi_f1_lgbm = bootstrap_ci(mc_true_lgbm, mc_pred_lgbm,
+    metric_fn=lambda yt, yp: f1_score(yt, yp, average="macro"))
 
 print(f"=== LightGBM Q1 (early stopping, grouped CV) ===")
 print(f"Balanced accuracy: {mean_ba_lgbm:.4f} [{lo_lgbm:.4f}-{hi_lgbm:.4f}]")
@@ -774,26 +786,32 @@ learning_rate and early stopping, do better than RF on the small-sample species?
 code("""\
 results_q2_xgb  = {}
 results_q2_lgbm = {}
+ba_xgb_dict     = {}  # H4: fold-level XGB BAs per species for BH correction
 
 for sp in sorted(fm["species"].unique()):
     sp_mask  = fm["species"].to_numpy(dtype=str) == sp
     fm_sp    = fm[sp_mask]
 
-    arg_candidates = [c for c in fm_sp.columns if "ARG" in c.upper() and "count" in c.lower()]
-    if not arg_candidates:
-        print(f"  {sp}: no ARG count column found — skip")
+    # Q2 labels: use pre-computed arg_burden_tertile (top vs bottom tertile only)
+    # Excludes mid_ARG genomes to match the LR baseline task exactly (C1 fix)
+    mask_q2 = fm_sp["arg_burden_tertile"].isin(["low_ARG", "high_ARG"])
+    fm_q2   = fm_sp[mask_q2]
+    if len(fm_q2) < 20 or fm_q2["arg_burden_tertile"].nunique() < 2:
+        print(f"  {sp}: insufficient Q2 data -- skip")
         continue
-    arg_col = arg_candidates[0]
-
-    tertile_thresh = fm_sp[arg_col].quantile(2/3)
-    y_sp  = (fm_sp[arg_col] > tertile_thresh).astype(int).values
-    X_sp  = fm_sp[FEAT_COLS].values
-    grp_sp = fm_sp["phylogroup"].to_numpy(dtype=str)
+    y_sp   = (fm_q2["arg_burden_tertile"] == "high_ARG").astype(int).values
+    # H1: per-species sparsity filter -- keep only features with >=5% prevalence
+    feat_prev_sp = fm_q2[FEAT_COLS].mean()
+    feat_q2_sp   = feat_prev_sp[feat_prev_sp >= 0.05].index.tolist()
+    X_sp         = fm_q2[feat_q2_sp].values
+    grp_sp = fm_q2["phylogroup"].to_numpy(dtype=str)
+    print(f"  {sp}: {len(feat_q2_sp)} features after H1 filter (from {len(FEAT_COLS)})")
 
     cv_sp = StratifiedGroupKFold(n_splits=N_SPLITS, shuffle=True, random_state=RANDOM_STATE)
 
     for model_name, results_dict in [("xgb", results_q2_xgb), ("lgbm", results_q2_lgbm)]:
         ba_sp, auc_sp = [], []
+        all_yt_sp, all_yp_sp = [], []
 
         for tr, te in cv_sp.split(X_sp, y_sp, groups=grp_sp):
             if len(set(y_sp[te])) < 2:
@@ -826,20 +844,24 @@ for sp in sorted(fm["species"].unique()):
 
             pred  = m.predict(X_sp[te])
             prob  = m.predict_proba(X_sp[te])[:, 1]
+            all_yt_sp.extend(y_sp[te])
+            all_yp_sp.extend(pred)
             ba_sp.append(balanced_accuracy_score(y_sp[te], pred))
             auc_sp.append(roc_auc_score(y_sp[te], prob))
 
         if not ba_sp:
             continue
-        mean_ba_sp, lo_sp, hi_sp = bootstrap_ci(np.array(ba_sp))
+        if model_name == "xgb":
+            ba_xgb_dict[sp] = list(ba_sp)  # H4: store XGB fold BAs for BH correction
+        mean_ba_sp, lo_sp, hi_sp = bootstrap_ci(np.array(all_yt_sp), np.array(all_yp_sp))
         results_dict[sp] = {"ba": mean_ba_sp, "lo": lo_sp, "hi": hi_sp,
                             "auroc": np.mean(auc_sp)}
 
-# Print comparison table
+# Print comparison table — load RF results from parquet (C1-corrected)
 lr_q2 = {"ecloaceae":0.752,"kpneumoniae":0.719,"paeruginosa":0.645,
           "efaecium":0.512,"saureus":0.470,"abaumannii":0.473}
-rf_q2 = {"ecloaceae":0.508,"kpneumoniae":0.546,"paeruginosa":0.621,
-          "efaecium":0.681,"saureus":0.475,"abaumannii":0.500}
+_rf_df = pd.read_parquet(RES / "q2_rf_results.parquet")
+rf_q2  = dict(zip(_rf_df["species"], _rf_df["ba"]))
 
 print(f"\\nQ2 comparison (balanced accuracy):")
 print(f"  {'Species':<22} {'LR':>6}  {'RF':>6}  {'XGB':>6}  {'LGBM':>6}  Winner")
@@ -852,6 +874,51 @@ for sp in sorted(results_q2_xgb.keys()):
     winner = max(["LR", "RF", "XGB", "LGBM"],
                  key=lambda m: {"LR": lrv, "RF": rfv, "XGB": xv, "LGBM": lv}[m])
     print(f"  {sp:<22} {lrv:.3f}  {rfv:.3f}  {xv:.3f}  {lv:.3f}  {winner}")
+""")
+
+# ── SECTION 12b: H4 — BH CORRECTION ACROSS Q2 SPECIES ─────────────────────────
+md("""\
+## Section 12b — H4: BH correction across Q2 species (XGBoost)
+
+**Audit finding H4:** BH correction required across 6 Q2 species tests.
+One-sample t-test per species (XGB fold BAs vs BA=0.5 null), then BH correction.
+EF, SA, AB may have few usable folds; n_folds reported for transparency.
+""")
+
+code("""\
+from scipy.stats import ttest_1samp
+from statsmodels.stats.multitest import multipletests
+
+null_ba  = 0.5
+sp_order = sorted(ba_xgb_dict.keys())
+p_raw    = []
+for sp in sp_order:
+    ba_list = ba_xgb_dict[sp]
+    if len(ba_list) >= 2:
+        _, pval = ttest_1samp(ba_list, popmean=null_ba, alternative="greater")
+        p_raw.append(pval)
+    else:
+        p_raw.append(float("nan"))
+
+valid_idx   = [i for i, p in enumerate(p_raw) if not (p != p)]
+sp_valid    = [sp_order[i] for i in valid_idx]
+pvals_valid = [p_raw[i]    for i in valid_idx]
+
+reject_bh, pvals_adj, _, _ = multipletests(pvals_valid, alpha=0.05, method="fdr_bh")
+q2_pval_map_xgb = dict(zip(sp_valid, pvals_adj))
+q2_praw_map_xgb = dict(zip(sp_valid, pvals_valid))
+q2_sig_map_xgb  = dict(zip(sp_valid, reject_bh))
+
+print("H4: Q2 XGB null-baseline significance (one-sample t vs BA=0.5, BH-corrected):")
+print(f"  {'Species':<22} {'XGB BA':>7}  {'n_folds':>7}  {'p_raw':>8}  {'p_adj_BH':>10}  {'Sig?':>5}")
+print("  " + "-" * 72)
+for sp in sp_order:
+    ba_v = results_q2_xgb.get(sp, {}).get("ba", float("nan"))
+    n_f  = len(ba_xgb_dict.get(sp, []))
+    p_r  = q2_praw_map_xgb.get(sp, float("nan"))
+    p_a  = q2_pval_map_xgb.get(sp, float("nan"))
+    sig  = "YES" if q2_sig_map_xgb.get(sp, False) else "ns"
+    print(f"  {sp:<22} {ba_v:.3f}   {n_f:>7}  {p_r:.4f}    {p_a:.4f}      {sig}")
 """)
 
 # ── SECTION 13: SAVE RESULTS ───────────────────────────────────────────────────
@@ -873,10 +940,14 @@ q1_gb = pd.DataFrame([
 q1_gb.to_parquet(RES / "q1_gb_results.parquet")
 print("Saved: results/q1_gb_results.parquet")
 
-# Q2 summary
+# Q2 summary (including H4 BH-corrected p-values for XGB)
 q2_rows = []
 for sp, vals in results_q2_xgb.items():
-    q2_rows.append({"species": sp, "model": "XGBoost", **vals})
+    q2_rows.append({"species": sp, "model": "XGBoost",
+                    "p_adj_bh": q2_pval_map_xgb.get(sp, float("nan")),
+                    "p_raw":    q2_praw_map_xgb.get(sp, float("nan")),
+                    "sig_bh":   q2_sig_map_xgb.get(sp, False),
+                    **vals})
 for sp, vals in results_q2_lgbm.items():
     q2_rows.append({"species": sp, "model": "LightGBM", **vals})
 pd.DataFrame(q2_rows).to_parquet(RES / "q2_gb_results.parquet")
