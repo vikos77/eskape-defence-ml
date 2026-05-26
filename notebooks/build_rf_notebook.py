@@ -342,7 +342,20 @@ print(f"Delta RF vs LR (BA):  {mean_ba - 0.8370:+.4f}")
 
 # OOB score (train on all data)
 rf_best.fit(X, y_q1)
-print(f"\\nOOB score (full dataset, best RF): {rf_best.oob_score_:.4f}")
+oob = rf_best.oob_score_
+print(f"\\nOOB score (full dataset, best RF): {oob:.4f}")
+print(f"Grouped CV BA:                      {mean_ba:.4f}")
+print(f"OOB - CV delta:                    {oob - mean_ba:+.4f}")
+print()
+print("M5 framing: The {:.1f}pp OOB-to-CV gap is the empirical phylogenetic".format(
+    (oob - mean_ba) * 100))
+print("correction effect. OOB uses random held-out trees (equivalent to standard")
+print("CV) -- related genomes can bleed between training and test sets, inflating")
+print("accuracy to {:.3f}. GroupedStratifiedKFold enforces clone-complete fold".format(oob))
+print("isolation, removing that leak and giving the honest estimate of {:.3f}.".format(mean_ba))
+print("The delta ({:+.1f}pp) quantifies how much phylogenetic signal standard CV".format(
+    (oob - mean_ba) * 100))
+print("would falsely claim as model performance on this dataset.")
 
 # Per-class report
 from sklearn.metrics import classification_report

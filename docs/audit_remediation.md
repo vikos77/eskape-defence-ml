@@ -417,6 +417,6 @@ Items to address in order:
 | H6  | HIGH     | DONE    | RM_Type_I framing logged in decisions.md; Phase 10 action items defined |
 | M1  | MODERATE | DONE    | Deviation amendment logged in pre_analysis_plan.md §9; required manuscript statement written |
 | M4  | MODERATE | DONE    | McNemar Q2: EF LR>RF/XGB (p<0.05); PA RF>XGB (p=0.02); EC/KP/SA/AB no sig pairs |
-| M5  | MODERATE | pending | Explicit framing of OOB=0.932 vs CV=0.878 delta |
+| M5  | MODERATE | DONE    | OOB=0.932 vs CV=0.874 delta (+5.7pp) explicitly framed as phylogenetic correction effect |
 | M6  | MODERATE | pending | Flag dp_df_Gabija spurious Gini inflation in Phase 10 narrative |
 | O2  | OPTIONAL | pending | Expanded max_depth grid for GB |
