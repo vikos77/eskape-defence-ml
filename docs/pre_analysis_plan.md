@@ -280,3 +280,36 @@ exploratory. Specifically:
 
 These are not primary analyses. Any manuscript claim must distinguish
 confirmatory (pre-specified) from exploratory (post-hoc).
+
+---
+
+## 9. Post-hoc deviations from this plan (amendment log)
+
+Deviations are logged here for transparency. Each must also appear in `decisions.md`.
+
+### Amendment 1 — Primary Q1 model selection criterion (2026-05-25)
+
+**Pre-registered criterion:** The primary Q1 model is the model with the highest
+balanced accuracy, provided the 95% bootstrap CI does not overlap with the LR
+reference CI.
+
+**Observed result:** RF CI [0.859--0.898], LR CI [0.813--0.859]. The lower bound of
+the RF CI equals the upper bound of the LR CI to four decimal places — a technical
+overlap of 0.0002 units.
+
+**Deviation:** The non-overlap criterion is technically violated. RF was nonetheless
+selected as the primary Q1 model.
+
+**Justification:** The 0.0002 overlap falls below the precision floor of a bootstrap
+CI estimated from 5 fold-level scores (2000 resamples of n=5 cannot reliably resolve
+intervals at 4 decimal places). The intent of the criterion — preventing a 0.001
+difference from being declared a win — is not violated by a delta of 0.041. All five
+individual CV folds showed RF > LR; the boundary touch is a CI construction artefact.
+Full rationale in decisions.md (2026-05-25).
+
+**Required manuscript statement:** "Primary Q1 model selection required non-overlapping
+95% bootstrap CIs. The RF CI [0.859--0.898] and LR CI [0.813--0.859] overlap by 0.0002
+units at the boundary; we treat this as below the precision floor of a bootstrap CI from
+five CV fold scores and select RF on the basis of the 0.041 BA improvement. This
+constitutes a minor post-hoc deviation from the pre-registered criterion, logged in the
+pre-analysis plan and in decisions.md."

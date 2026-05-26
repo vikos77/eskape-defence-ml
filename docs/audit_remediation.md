@@ -383,7 +383,7 @@ Items to address in order:
 | H7  | HIGH     | DONE    | ad_* excluded from Q1 (spec_score 0.62-0.81); Q2 sensitivity shows +0.019 to +0.089 improvement |
 | H8  | HIGH     | DONE    | Learning curves generated for Q1 (RF vs LR) and Q2 (EC, KP, PA) |
 | H6  | HIGH     | DONE    | RM_Type_I framing logged in decisions.md; Phase 10 action items defined |
-| M1  | MODERATE | pending | Transparent manuscript language about 0.0002 CI overlap in RF model selection |
+| M1  | MODERATE | DONE    | Deviation amendment logged in pre_analysis_plan.md §9; required manuscript statement written |
 | M4  | MODERATE | pending | McNemar tests for Q2 per-species model comparisons |
 | M5  | MODERATE | pending | Explicit framing of OOB=0.932 vs CV=0.878 delta |
 | M6  | MODERATE | pending | Flag dp_df_Gabija spurious Gini inflation in Phase 10 narrative |
