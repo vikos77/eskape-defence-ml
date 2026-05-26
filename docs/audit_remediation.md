@@ -263,6 +263,45 @@ across models) and PA (RF only). EF's previous apparent advantage was a sparsity
 
 ---
 
+---
+
+## H3 — GB fair comparison with fixed n_estimators (FIXED 2026-05-26)
+
+**What was wrong:**
+XGB/LGBM Q1 used an 80/20 inner split for early stopping → trained on ~64% of data
+per fold. RF trained on ~80%. The 14pp RF advantage (0.878 vs 0.817) might partly
+reflect data starvation rather than model quality.
+
+**Fix applied:**
+Added Section 10b to `build_gb_notebook.py`. Re-ran XGB (n_estimators=143, median of
+early-stopping best_iters) and LGBM (n_estimators=92) with no inner split, training on
+the full fold — same effective data as RF. McNemar tests against RF using aligned
+per-genome predictions.
+
+**Results (Q1 balanced accuracy):**
+
+| Model                              | BA     | 95% CI          | vs RF  |
+|------------------------------------|--------|-----------------|--------|
+| RF (80% fold, n free)              | 0.8780 | [0.859–0.898]   | —      |
+| XGB (early-stop, 64% fold)         | 0.8165 | [0.793–0.839]   | -0.062 |
+| XGB (fixed n=143, 80% fold)        | 0.8062 | [0.782–0.830]   | -0.072 |
+| LGBM (early-stop, 64% fold)        | 0.8267 | [0.802–0.852]   | -0.051 |
+| LGBM (fixed n=92, 80% fold)        | 0.8304 | [0.807–0.855]   | -0.048 |
+
+- McNemar (XGB fixed-n vs RF): p<0.0001 (b=21, c=83) — RF significantly better
+- McNemar (LGBM fixed-n vs RF): p<0.0001 (b=25, c=65) — RF significantly better
+
+**Conclusion:**
+Data starvation does not explain the RF advantage. XGB is actually **worse** with full
+fold data (0.806 vs 0.817 early-stop) — early stopping was acting as a regulariser for
+XGB, not penalising it through data reduction. LGBM gains marginally (+0.004) but remains
+far below RF. RF's superiority on this sparse binary feature matrix at n=878 is genuine,
+not an artefact of unequal training set sizes. The manuscript H3 limitation note should be
+updated accordingly: "H3 fair comparison confirms RF advantage is not attributable to
+the inner validation split used by gradient boosting."
+
+---
+
 ## Pending remediation items
 
 Items to address in order:
@@ -276,7 +315,7 @@ Items to address in order:
 | M3  | HIGH     | DONE    | Removed sample_weight from GridSearchCV; per-fold weights in early-stopping loop already correct |
 | H1  | HIGH     | DONE    | Per-species sparsity filter (>=5% prevalence) for Q2 features |
 | H4  | HIGH     | DONE    | BH correction across 6 Q2 species |
-| H3  | HIGH     | pending | GB fair comparison: no early stopping, fixed n_estimators |
+| H3  | HIGH     | DONE    | GB fair comparison: fixed n_estimators confirms RF advantage is genuine |
 | H7  | HIGH     | pending | Explicit decision on ad_* (anti-defence) feature inclusion |
 | H8  | HIGH     | pending | Learning curves for Q1 (RF vs LR) and key Q2 species |
 | M1  | MODERATE | pending | Transparent manuscript language about 0.0002 CI overlap in RF model selection |

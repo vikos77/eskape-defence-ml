@@ -659,6 +659,93 @@ for label, true_a, pred_a, true_b, pred_b in comparisons:
     print()
 """)
 
+# ── SECTION 10b: H3 — FAIR COMPARISON (FIXED N_ESTIMATORS) ───────────────────
+md("""\
+## Section 10b — H3: Fair comparison with fixed n_estimators
+
+**Audit finding H3:** XGBoost and LightGBM use an 80/20 inner split for early
+stopping, so they train on only ~64% of the data per fold (80% x 80%).
+RF trains on ~80%. The 14pp BA gap (RF=0.878 vs XGB=0.817) may partly reflect
+data starvation rather than model quality.
+
+**What this section does:**
+Re-run XGB and LGBM with:
+- Fixed `n_estimators` from the median of early-stopping best iterations
+  (XGB median=143, LGBM median=92)
+- No inner validation split -- full training fold used (same effective data as RF)
+- Same hyperparameters otherwise
+
+If the gap closes substantially: data starvation was the primary cause.
+If the gap persists: RF genuinely outperforms gradient boosting on this dataset.
+""")
+
+code("""\
+# H3: fixed n_estimators -- use median from early stopping runs
+n_est_xgb  = int(np.median(best_iters))
+n_est_lgbm = int(np.median(best_iters_lgbm))
+print(f"Fixed n_estimators -- XGB: {n_est_xgb}, LGBM: {n_est_lgbm}")
+
+ba_xgb_fixed  = []
+ba_lgbm_fixed = []
+mc_pred_xgb_fixed  = np.empty(len(y_q1), dtype=int)
+mc_pred_lgbm_fixed = np.empty(len(y_q1), dtype=int)
+mc_true_fixed      = np.empty(len(y_q1), dtype=int)
+
+for tr, te in cv.split(X, y_q1, groups=groups):
+    sw = compute_sample_weight("balanced", y_q1[tr])
+    mc_true_fixed[te] = y_q1[te]
+
+    # XGB: fixed n_estimators, full training fold
+    xgb_fixed = XGBClassifier(
+        **best_params_xgb,
+        n_estimators     = n_est_xgb,
+        colsample_bytree = 0.8,
+        verbosity        = 0,
+        random_state     = RANDOM_STATE,
+        n_jobs           = -1,
+    )
+    xgb_fixed.fit(X[tr], y_q1[tr], sample_weight=sw)
+    pred_xf = xgb_fixed.predict(X[te])
+    ba_xgb_fixed.append(balanced_accuracy_score(y_q1[te], pred_xf))
+    mc_pred_xgb_fixed[te] = pred_xf
+
+    # LGBM: fixed n_estimators, full training fold
+    lgbm_fixed = LGBMClassifier(
+        **{k: v for k, v in lgbm_params.items() if k != "n_estimators"},
+        n_estimators = n_est_lgbm,
+    )
+    lgbm_fixed.fit(X[tr], y_q1[tr])
+    pred_lf = lgbm_fixed.predict(X[te])
+    ba_lgbm_fixed.append(balanced_accuracy_score(y_q1[te], pred_lf))
+    mc_pred_lgbm_fixed[te] = pred_lf
+
+ba_xf,  lo_xf,  hi_xf  = bootstrap_ci(mc_true_fixed, mc_pred_xgb_fixed)
+ba_lf,  lo_lf,  hi_lf  = bootstrap_ci(mc_true_fixed, mc_pred_lgbm_fixed)
+
+lbl_xf = f"XGB (fixed n={n_est_xgb}, 80% fold)"
+lbl_lf = f"LGBM (fixed n={n_est_lgbm}, 80% fold)"
+
+print()
+print("=== H3: fixed-n vs early-stopping vs RF (Q1 BA) ===")
+print(f"  {'Model':<38} {'BA':>6}  {'95% CI':<18}  {'vs RF delta':>11}")
+print("  " + "-" * 78)
+ref_rf  = 0.8780
+print(f"  {'RF (80% fold, n_estimators free)':<38} {ref_rf:.4f}  [0.8590-0.8980]")
+print(f"  {'XGB (early-stop, 64% fold)':<38} {mean_ba_xgb:.4f}  [{lo_xgb:.4f}-{hi_xgb:.4f}]  {mean_ba_xgb - ref_rf:+.4f}")
+print(f"  {lbl_xf:<38} {ba_xf:.4f}  [{lo_xf:.4f}-{hi_xf:.4f}]  {ba_xf - ref_rf:+.4f}")
+print(f"  {'LGBM (early-stop, 64% fold)':<38} {mean_ba_lgbm:.4f}  [{lo_lgbm:.4f}-{hi_lgbm:.4f}]  {mean_ba_lgbm - ref_rf:+.4f}")
+print(f"  {lbl_lf:<38} {ba_lf:.4f}  [{lo_lf:.4f}-{hi_lf:.4f}]  {ba_lf - ref_rf:+.4f}")
+print()
+
+# McNemar: fixed-n XGB vs RF
+p_xf_rf, b_xf_rf, c_xf_rf, _ = mcnemar_test(mc_true_fixed, mc_pred_xgb_fixed, mc_pred_rf)
+sig_xf = "**significant**" if p_xf_rf < 0.05 else "not significant"
+print(f"McNemar (XGB fixed-n vs RF): b={b_xf_rf}, c={c_xf_rf}, p={p_xf_rf:.4f}  [{sig_xf}]")
+p_lf_rf, b_lf_rf, c_lf_rf, _ = mcnemar_test(mc_true_fixed, mc_pred_lgbm_fixed, mc_pred_rf)
+sig_lf = "**significant**" if p_lf_rf < 0.05 else "not significant"
+print(f"McNemar (LGBM fixed-n vs RF): b={b_lf_rf}, c={c_lf_rf}, p={p_lf_rf:.4f}  [{sig_lf}]")
+""")
+
 # ── SECTION 11: CALIBRATION ────────────────────────────────────────────────────
 md("""\
 ## Section 11 — Probability calibration
