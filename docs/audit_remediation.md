@@ -418,5 +418,5 @@ Items to address in order:
 | M1  | MODERATE | DONE    | Deviation amendment logged in pre_analysis_plan.md §9; required manuscript statement written |
 | M4  | MODERATE | DONE    | McNemar Q2: EF LR>RF/XGB (p<0.05); PA RF>XGB (p=0.02); EC/KP/SA/AB no sig pairs |
 | M5  | MODERATE | DONE    | OOB=0.932 vs CV=0.874 delta (+5.7pp) explicitly framed as phylogenetic correction effect |
-| M6  | MODERATE | pending | Flag dp_df_Gabija spurious Gini inflation in Phase 10 narrative |
+| M6  | MODERATE | DONE    | dp_Gabija (SHAP 13, perm 265, perm_val=-0.029) flagged inline in Section 10 and decisions.md |
 | O2  | OPTIONAL | pending | Expanded max_depth grid for GB |

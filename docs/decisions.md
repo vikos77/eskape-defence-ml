@@ -619,6 +619,16 @@ Report all four models in supplementary; use XGB as primary for EC/KP and RF for
 
 ---
 
+## 2026-05-26 — Audit remediation (M6, H6, H7)
+
+**M6 — dp_Gabija Gini inflation:**
+`dp_Gabija`: SHAP rank 13, Gini rank ~32, permutation rank 265 (value negative).
+Negative permutation importance = shuffling Gabija improves accuracy. Textbook Gini
+inflation from correlation with informative features without independent signal.
+Phase 10 rule: Only cite features where SHAP and permutation ranks agree. Do not list
+Gabija as a key Q4 feature. Same applies to dp_df_MazEF (SHAP rank 6, perm rank 264).
+Flagged inline in Section 10 of 06_random_forest.ipynb with explicit M6 WARNING block.
+
 ## 2026-05-26 — Audit remediation (H6, H7)
 
 **H6 — RM_Type_I negative permutation importance:**

@@ -572,11 +572,27 @@ mean_abs_shap = np.abs(shap_values).mean(axis=0).mean(axis=1)   # shape: (265,)
 shap_global   = pd.Series(mean_abs_shap, index=FEAT_COLS).sort_values(ascending=False)
 
 print("\\nTop 10 features by mean |SHAP| (averaged across all 6 classes):")
+shap_ranks = shap_global.rank(ascending=False).astype(int)
 for f, v in shap_global.head(10).items():
-    gr = gini_ranks.get(f, "—")
-    pr = perm_ranks.get(f, "—")
-    print(f"  SHAP #{shap_global.rank(ascending=False).astype(int)[f]:<3} | "
-          f"Gini #{gr:<3} | Perm #{pr:<3} | {f:<40} {v:.5f}")
+    gr = gini_ranks.get(f, "?")
+    pr = perm_ranks.get(f, "?")
+    print(f"  SHAP #{shap_ranks[f]:<3} | Gini #{gr:<3} | Perm #{pr:<3} | {f:<40} {v:.5f}")
+
+# M6: flag dp_Gabija discordance explicitly (audit listed as dp_df_Gabija; actual name dp_Gabija)
+gabija = "dp_Gabija"
+if gabija in shap_global.index:
+    g_shap = shap_ranks[gabija]
+    g_gini = gini_ranks.get(gabija, "?")
+    g_perm = perm_ranks.get(gabija, "?")
+    g_pv   = imp_perm.get(gabija, float("nan"))
+    print()
+    print(f"M6 WARNING -- {gabija} importance discordance:")
+    print(f"  SHAP rank {g_shap}, Gini rank {g_gini}, Permutation rank {g_perm} (value={g_pv:.5f})")
+    print("  Negative permutation importance = shuffling Gabija IMPROVES model accuracy.")
+    print("  This is the textbook signature of Gini inflation: Gabija is correlated with")
+    print("  informative features but is not independently predictive.")
+    print("  Phase 10 action: DO NOT cite Gabija SHAP rank as a key Q4 finding.")
+    print("  Report only features where SHAP rank and permutation rank agree.")
 """)
 
 # ── SECTION 11: RF vs LR COMPARISON ──────────────────────────────────────────
