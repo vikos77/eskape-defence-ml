@@ -750,6 +750,78 @@ for sp in sp_order:
     print(f"  {sp:<22} {ba_v:.3f}  {n_f:>7}  {p_r:.4f}    {p_a:.4f}      {sig}")
 """)
 
+# ── SECTION 12c: H7 — Q2 SENSITIVITY WITH ad_* FEATURES ──────────────────────
+md("""\
+## Section 12c — H7: Q2 sensitivity including anti-defence features
+
+**Audit finding H7:** 29 `ad_*` (anti-defence) features from AntiDefenseFinder were
+never included in any model. No exclusion rationale was logged.
+
+**Decision (H7, logged in decisions.md 2026-05-26):**
+- **Q1:** Exclude `ad_*`. Their spec_scores range 0.62--0.81, making them even more
+  species-specific than the C2 borderline `dp_*` features. Including them would inflate
+  Q1 species classification for the wrong reason.
+- **Q2:** Sensitivity analysis here. Anti-defence systems are MGE-borne; if
+  `ad_*`-positive genomes also carry more ARGs (via co-mobilisation), these features
+  could genuinely improve Q2. The within-species framing eliminates the
+  species-identity confound. H1 per-species filter applied identically.
+""")
+
+code("""\
+ad_cols = [c for c in fm.columns if c.startswith("ad_")]
+
+results_q2_rf_ad = {}  # dp_* + ad_* combined
+
+for sp in sorted(fm["species"].unique()):
+    sp_mask = fm["species"] == sp
+    fm_sp   = fm[sp_mask]
+    mask_q2 = fm_sp["arg_burden_tertile"].isin(["low_ARG", "high_ARG"])
+    fm_q2   = fm_sp[mask_q2]
+    if len(fm_q2) < 20 or fm_q2["arg_burden_tertile"].nunique() < 2:
+        continue
+    y_sp   = (fm_q2["arg_burden_tertile"] == "high_ARG").astype(int).values
+    grp_sp = fm_q2["phylogroup"].to_numpy(dtype=str)
+
+    # H1 filter on dp_* (same as main Q2 run)
+    feat_prev_sp = fm_q2[FEAT_COLS].mean()
+    feat_q2_sp   = feat_prev_sp[feat_prev_sp >= 0.05].index.tolist()
+
+    # H1 filter on ad_* (same 5% threshold, within-species Q2 set)
+    feat_prev_ad = fm_q2[ad_cols].mean()
+    feat_ad_sp   = feat_prev_ad[feat_prev_ad >= 0.05].index.tolist()
+
+    feat_combined = feat_q2_sp + feat_ad_sp
+    X_sp_ad = fm_q2[feat_combined].values
+    cv_sp   = StratifiedGroupKFold(n_splits=N_SPLITS, shuffle=True, random_state=RANDOM_STATE)
+
+    all_yt, all_yp = [], []
+    for tr, te in cv_sp.split(X_sp_ad, y_sp, groups=grp_sp):
+        if len(set(y_sp[te])) < 2:
+            continue
+        rf_ad = RandomForestClassifier(**best_params, class_weight="balanced",
+                                       n_jobs=-1, random_state=RANDOM_STATE)
+        rf_ad.fit(X_sp_ad[tr], y_sp[tr])
+        pred = rf_ad.predict(X_sp_ad[te])
+        all_yt.extend(y_sp[te])
+        all_yp.extend(pred)
+
+    if not all_yt:
+        continue
+    ba_ad, _, _ = bootstrap_ci(np.array(all_yt), np.array(all_yp))
+    results_q2_rf_ad[sp] = {"ba_ad": ba_ad, "n_dp": len(feat_q2_sp),
+                             "n_ad": len(feat_ad_sp)}
+
+print("H7: Q2 RF sensitivity -- dp_* only vs dp_* + ad_* (both H1-filtered):")
+print(f"  {'Species':<22} {'dp only':>8}  {'dp+ad':>8}  {'Delta':>7}  {'n_dp':>5}  {'n_ad':>5}")
+print("  " + "-" * 62)
+for sp in sorted(results_q2_rf_ad.keys()):
+    ba_base = results_q2_rf.get(sp, {}).get("ba", float("nan"))
+    ba_ad   = results_q2_rf_ad[sp]["ba_ad"]
+    n_dp    = results_q2_rf_ad[sp]["n_dp"]
+    n_ad    = results_q2_rf_ad[sp]["n_ad"]
+    print(f"  {sp:<22} {ba_base:.3f}     {ba_ad:.3f}     {ba_ad - ba_base:+.3f}    {n_dp:>5}  {n_ad:>5}")
+""")
+
 # ── SECTION 13: C2 SENSITIVITY — SPEC-FILTER THRESHOLD ───────────────────────
 md("""\
 ## Section 13 — C2 sensitivity: specificity filter threshold
@@ -815,6 +887,106 @@ print("Interpretation: The 14.5pp drop confirms that SHAP ranks 1-4 at threshold
 print("are substantially driven by species-identity proxies. Phase 10 SHAP analysis")
 print("will be restricted to features surviving the 0.50 filter (259 features).")
 pd.DataFrame(results_sensitivity).T.to_parquet(RES / "q1_rf_sensitivity_spec_filter.parquet")
+""")
+
+# ── SECTION 13b: H8 — LEARNING CURVES ──────────────────────────────────────────
+md("""\
+## Section 13b — H8: Learning curves
+
+**Audit finding H8:** Learning curves (accuracy vs training set size) were never computed.
+With Q2 per-species n dropping to ~60--100 after H1 filter, it is unknown whether models
+are sample-saturated or still on the steep part of the learning curve.
+
+**What this shows:**
+- Q1 (left): RF vs LR across increasing fractions of the 878-genome training set.
+  Convergence means adding more genomes would not substantially change Q1 conclusions.
+- Q2 (right): RF for EC, KP, PA -- the three species with significant Q2 signal.
+  A steep right end means performance is still limited by sample size.
+
+Train sizes use 5 evenly-spaced fractions (20%--100%). Error bands = +/- 1 std
+across CV folds.
+""")
+
+code("""\
+from sklearn.model_selection import learning_curve
+from sklearn.linear_model import LogisticRegression
+import matplotlib.pyplot as plt
+
+fig, axes = plt.subplots(1, 2, figsize=(13, 5))
+
+# ---- Q1 learning curve: RF vs LR ----
+lr_q1 = LogisticRegression(max_iter=2000, class_weight="balanced",
+                            solver="saga", C=0.1, random_state=RANDOM_STATE)
+
+train_fracs = np.array([0.20, 0.40, 0.60, 0.80, 1.00])
+cv_lc = StratifiedGroupKFold(n_splits=N_SPLITS, shuffle=True, random_state=RANDOM_STATE)
+
+for model, label, color in [(rf_best, "RF", "steelblue"),
+                             (lr_q1,   "LR", "tomato")]:
+    ts, tr_sc, te_sc = learning_curve(
+        model, X, y_q1, groups=groups,
+        train_sizes=train_fracs,
+        cv=cv_lc,
+        scoring="balanced_accuracy",
+        n_jobs=-1,
+    )
+    ax = axes[0]
+    ax.plot(ts, te_sc.mean(axis=1), "o-", color=color, label=label)
+    ax.fill_between(ts,
+                    te_sc.mean(axis=1) - te_sc.std(axis=1),
+                    te_sc.mean(axis=1) + te_sc.std(axis=1),
+                    alpha=0.18, color=color)
+
+axes[0].axhline(0.130, color="grey", linestyle="--", linewidth=0.8, label="Null baseline")
+axes[0].set_xlabel("Training set size (genomes)")
+axes[0].set_ylabel("Balanced accuracy")
+axes[0].set_title("Q1 learning curves: RF vs LR")
+axes[0].legend()
+axes[0].set_ylim(0.0, 1.05)
+
+# ---- Q2 learning curve: RF for EC, KP, PA ----
+sig_species = ["ecloaceae", "kpneumoniae", "paeruginosa"]
+colors_q2   = ["steelblue", "darkorange", "seagreen"]
+
+for sp, color in zip(sig_species, colors_q2):
+    sp_mask = fm["species"] == sp
+    fm_sp   = fm[sp_mask]
+    mask_q2 = fm_sp["arg_burden_tertile"].isin(["low_ARG", "high_ARG"])
+    fm_q2   = fm_sp[mask_q2]
+    y_sp    = (fm_q2["arg_burden_tertile"] == "high_ARG").astype(int).values
+
+    feat_prev_sp = fm_q2[FEAT_COLS].mean()
+    feat_q2_sp   = feat_prev_sp[feat_prev_sp >= 0.05].index.tolist()
+    X_sp         = fm_q2[feat_q2_sp].values
+    grp_sp       = fm_q2["phylogroup"].to_numpy(dtype=str)
+
+    cv_sp = StratifiedGroupKFold(n_splits=N_SPLITS, shuffle=True, random_state=RANDOM_STATE)
+    rf_q2_lc = RandomForestClassifier(**best_params, class_weight="balanced",
+                                       n_jobs=-1, random_state=RANDOM_STATE)
+    ts_sp, _, te_sp = learning_curve(
+        rf_q2_lc, X_sp, y_sp, groups=grp_sp,
+        train_sizes=train_fracs,
+        cv=cv_sp,
+        scoring="balanced_accuracy",
+        n_jobs=1,
+    )
+    axes[1].plot(ts_sp, te_sp.mean(axis=1), "o-", color=color, label=sp[:2].upper())
+    axes[1].fill_between(ts_sp,
+                         te_sp.mean(axis=1) - te_sp.std(axis=1),
+                         te_sp.mean(axis=1) + te_sp.std(axis=1),
+                         alpha=0.18, color=color)
+
+axes[1].axhline(0.5, color="grey", linestyle="--", linewidth=0.8, label="Null (0.5)")
+axes[1].set_xlabel("Training set size (genomes)")
+axes[1].set_ylabel("Balanced accuracy")
+axes[1].set_title("Q2 learning curves: RF (EC, KP, PA)")
+axes[1].legend()
+axes[1].set_ylim(0.3, 1.05)
+
+fig.tight_layout()
+fig.savefig(RES / "figures" / "rf" / "learning_curves.png", dpi=150, bbox_inches="tight")
+plt.show()
+print("Saved: results/figures/rf/learning_curves.png")
 """)
 
 # ── SECTION 14: SAVE RESULTS ───────────────────────────────────────────────────

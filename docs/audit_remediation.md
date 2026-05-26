@@ -302,6 +302,70 @@ the inner validation split used by gradient boosting."
 
 ---
 
+---
+
+## H7 — Anti-defence feature decision and Q2 sensitivity (FIXED 2026-05-26)
+
+**Decision:**
+- Q1: `ad_*` excluded. spec_scores 0.62--0.81 — more species-specific than the C2
+  borderline `dp_*` features. Including them would inflate Q1 via taxonomic proxies.
+- Q2: Sensitivity run in Section 12c of `06_random_forest.ipynb`. H1 per-species
+  sparsity filter applied identically to `ad_*` features.
+
+**Q2 sensitivity results (dp_* only vs dp_* + ad_*):**
+
+| Species | dp_* only | dp_*+ad_* | Delta  | n_dp | n_ad |
+|---------|-----------|-----------|--------|------|------|
+| EC      | 0.753     | 0.772     | +0.019 | 68   | 9    |
+| KP      | 0.707     | 0.742     | +0.035 | 85   | 10   |
+| PA      | 0.677     | 0.696     | +0.019 | 74   | 10   |
+| EF      | 0.489     | 0.577     | +0.089 | 23   | 2    |
+| SA      | 0.514     | 0.603     | +0.089 | 27   | 3    |
+| AB      | 0.489     | 0.524     | +0.034 | 30   | 3    |
+
+**Key finding:** EF and SA (both at chance with dp_*-only) gain +0.089 BA when
+anti-defence features are added. Biologically plausible: Gram-positive organisms
+that lack defence systems rely on anti-defence systems co-mobilised with MGEs —
+the same MGEs that carry ARGs. This is a genuine new finding beyond the published
+single-species analysis. Phase 10 should examine which `ad_*` features drive the
+EF and SA improvement.
+
+---
+
+## H8 — Learning curves (FIXED 2026-05-26)
+
+**Generated in Section 13b of `06_random_forest.ipynb`.**
+Saved to `results/figures/rf/learning_curves.png`.
+
+Q1 (RF vs LR): learning curves across 20--100% of the 878-genome training set with
+GroupedStratifiedKFold CV.
+
+Q2 (RF for EC, KP, PA): per-species curves with H1-filtered features across
+20--100% of each species' Q2-eligible set.
+
+---
+
+## H6 — RM_Type_I interpretation (FIXED 2026-05-26 — documentation only)
+
+**No code change.** Framing logged in `decisions.md` (2026-05-26).
+
+`dp_RM_Type_I` permutation rank = 261/265 (value = -0.006). Two interpretations
+to address in Phase 10:
+1. RM Type I is redundant given other correlated features in Q1 multi-class context.
+2. RM is a within-AB archetype signal, not a cross-species signal — Q1 cannot
+   detect it because RM's within-AB variation does not distinguish AB from other species.
+
+Phase 10 action: examine RM_Type_I in Q2 (ARG burden within species). If still
+unimportant there, that is a genuine new finding: binary RM presence does not
+predict multi-species ARG burden even though RM count correlates with ARG burden
+in the published single-species analysis.
+
+Do NOT present SHAP rank 17 for RM as "confirming" the published finding.
+Correct framing: "Q1 RM signal is attenuated, consistent with RM being a
+within-species archetype marker rather than a cross-species predictor."
+
+---
+
 ## Pending remediation items
 
 Items to address in order:
@@ -316,11 +380,11 @@ Items to address in order:
 | H1  | HIGH     | DONE    | Per-species sparsity filter (>=5% prevalence) for Q2 features |
 | H4  | HIGH     | DONE    | BH correction across 6 Q2 species |
 | H3  | HIGH     | DONE    | GB fair comparison: fixed n_estimators confirms RF advantage is genuine |
-| H7  | HIGH     | pending | Explicit decision on ad_* (anti-defence) feature inclusion |
-| H8  | HIGH     | pending | Learning curves for Q1 (RF vs LR) and key Q2 species |
+| H7  | HIGH     | DONE    | ad_* excluded from Q1 (spec_score 0.62-0.81); Q2 sensitivity shows +0.019 to +0.089 improvement |
+| H8  | HIGH     | DONE    | Learning curves generated for Q1 (RF vs LR) and Q2 (EC, KP, PA) |
+| H6  | HIGH     | DONE    | RM_Type_I framing logged in decisions.md; Phase 10 action items defined |
 | M1  | MODERATE | pending | Transparent manuscript language about 0.0002 CI overlap in RF model selection |
 | M4  | MODERATE | pending | McNemar tests for Q2 per-species model comparisons |
 | M5  | MODERATE | pending | Explicit framing of OOB=0.932 vs CV=0.878 delta |
 | M6  | MODERATE | pending | Flag dp_df_Gabija spurious Gini inflation in Phase 10 narrative |
-| H6  | HIGH     | pending | Address RM_Type_I negative permutation importance in interpretation |
 | O2  | OPTIONAL | pending | Expanded max_depth grid for GB |

@@ -599,7 +599,57 @@ Manuscript framing: Report both LR and RF for Q1. RF is the primary model for fe
 importance analysis. LR is reported as the regularised-linear comparator and as the
 primary model for Q2 (where RF consistently underperforms at n~150).
 
-**Q2 model selection:** LR is primary for all 6 species. RF Q2 results are reported as
-supplementary — the underperformance of RF at n~150 is itself a methodological finding
-(moderate ARG-burden signal: detectable by regularised LR, insufficient for flexible RF).
+**Q2 model selection (original, 2026-05-25):** LR is primary for all 6 species. RF Q2
+results are reported as supplementary — the underperformance of RF at n~150 is itself a
+methodological finding (moderate ARG-burden signal: detectable by regularised LR,
+insufficient for flexible RF).
+
+**Q2 model selection REVISION (2026-05-26, post-audit fixes C1+H1+H4):**
+The original conclusion was entirely driven by the C1 label bug. After correcting Q2
+labels AND applying the H1 per-species sparsity filter AND BH correction:
+- EC: RF (0.753) ties LR (0.752); XGB (0.824) wins. All three BH-significant.
+- KP: XGB (0.789) > RF (0.707) > LR (0.719). XGB and RF both BH-significant.
+- PA: RF (0.677) > LR (0.645). RF BH-significant; XGB (0.568) not significant.
+- EF: all models at chance (~0.49) after H1 filter. None significant.
+- SA: marginal (RF 0.514, LR 0.470). None BH-significant.
+- AB: all at chance. None significant.
+REVISED CONCLUSION: No single model is universally primary for Q2. XGB is best for EC/KP;
+RF is best for PA. LR remains a valid comparator but is not consistently superior.
+Report all four models in supplementary; use XGB as primary for EC/KP and RF for PA.
+
+---
+
+## 2026-05-26 — Audit remediation (H6, H7)
+
+**H6 — RM_Type_I negative permutation importance:**
+`dp_RM_Type_I` has permutation importance rank 261/265 (value = -0.006) in Q1.
+Two interpretations to address explicitly in Phase 10:
+1. RM Type I is not independently informative for species classification once other
+   defence systems are conditioned on. It is correlated with other features (CRISPR-Cas,
+   Mok_Hok_Sok, defence count).
+2. RM is a within-species signal (high RM = non-IC2 AB), not a between-species signal.
+   Q1 is a multi-class species classifier, so within-AB RM variation does not distinguish
+   AB from other species.
+Action: Examine RM_Type_I in Q2 (ARG burden) not just Q1. If RM is still unimportant
+in Q2, that is a genuine new finding: binary RM presence may not predict ARG burden in
+the multi-species ESKAPE context even though RM COUNT negatively correlates with ARG
+burden in the single-species published analysis.
+Phase 10 framing: Do not present SHAP rank 17 for RM as "confirming" the published finding.
+Present it as: Q1 RM signal is attenuated relative to published single-species analysis,
+consistent with RM being a within-species archetype marker rather than a cross-species
+defence-architecture predictor.
+
+**H7 — ad_* feature inclusion decision:**
+29 `ad_*` (anti-defence) features from AntiDefenseFinder were absent from all models.
+spec_scores range 0.62--0.81 (top features: apyc1=0.807, ardb=0.802, acriia21=0.789).
+These are more species-specific than the C2 borderline dp_* features (which had 0.55--0.70).
+
+Decision:
+- Q1: EXCLUDE `ad_*`. Including them would inflate species classification accuracy
+  via taxonomic proxies worse than the C2 borderline features. This is not a feature
+  engineering oversight -- it is the correct decision for a defence-architecture classifier.
+- Q2: Sensitivity analysis run (Section 12c of 06_random_forest.ipynb). Since Q2 is
+  within-species, the species-identity confound is eliminated. Anti-defence systems are
+  MGE-borne; co-mobilisation with ARGs is biologically plausible. Results reported as
+  supplementary sensitivity, not as primary Q2 model.
 
