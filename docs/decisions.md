@@ -663,3 +663,40 @@ Decision:
   MGE-borne; co-mobilisation with ARGs is biologically plausible. Results reported as
   supplementary sensitivity, not as primary Q2 model.
 
+
+---
+
+## 2026-05-27 — Post-Phase-10
+
+**5x genome expansion — deferred to post-Phase-11 sensitivity analysis**
+Decision: Complete Phase 11 with current 900-genome dataset. After Phase 11, run a
+targeted sensitivity analysis with increased per-species sampling.
+
+Rationale for deferral: Current results are publishable. Rerunning the full pipeline
+(Phases 2–10) is a multi-week commitment that should not block Phase 11.
+
+Species-specific guidance for the expansion:
+- EF: biological ceiling (~300–500 complete genomes on NCBI). More genomes allows
+  lowering H1 threshold from 5% to 2–3%, recovering ~35–45 features vs current 23.
+  But sparsity is partly biological (small genome, limited defence diversity) — gain
+  will be modest. Do not expect Q2 EF to become significant.
+- AB: IC2-CAPPED sampling mandatory. Do NOT simply download more AB — NCBI is
+  IC2-skewed and more genomes will worsen clonal compression. Cap IC2 at 30% maximum
+  in any expanded cohort. Reframes the Q2 AB question as "non-IC2 AB" explicitly.
+- SA: Target 250–300. NCBI supply adequate (2000+ complete). Expected gain: ~40–50
+  features after H1, may push SA from marginal to significant.
+- PA: Target 300–400. NCBI supply adequate (2000+). May stabilise XGB significance
+  (currently RF only).
+- EC/KP: Already significant. Expand only to maintain balance with other species.
+- Minimum target: 250 per species; keep balance within ±50 across species.
+
+Registration: This expansion is registered as Phase 12. Primary scientific question:
+does the RESTRICT/FACILITATE signal in EC/KP strengthen at higher n, and does SA reach
+significance? AB Q2 re-analysis with IC2 cap is a secondary question.
+
+**Q5b — Phage susceptibility archetype (pre-registered for Phase 11)**
+Run unsupervised clustering on combined defence + anti-defence + IS burden feature space.
+Archetype interpretation: clusters with high IS burden, low defence, high anti-defence =
+phage-permissive profile hypothesis. Manuscript ceiling: "consistent with phage
+permissiveness" — NOT "predicts clinical phage therapy outcomes." Requires experimental
+validation.

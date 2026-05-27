@@ -1157,3 +1157,58 @@ Session average: 7.1/10 (+1.4 vs Session 13)
 - **Within-vs-between method divergence:** Fisher's exact (within AB) and SHAP (between species) are different questions. Expected divergence is interpretable, not a failure.
 - **Holdout BA vs per-class recall:** Always articulate which hypothesis each metric tests — they are not interchangeable.
 - **Inflation bias from taxonomic markers:** Including species-specific features in an alignment comparison inflates the correlation in a predictable direction. Know which direction and why.
+
+---
+
+## Session 15 — Phase 11: Unsupervised Archetypes (2026-05-27)
+
+Topics: K-means clustering, silhouette score, ARI, phylogenetic dereplication, Q5b phage-permissive archetype, IS element biology.
+
+---
+
+**P11-Q1. Full dataset silhouette scores are all <0.07 across K=2..12. Dereplicated silhouette at K=2 is 0.194 but ARI vs species = −0.004. What do these numbers together tell you, and what is the correct manuscript sentence?**
+
+Score: 6/10
+
+User attempt: Low silhouette = clusters not tightly separated. Dereplicated silhouette increases, shows clear K=2 separation. Negative ARI confirms full dataset was dominated by clonal markers which caused ARI to be high.
+
+Model answer: The direction of the ARI claim was reversed. Full dataset ARI vs species = 0.38 (INFLATED by clonal representation). Dereplicated ARI vs species = −0.004 (near random). The correct statement: full dataset's moderate ARI was artefactual; dereplication revealed the true signal is near zero. The compound interpretation missed: dereplicated K=2 has high silhouette (0.194) AND near-zero ARI vs species simultaneously. This means: two real groups exist in the data, but those groups are NOT species groups — likely Gram-positive vs Gram-negative or genome-size-based, not defence-archetype based. Both numbers are required; neither alone is sufficient.
+
+---
+
+**P11-Q2. The clustering recovered RESTRICT/FACILITATE in the full 878-genome run (Cluster 2 = RM+/SspBCDE−; Cluster 8 = RM−/SspBCDE+) but not in the dereplicated 95-genome run. Does this mean RESTRICT/FACILITATE is not real?**
+
+Score: 7/10
+
+User attempt: In full dataset RESTRICT/FACILITATE holds for AB. During dereplication AB count drops to 13, IC2 clone numbers drop, and the pattern breaks because it holds strongest with IC2 clones.
+
+Model answer: Correct core mechanism. The precision missed: RESTRICT/FACILITATE is inherently a within-AB pattern. Cross-species K=10 clustering on 878 genomes found it because IC2 was numerous enough (69 genomes) to pull a dedicated centroid. With 13 AB representatives among 95 diverse genomes, the global K=2 partition is dominated by larger cross-species variation (Gram+/Gram−), and the within-AB IC2 signal is insufficient to create its own cluster. To study RESTRICT/FACILITATE properly with unsupervised methods, within-AB-only clustering is required — not cross-species clustering.
+
+---
+
+**P11-Q3. Q5b K=2: IS burden is nearly identical between clusters (58.9 vs 55.0). Defence count, ARG count, and IME count all differ 2× between clusters. Does this support the phage-permissive archetype hypothesis?**
+
+Score: 8/10
+
+User attempt: Hypothesis debunked — IS elements are similar, other elements at extreme ends, suggesting genome size drives the split. Follow-up: if genome size drives clustering, shouldn't IS elements also scale with genome size? IS similarity implies chromosomal transposition is similar regardless of genome size, while MGE/IME differs drastically.
+
+Model answer: Correct on both counts. Hypothesis debunked: K=2 is a genome-complexity split (large-genome Gram-negative species PA/EC/KP vs small-genome Gram-positive EF/SA/AB), not a phage-permissive vs phage-restrictive split. The IS element insight is biologically accurate: IS elements transpose autonomously within any chromosomal background and do not require conjugation — therefore they accumulate similarly across all genome sizes. IMEs/ICEs require conjugation machinery and are enriched in species with active HGT networks (EC, KP, PA). The Q5b hypothesis used the wrong proxy: IS COUNT is not a marker of defence disruption. IS elements INSIDE defence loci would be, but that requires positional analysis not available in the current feature matrix.
+
+---
+
+### Summary table — Session 15
+
+| Q | Topic | Score | Key gap |
+|---|---|---|---|
+| P11-Q1 | Silhouette + ARI interpretation | 6/10 | ARI direction reversed; compound silhouette+ARI interpretation missed |
+| P11-Q2 | RESTRICT/FACILITATE recovery vs dereplication | 7/10 | Within-species vs cross-species scope missed |
+| P11-Q3 | Q5b IS element hypothesis | 8/10 | Correct; excellent follow-up on IS vs IME biology |
+
+Session average: 7.0/10 (consistent with Session 14: 7.1)
+
+### Items to revisit
+
+- **ARI direction in full vs dereplicated dataset:** Full = 0.38 (inflated by clonal inflation). Dereplicated = −0.004 (near random). Do NOT flip these.
+- **High silhouette + near-zero ARI:** Two separable groups exist, but they are NOT species groups. Always interpret both numbers together.
+- **RESTRICT/FACILITATE scope:** This is a within-AB pattern. Cross-species clustering can recover it only when IC2 is sufficiently overrepresented. The correct analysis for it is within-AB clustering, not 6-species clustering.
+- **IS count vs IS position:** IS element count ≠ defence disruption. IS elements inside defence loci would be the proxy. Count is not position.
