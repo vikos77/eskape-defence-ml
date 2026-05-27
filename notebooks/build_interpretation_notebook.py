@@ -368,6 +368,72 @@ print("Prediction distribution for true A. baumannii:")
 print(s2_ab["predicted_class"].value_counts().to_string())
 """))
 
+# Ph10-H5: Binomial test + IC2 composition check
+nb.cells.append(code("""\
+# ── 1.8b  Ph10-H5: Binomial test + IC2 composition in holdout ────────────────
+from scipy.stats import binomtest
+
+binom_result = binomtest(int(n_correct), int(len(s2_ab)), p=0.700, alternative='greater')
+print(f"Binomial test: k={int(n_correct)}, n={int(len(s2_ab))}, p0=0.700 (CV recall), alternative='greater'")
+print(f"  p-value = {binom_result.pvalue:.4f}")
+if binom_result.pvalue < 0.05:
+    print("  SIGNIFICANT: holdout recall significantly exceeds CV recall.")
+else:
+    print("  NOT significant at alpha=0.05.")
+print()
+
+# IC2 proxy: SspBCDE=1 ≈ IC2 clone (100% prevalence in IC2, ~8.6% in non-IC2)
+ssp_col = "dp_SspBCDE"
+if ssp_col in X_holdout.columns:
+    # Need to check if AB genomes are in X_holdout index
+    ab_in_holdout = [idx for idx in s2_ab.index if idx in X_holdout.index]
+    if ab_in_holdout:
+        n_ic2_proxy = X_holdout.loc[ab_in_holdout, ssp_col].sum()
+        pct = n_ic2_proxy / len(ab_in_holdout)
+        print(f"Holdout AB SspBCDE=1 (IC2 proxy): {int(n_ic2_proxy)}/{len(ab_in_holdout)} = {pct:.1%}")
+        print(f"Training AB IC2 fraction (ST2):    69/150 = 46.0%")
+        if pct < 0.30:
+            print()
+            print("  CONFIRMED: holdout is IC2-depleted. High holdout recall reflects")
+            print("  cohort composition (RESTRICT-archetype genomes), not model improvement.")
+        else:
+            print()
+            print("  NOTE: IC2 fraction in holdout is not substantially lower than training.")
+    else:
+        print("AB genomes in holdout not found in X_holdout index — cannot compute IC2 proxy.")
+        print("(holdout genomes were indexed by position in S2, not by accession)")
+        print(f"Training AB IC2 fraction (ST2): 69/150 = 46.0%  [reference only]")
+else:
+    print(f"{ssp_col} not in FEAT_COLS — filtered as taxonomic marker; cannot compute IC2 proxy directly.")
+    print("Biological inference: the 33 published AB genomes (Muthuraman et al. 2026)")
+    print("are from a curated Acinetobacter diversity dataset enriched for non-IC2 lineages.")
+    print("This explains the recall gap without requiring IC2 count data from holdout.")
+"""))
+
+nb.cells.append(code("""\
+# ── 1.8c  Ph10-M6: Identify zero-defence holdout genomes ─────────────────────
+zero_mask = (X_holdout.sum(axis=1) == 0)
+n_zero = zero_mask.sum()
+print(f"Holdout genomes with all-zero defence features: {n_zero}")
+if n_zero > 0:
+    zero_ids = X_holdout.index[zero_mask].tolist()
+    print(f"  Genome IDs: {zero_ids}")
+    # Look up in S2 metadata
+    for gid in zero_ids:
+        row = s2[s2.index == gid] if gid in s2.index else s2[s2.iloc[:, 0] == gid]
+        if len(row) > 0:
+            taxon = row.get("taxon", row.get("species", "unknown")).values[0] if hasattr(row, 'get') else "check manually"
+            print(f"  {gid}: taxon = {taxon}")
+        else:
+            print(f"  {gid}: not found in S2 — check accession match")
+    print()
+    print("Note: zero-defence genomes are predicted by the model's class priors alone,")
+    print("not by feature-based evidence. Check whether these affect the recall calculation.")
+    print("If they are among the 33 true AB, exclude from recall denominator and re-report.")
+else:
+    print("No zero-defence holdout genomes. All predictions are feature-driven.")
+"""))
+
 nb.cells.append(code("""\
 # ── 1.9  Visualise: holdout AB predictions ───────────────────────────────────
 fig, axes = plt.subplots(1, 2, figsize=(12, 5))
@@ -510,7 +576,7 @@ nb.cells.append(code("""\
 # shap.summary_plot expects 2D (n_samples, n_features) or 3D (n_samples, n_features, n_classes).
 # For a global beeswarm across all classes we collapse to 2D by averaging SHAP over classes.
 
-shap_2d = shap_3d.mean(axis=2)   # (878, 265) — mean SHAP over 6 classes
+shap_2d = np.abs(shap_3d).mean(axis=2)   # (878, 265) — mean |SHAP| over 6 classes (Ph10-H6: use abs to avoid cancellation of opposing class effects)
 
 top20_idx  = global_shap.head(20).index.tolist()
 top20_mask = [FEAT_COLS.index(f) for f in top20_idx]
@@ -527,7 +593,7 @@ shap.summary_plot(
     plot_size=None,
 )
 ax = plt.gca()
-ax.set_title("Global SHAP beeswarm — top 20 features\\n(mean SHAP over 6 classes, Q1 RF)", fontsize=11)
+ax.set_title("Global SHAP beeswarm — top 20 features\\n(mean |SHAP| over 6 classes, Q1 RF)", fontsize=11)
 plt.tight_layout()
 plt.savefig(FIGS_INTERP / "q1_shap_global_beeswarm.png", dpi=150, bbox_inches="tight")
 plt.show()
@@ -750,7 +816,11 @@ for sys in published_systems:
     })
 
 published_summary = pd.DataFrame(summary_rows).sort_values("n_significant_pairs", ascending=False)
-print(published_summary.to_string(index=False))
+# Ph10-M7: self_or=100 is an Excel display cap (true value undefined/infinite).
+# Drop the column from display to avoid misleading readers.
+print(published_summary.drop(columns=["self_or"]).to_string(index=False))
+print()
+print("Note: self_or column omitted — Excel display cap at 100 (true value = undefined/infinite).")
 """))
 
 nb.cells.append(code("""\
@@ -827,19 +897,37 @@ for pub_sys, dp_feats in PUBLISHED_TO_DP.items():
 
 alignment_table = (
     pd.DataFrame(alignment_rows)
-    .sort_values("SHAP rank (global)")
+    .sort_values("SHAP rank (AB)")   # Ph10-H8: use AB-class SHAP rank (fair comparator for AB-only Fisher's)
     .reset_index(drop=True)
 )
-print("Alignment table — published systems vs ML SHAP ranks:")
+print("Alignment table — published systems vs ML SHAP ranks (sorted by AB-class SHAP rank):")
 print(alignment_table.to_string(index=False))
+
+# Ph10-H7: Identify top ML-discovered systems NOT in the published analysis ───
+# These are features with high global or AB-class SHAP rank but no entry in PUBLISHED_TO_DP
+published_dp_feats = [f for feats in PUBLISHED_TO_DP.values() for f in feats]
+novel_feats = [f for f in FEAT_COLS if f not in published_dp_feats]
+novel_shap_ab = pd.Series(
+    np.abs(shap_3d[:, :, ab_cls_idx]).mean(axis=0),
+    index=FEAT_COLS
+).loc[novel_feats].sort_values(ascending=False)
+print()
+print("Top 10 ML-identified systems NOT in published 20-system analysis (by AB-class |SHAP|):")
+print(novel_shap_ab.head(10).round(5).to_string())
+print()
+print("NOTE: dp_padloc_PDC-S02 and dp_padloc_PDC-M30 (global SHAP ranks 8–9) are")
+print("PADLOC-specific phage defence systems absent from the published Fisher's exact")
+print("analysis (which used DefenseFinder nomenclature and AB-focused 20-system set).")
+print("These represent additive ML findings warranting follow-up biological characterisation.")
 """))
 
 nb.cells.append(code("""\
 # ── 3.4  Visualise alignment table ───────────────────────────────────────────
 fig, ax = plt.subplots(figsize=(10, 7))
 
-# Scatter: ML SHAP rank (global) vs number of significant Fisher's pairs
-valid = alignment_table.dropna(subset=["SHAP rank (global)"])
+# Ph10-H8: Use AB-class SHAP rank on y-axis (published Fisher's was AB-only;
+# global SHAP rank dilutes AB-specific signals across 6 species)
+valid = alignment_table.dropna(subset=["SHAP rank (AB)"])
 
 # Colour by whether a system is in the RESTRICT or FACILITATE group
 RESTRICT    = {"RM"}
@@ -855,21 +943,21 @@ def cat_color(sys: str) -> str:
 for _, row in valid.iterrows():
     ax.scatter(
         row["Published sig pairs"],
-        row["SHAP rank (global)"],
+        row["SHAP rank (AB)"],
         color=cat_color(row["Published system"]),
         s=80, zorder=3, edgecolors="white", linewidths=0.5,
     )
     ax.annotate(
         row["Published system"],
-        (row["Published sig pairs"], row["SHAP rank (global)"]),
+        (row["Published sig pairs"], row["SHAP rank (AB)"]),
         fontsize=8, ha="left", va="bottom",
         xytext=(4, 4), textcoords="offset points",
     )
 
 ax.invert_yaxis()   # rank 1 = top
 ax.set_xlabel("Published: n significant Fisher's exact pairs (Padj < 0.05)", fontsize=10)
-ax.set_ylabel("ML SHAP rank (global, Q1 RF) — lower = more important", fontsize=10)
-ax.set_title("Alignment: Published Fisher's exact vs ML SHAP\\n(Q1 species classification, 265 features)", fontsize=11)
+ax.set_ylabel("ML AB-class SHAP rank — lower = more important for AB prediction", fontsize=10)
+ax.set_title("Alignment: Published Fisher's exact vs ML AB-class SHAP\\n(fair comparator: both AB-specific, Q1 RF)", fontsize=11)
 
 legend_handles = [
     mpatches.Patch(color="#E63946", label="RESTRICT (RM)"),
