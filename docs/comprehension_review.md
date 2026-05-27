@@ -1212,3 +1212,75 @@ Session average: 7.0/10 (consistent with Session 14: 7.1)
 - **High silhouette + near-zero ARI:** Two separable groups exist, but they are NOT species groups. Always interpret both numbers together.
 - **RESTRICT/FACILITATE scope:** This is a within-AB pattern. Cross-species clustering can recover it only when IC2 is sufficiently overrepresented. The correct analysis for it is within-AB clustering, not 6-species clustering.
 - **IS count vs IS position:** IS element count ≠ defence disruption. IS elements inside defence loci would be the proxy. Count is not position.
+
+---
+
+## Session 16 — Phase 12 (2026-05-27)
+
+Questions issued at end of Phase 12 execution. Four questions covering Tests A and B.
+
+---
+
+**P12-Q1. Test A finds ΔAUROC ≈ 0 for EC (−0.012) but +0.098 for KP. A colleague says the inconsistency means RM count is noise. Give two reasons why this is wrong.**
+
+Score: 4/10
+
+User attempt: (1) EC is a species complex with within-complex heterogeneity diluting the signal. (2) KP has a larger genome which helps resolve AUROC better. Also noted different RM type SHAP ranks for KP.
+
+Model answer: Reason 1 (EC complex heterogeneity) is correct. Reason 2 (genome size helps AUROC) is wrong — AUROC measures rank ordering and is independent of genome size. The correct second reason: KP has a genuine dose-response relationship between RM Type II count and aminoglycoside/beta-lactam ARG burden — dc_RM_Type_II is rank 1 in KP SHAP at |SHAP|=0.0569. EC also has dc_RM_Type_II as rank 1 (|SHAP|=0.0780), but EC's baseline AUROC (0.824) was already high enough that the dc substitution yields diminishing returns, whereas KP had more room for improvement. The signal exists in both species; the ΔAUROC difference reflects baseline headroom, not signal presence.
+
+---
+
+**P12-Q2. PA beta_lactam AUROC = 0.793 (BH-significant) but RM Type I SHAP is positive (+0.005). You predicted negative. Give two explanations that do not abandon the RESTRICT hypothesis.**
+
+Score: 7/10
+
+User attempt: (1) PA beta-lactam resistance is largely chromosomal (AmpC, OXA-50 family) — RM has no plasmid to gate. (2) Finding may be species-specific or RM subtype-specific.
+
+Model answer: Reason 1 is correct and well-reasoned. Reason 2 is vague — should be stated as: the genomic complexity confound. In PA, genomes with more RM Type I systems tend to be more complex, larger, and more evolutionarily established isolates. These same complex genomes have accumulated more chromosomal beta-lactam resistance (AmpC derepression, OXA variants, MexAB-OprM). RM Type I and chromosomal beta-lactam resistance co-occur as features of genome complexity without any direct gating relationship. The positive SHAP reflects this confound, not a facilitating mechanism.
+
+---
+
+**P12-Q3. Quinolone passed 0 cells through the 30/30 floor. Is this a failure of the analysis, a finding in itself, or both?**
+
+Score: 5/10
+
+User attempt: Not a failure — it's a finding. Quinolone resistance may not vary much, genomes may be in the middle tertile. Should look into it further.
+
+Model answer: It is a finding, specifically the expected pre-registered negative control outcome. Quinolone resistance in ESKAPE is predominantly chromosomal (GyrA/ParC point mutations) and near-binary in distribution: a genome either has the mutation (count=1) or doesn't (count=0). With near-binary distributions, pd.qcut cannot split into three meaningful groups where both extremes have ≥30 genomes within each species. The 30/30 floor fails precisely because the distribution has insufficient continuous variation — which is the expected behaviour for a class acquired by chromosomal mutation rather than plasmid transfer. The finding is: quinolone burden does not form a continuous distribution that RM-gated plasmid transfer could shape, consistent with the pre-registered prediction that quinolone is the negative control for RM gating.
+
+---
+
+**P12-Q4. Write one Results sentence: (a) state the SHAP direction observation, (b) name the specific RM subtype with the restriction signal, (c) no causal language.**
+
+Score: 2/10
+
+User attempt: Noted 7 significant cells across 3 species; noted RM Type II carries the restriction signal; confused Test A count data with Test B SHAP direction. No Results sentence formulated.
+
+Model answer (example): "Among the seven BH-significant (species × ARG class) cells, signed SHAP analysis revealed that dp_RM_Type_II was negatively associated with high-class ARG burden in Klebsiella pneumoniae aminoglycoside (mean SHAP = −0.0039), K. pneumoniae sulfonamide (−0.0016), and Enterococcus faecium tetracycline (−0.0040), whereas dp_RM_Type_I showed near-zero or positive associations across pre-specified plasmid-mediated classes, a pattern consistent with RM Type II rather than Type I acting as the genomic correlate of reduced plasmid-mediated ARG acquisition."
+
+Note: User requested full explanation of Test B and 30/30 floor before re-attempting Q4. Learning document pending — see docs/pending_tasks/learning_doc_request.md. Q4 to be re-attempted at start of next session after reading document.
+
+---
+
+### Summary table — Session 16
+
+| Q | Topic | Score | Key gap |
+|---|---|---|---|
+| P12-Q1 | Test A ΔAUROC inconsistency | 4/10 | Genome size argument wrong; dc_RM_Type_II rank-1 in both species missed |
+| P12-Q2 | PA/beta_lactam positive SHAP mismatch | 7/10 | Genomic complexity confound not named explicitly |
+| P12-Q3 | Quinolone 30/30 floor failure | 5/10 | Near-binary distribution biology not explained |
+| P12-Q4 | Results sentence for SHAP direction | 2/10 | Test A/B conflation; no sentence formulated; deferred to next session |
+
+Session average: 4.5/10 (below Sessions 14–15 average of 7.0)
+
+### Drop explanation
+
+Phase 12 combines TWO sensitivity tests with orthogonal designs, SHAP directionality in 2D (species × class), pre-registration matching, and Test A/B interaction. This is the most complex result structure encountered. The drop from 7.0 to 4.5 reflects genuine complexity increase, not comprehension regression. Sessions 14–15 questions had one correct answer per question; Phase 12 questions require simultaneous reasoning across multiple sub-results.
+
+### Items to revisit
+
+- **Test A vs Test B distinction:** Test A changes the FEATURE (dc vs dp RM). Test B changes the TARGET (class-specific vs total ARG burden). These are orthogonal. Never conflate dc_RM counts (Test A) with SHAP direction (Test B).
+- **RM subtype specificity:** RM Type II/IIG carries the restriction SHAP signal in KP/EF. RM Type I does not (near-zero or positive). The pre-registration tested Type I because Phase 8 pointed there; the finding is that Type II is the gatekeeping subtype in these species/class combinations.
+- **30/30 floor:** Minimum viable comparison size. Quinolone fails the floor because resistance is near-binary (chromosomal mutation = count 0 or 1 per genome), not because it's rare.
+- **Writing Results sentences:** Observation + metric + no causal verb. "Was associated with", "was negatively correlated with", "was consistent with" — not "caused", "drove", "because of".
