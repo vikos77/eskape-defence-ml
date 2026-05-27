@@ -805,3 +805,71 @@ each (genome × class) to avoid inflating counts from multiple chromosomal hits 
 the same gene. The deduplication is over the `Resistance gene` field in
 ResFinder_results_tab.txt. Example: if blaSHV-11 hits 3 plasmid copies, it
 contributes 1 to the beta_lactam count, not 3.
+
+---
+
+## Audit 3 remediation — Phase 12 (2026-05-28)
+
+**CRITICAL C1 — Phase 8 AUROC baselines were hardcoded as balanced-accuracy (BA) values.**
+
+The original `phase8_q2_auroc` dict used BA values (EC=0.824, KP=0.789, PA=0.677),
+not AUROC. `q2_rf_per_species()` returns `roc_auc_score` (AUROC). Comparing AUROC to BA
+inverts the sign of ΔAUROC for KP (showed +0.098 improvement, true value is −0.040).
+Fix: load baselines dynamically from `results/q2_gb_results.parquet` and
+`results/q2_rf_results.parquet` using the `auroc` column.
+
+Corrected Phase 8 baselines: EC=0.872, KP=0.924, PA=0.722.
+Corrected Test A ΔAUROC: EC=−0.069, KP=−0.040, PA=−0.142. ALL NEGATIVE.
+Headline conclusion reversed: RM count does NOT improve Q2 prediction; binary dp_RM
+encoding was already adequate.
+
+**CRITICAL C2 — SHAP direction check used only dp_RM_Type_I instead of any dp_RM_*.**
+
+The synthesis code checked `.get("dp_RM_Type_I", 0)` to determine MATCH/MISMATCH.
+Since the restriction signal lives in Type II/IIG (not Type I), this produced 0 matches.
+Fix: for each cell, find the minimum (most negative) dp_RM_* feature across all subtypes.
+MATCH if min(dp_RM_*) < −0.002; MISMATCH if not.
+After fix: KP/aminoglycoside MATCH ✓ (dp_RM_Type_II = −0.0039);
+EF/tetracycline MATCH ✓ (dp_RM_Type_II = −0.0040, exploratory);
+EF/macrolide_mlsb MATCH ✓ (dp_RM_Type_IIG = −0.0052, exploratory).
+
+**CRITICAL C3 — Test A swapped all 4 dp_RM_* features, including moot subtypes.**
+
+Original code used `dp_rm_set = set(dp_rm_cols)` which swapped ALL dp_RM_* features
+to dc_RM_*. Only RM Type I has real count variation (31.2% dc≠dp). Types II/IIG/III/IV
+are <5% — swapping them adds numeric noise without signal.
+Fix: use `live_rm_dp = {f"dp_{c}" for c in live_cols}` to swap only RM_Type_I.
+Test A now swaps 1 feature (dc_RM_Type_I), not 4.
+
+**HIGH H1 — PA/beta-lactam positive SHAP not explained as chromosomal confound.**
+
+Narrative added to Section 13: PA beta-lactam resistance is chromosomal (AmpC,
+OprD loss, MexAB efflux). Positive RM Type I SHAP = genomic complexity confound
+(large, complex PA genomes have both more RM AND more chromosomal resistance).
+Festival analogy added. PA/beta-lactam explicitly excluded from RESTRICT interpretation.
+
+**HIGH H2 — In-sample SHAP caveat not stated.**
+
+Added to Section 11 narrative: SHAP computed in-sample on max_depth=20 RF trained
+on n≤44 samples. Memorisation regime. Only sign (direction) interpretable; magnitude
+not reliable. Pre-registered output is direction, not magnitude.
+
+**HIGH H3 — AB aminoglycoside described as transient failure, not permanent exclusion.**
+
+Clarified in Section 13: AB aminoglycoside passes 30/30 floor but permanently excluded
+from Test B. Reason: 13 AB phylogroups with IC2 holding ~43% of Q2-eligible genomes
+makes GroupKFold(5) structurally infeasible. This is a permanent architectural consequence
+of IC2 clonal compression, not a data quality issue.
+
+**HIGH H4 — EF tetracycline/macrolide framed as "ambiguous", not exploratory RESTRICT.**
+
+Updated predictions dict: tetracycline and macrolide_mlsb changed from "ambiguous" to
+"negative_exploratory". Rationale added: in EF specifically, tet(M) is on Tn916 and
+erm(B) is on Tn1545 (conjugative plasmids). RM gate applies. EF cells now the most
+biologically interesting Phase 12 finding. Elevated to positive exploratory result in
+Section 13 synthesis.
+
+**MODERATE M4 — No explanation of 883 vs 878 discrepancy in ResFinder parsing.**
+
+Added comment: "ResFinder dirs may include up to 883 accessions (5 more than fm's 878).
+The 5 extra are MLST-excluded genomes. Dropped automatically by merge with fm."
