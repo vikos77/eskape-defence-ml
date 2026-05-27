@@ -1,0 +1,122 @@
+# ARG antibiotic-class mapping for Phase 12 Test B
+# Source: ResFinder "Phenotype" field (comma-separated drug names)
+# Mapping written prospectively (2026-05-27) before any Test B modelling.
+# Classes follow ESKAPE clinical relevance for RESTRICT/FACILITATE hypothesis.
+# Primary prediction classes: beta_lactam, aminoglycoside, quinolone, sulfonamide,
+#   trimethoprim, tetracycline, glycopeptide.
+# Additional classes (completeness, not pre-specified for directional hypothesis):
+#   macrolide_mlsb, phenicol, rifamycin, other.
+# Parsing note: use re.split(r',\s*', phenotype) to handle spacing inconsistency.
+# Multi-class genes (polyspecific efflux etc.) are counted in ALL applicable classes.
+
+beta_lactam:
+  - Amoxicillin
+  - "Amoxicillin+Clavulanic acid"
+  - Ampicillin
+  - "Ampicillin+Clavulanic acid"
+  - Aztreonam
+  - Cefepime
+  - Cefixime
+  - Cefotaxime
+  - Cefoxitin
+  - Ceftazidime
+  - "Ceftazidime+Avibactam"
+  - Ceftriaxone
+  - Cephalothin
+  - Ertapenem
+  - Imipenem
+  - Meropenem
+  - Penicillin
+  - Piperacillin
+  - "Piperacillin+Clavulanic acid"
+  - "Piperacillin+Tazobactam"
+  - Temocillin
+  - Ticarcillin
+  - "Ticarcillin+Clavulanic acid"
+  - "Unknown Beta-lactam"
+
+aminoglycoside:
+  - Amikacin
+  - Apramycin
+  - Arbekacin
+  - Astromicin
+  - Butirosin
+  - Butiromycin
+  - Dibekacin
+  - Fortimicin
+  - Gentamicin
+  - Hygromycin
+  - Isepamicin
+  - Kanamycin
+  - Kasugamycin
+  - Lividomycin
+  - Netilmicin
+  - Neomycin
+  - Paromomycin
+  - Ribostamycin
+  - Sisomicin
+  - Spectinomycin
+  - Streptomycin
+  - Tobramycin
+  - "Unknown Aminoglycoside"
+
+# Quinolone: predominantly chromosomal in this dataset (GyrA/ParC point mutations).
+# Hypothesis: RM SHAP ≈ 0 (negative control for plasmid-mediated ARG gating).
+# Includes nalidixic acid (quinolone) and fluoroquinolones as one class.
+quinolone:
+  - Ciprofloxacin
+  - Fluoroquinolone
+  - "Nalidixic acid"
+
+sulfonamide:
+  - Sulfamethoxazole
+
+tetracycline:
+  - Doxycycline
+  - Minocycline
+  - Tetracycline
+  - Tigecycline
+
+glycopeptide:
+  - Vancomycin
+  - Teicoplanin
+
+trimethoprim:
+  - Trimethoprim
+
+macrolide_mlsb:
+  - Azithromycin
+  - Clindamycin
+  - Dalfopristin
+  - Erythromycin
+  - Lincomycin
+  - "Pristinamycin IA"
+  - "Pristinamycin IIA"
+  - Quinupristin
+  - Spiramycin
+  - Telithromycin
+  - "Virginiamycin M"
+  - "Virginiamycin S"
+
+phenicol:
+  - Chloramphenicol
+  - "Chloramphenicol,Florfenicol"   # pre-split alias handled in code
+  - Florfenicol
+
+rifamycin:
+  - Rifampicin
+
+# Drugs not assigned to any primary class above (diverse mechanisms).
+# Included in the "other" category for completeness; not modelled in Test B.
+other:
+  - Bleomycin
+  - Colistin
+  - Fosfomycin
+  - "Fusidic acid"
+  - Fusidic_acid
+  - Linezolid
+  - Maduramicin
+  - Mupirocin
+  - Narasin
+  - Salinomycin
+  - Tiamulin

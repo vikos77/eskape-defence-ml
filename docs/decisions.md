@@ -700,3 +700,108 @@ Archetype interpretation: clusters with high IS burden, low defence, high anti-d
 phage-permissive profile hypothesis. Manuscript ceiling: "consistent with phage
 permissiveness" — NOT "predicts clinical phage therapy outcomes." Requires experimental
 validation.
+
+---
+
+## 2026-05-27 — Phase 12 pre-registration
+
+**Phase 12 pre-registered.** Full specification in `docs/pre_analysis_plan.md §10`.
+Key design decisions logged here for cross-reference.
+
+**Decision: Two separate tests, not one combined run.**
+Test A changes only features (dc_RM_* for RM subtypes, all other features remain dp_*).
+Test B changes only the target (mechanism-class ARG burden per species).
+Running both simultaneously would prevent attribution of any accuracy change to its cause.
+Combined run is permitted as exploratory supplementary only after both separate tests are done.
+
+**Decision: 30/30 sample floor is a hard exclusion, not a soft warning.**
+A (species × mechanism class) cell with <30 positives or <30 negatives is excluded from
+Test B entirely. It is documented in the results table as "excluded: n<30" alongside the
+actual counts. It is not imputed, downsampled-to-equal, or combined with another class.
+Rationale: below n=30, GroupKFold AUROC CIs exceed ±0.15 and BH correction cannot be
+satisfied for moderate effects. See pre_analysis_plan.md §10 for statistical derivation.
+
+**Decision: Mechanism classes are not pre-assigned to "expect signal" vs "expect null"
+categories in the code.** The predicted direction (plasmid-mediated classes show RM
+negative SHAP; chromosomal classes show RM ≈ 0) is written in the pre-analysis plan before
+any code runs. The classification of each ARG gene to its mechanism class is done using
+the ResFinder-reported "resistance mechanism" field — not post-hoc inspection of results.
+
+**Decision: GroupKFold phylogroups from Phase 6 are frozen.** Phase 12 uses the exact same
+95 phylogroups as Phase 8/9. No re-clustering, no updated Mash distances.
+
+**Decision: ARG features are NOT added to Q1 (species classification).**
+ARG burden is a downstream consequence of defence architecture. Including it in Q1 would
+introduce label-correlated information, constituting feature leakage. This is not a
+conservative design choice — it is a logical requirement for Q1 to answer its stated question
+("can defence system repertoire alone classify species?").
+
+**Decision: BH correction scope for Test B.**
+BH applied within Test B across all (species × class) classifiers that pass the 30/30 floor.
+Scope is independent of Phase 8/9 Q2 tests — these are new tests, not re-tests.
+Cross-phase comparisons (Test B AUROC vs Phase 8 AUROC) are descriptive, not tested
+statistically (paired McNemar applies within a phase on the same folds; across phases the
+targets differ so McNemar does not apply).
+
+---
+
+## 2026-05-27 — Phase 12 execution: ARG class source and parsing decisions
+
+**Decision: ResFinder "Phenotype" field, not AMRFinderPlus "Class" column, for Test B.**
+
+The pre_analysis_plan §10 refers to "the ResFinder output mechanism field" — this is a
+terminology error in the plan. The actual ResFinder output field is `Phenotype`, which
+contains comma-separated drug names (e.g., "Amoxicillin, Ampicillin, Cephalothin").
+There is no "resistance mechanism" column in ResFinder output.
+
+AMRFinderPlus (`data/interim/*/amrfinderplus/`) does have a canonical `Class` column
+(BETA-LACTAM, AMINOGLYCOSIDE, QUINOLONE, …) and was evaluated as an alternative.
+Rejected for the following reasons:
+
+1. AMRFinderPlus mixes intrinsic and acquired genes under the same `Type=AMR` flag.
+   QUINOLONE class: all 1117 rows are `Scope=core`, methods POINTP (942) + ALLELEP (142)
+   + BLASTP (32). ALLELEP includes both acquired alleles (blaTEM-1B) and chromosomal
+   alleles (gyrA_D87N) — reliable intrinsic/acquired separation requires per-gene
+   annotation that is not machine-readable in AMRFinderPlus output.
+
+2. Filtering AMRFinderPlus to only BLASTP/EXACTP methods would exclude ~40% of legitimate
+   acquired ARGs detected by allele-matching (ALLELEP). Filtering to Scope=plus gives only
+   1378 rows total across 900 genomes — too sparse for 30/30 floor in most (species × class) cells.
+
+3. Consistency with Phase 8/9 Q2: those phases used `arg_count_unique` from ResFinder.
+   Using a different source for Test B mechanism-class counts introduces a tool-level
+   inconsistency that would require reconciliation in the Methods section.
+
+ResFinder is the correct source: it reports only acquired resistance genes by database
+construction, directly comparable to Phase 8's total ARG counts.
+
+**Decision: Manual drug→class mapping versioned in config/arg_class_mapping.yaml.**
+
+The ResFinder Phenotype field requires mapping drug names to antibiotic classes.
+This mapping is:
+- Written prospectively (before any Test B modelling)
+- Versioned in git at config/arg_class_mapping.yaml
+- Reproducible — the same mapping is applied to all 900 genomes identically
+- Defensive — any gene assigned to multiple drug classes (polyspecific efflux) is
+  counted in ALL applicable classes, letting the 30/30 floor naturally exclude cells
+  where signal is dominated by broad-spectrum efflux pumps
+
+Classes covered: beta_lactam, aminoglycoside, quinolone, sulfonamide, tetracycline,
+glycopeptide, trimethoprim, macrolide_mlsb, phenicol, rifamycin, other.
+Only the first 7 are candidates for the primary biological prediction (plasmid-mediated
+vs chromosomal RESTRICT/FACILITATE test). Macrolide/MLSB, phenicol, and rifamycin
+are included for completeness but were not pre-specified.
+
+**Decision: Parsing fix — use re.split(r',\s*', phenotype_string) not split(', ').**
+
+ResFinder Phenotype strings use inconsistent spacing after commas
+(e.g., "Chloramphenicol,Florfenicol" without space). The `split(', ')` idiom silently
+merges two drugs into one token. Fixed to `re.split(r',\s*', ...)` throughout Phase 12.
+
+**Decision: Count unique resistance genes per class per genome (not occurrences).**
+
+Same semantics as `arg_count_unique` in Phase 8: deduplicate gene symbols within
+each (genome × class) to avoid inflating counts from multiple chromosomal hits of
+the same gene. The deduplication is over the `Resistance gene` field in
+ResFinder_results_tab.txt. Example: if blaSHV-11 hits 3 plasmid copies, it
+contributes 1 to the beta_lactam count, not 3.

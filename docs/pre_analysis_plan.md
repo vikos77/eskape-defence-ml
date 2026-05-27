@@ -269,6 +269,156 @@ feature sets, each evaluated under phylogenetically-grouped cross-validation."
 
 ---
 
+## 10. Phase 12 — Mechanism-level ARG burden and RM count sensitivity (pre-registered 2026-05-27)
+
+### Motivation
+
+Phase 8/9 Q2 models used binary defence presence (`dp_*`) as features and total ARG count
+as the target. Two unresolved questions motivate Phase 12:
+
+1. **RM count vs RM presence (Test A):** RM Type I/II/III negative permutation importance in Q1
+   (decisions.md 2026-05-26, H6) and the published Spearman correlation (Muthuraman 2026) both
+   operate on RM *count*, not binary presence. Binary RM may dilute the signal by treating a
+   genome with 1 RM system identically to one with 8. Test A checks whether substituting RM
+   *count* columns (`dc_RM_*`) for RM *presence* columns (`dp_RM_*`) in Q2 improves AUROC.
+   All other features remain `dp_*` (presence/absence).
+
+2. **Mechanism-class ARG target (Test B):** Total ARG count conflates plasmid-mediated ARGs
+   (β-lactam, aminoglycoside — where RM gating is biologically expected) with chromosomal
+   ARGs (fluoroquinolone point mutations — where no RM gating is predicted). A classifier
+   predicting total ARG burden sees a mixed signal. Test B re-runs Q2 with mechanism-class
+   ARG burden as the target: one binary classifier per (species × ARG mechanism class), using
+   original `dp_*` features. This tests whether the RESTRICT/FACILITATE principle is
+   class-specific rather than universal.
+
+These are kept as **two separate experiments** with a shared feature set. Running both changes
+simultaneously would prevent attribution of any accuracy change to the correct cause.
+
+---
+
+### Test A — RM count features in Q2
+
+**Feature change:** Replace `dp_RM_Type_I`, `dp_RM_Type_II`, `dp_RM_Type_IIG`, `dp_RM_Type_III`
+with `dc_RM_Type_I`, `dc_RM_Type_II`, `dc_RM_Type_IIG`, `dc_RM_Type_III` in Q2 RF.
+All other features remain `dp_*` (binary presence).
+
+**Pre-check required:** Before modelling, run `(fm["dc_X"] != fm["dp_X"]).sum()` for each RM
+feature. If dc == dp for all genomes, RM counts are all 0 or 1 (no genome carries >1 RM system
+of any subtype) and Test A is moot. Report this check result regardless of outcome.
+
+**Target:** Original total-ARG-burden tertile label (same as Phase 8/9 Q2).
+
+**Model:** Random Forest with same hyperparameters as Phase 8 (max_depth=20, max_features=sqrt,
+min_samples_leaf=1, n_estimators=100). GroupKFold on same 95 phylogroups.
+
+**Primary outcome:** AUROC per species. Compare to Phase 8 Q2 AUROC as baseline.
+
+**Null hypothesis:** RM count features do not improve Q2 AUROC beyond Phase 8 binary-presence baseline.
+
+**Falsification:** If dc_RM == dp_RM for ≥90% of genomes → Test A is uninformative (RM is
+largely binary in this dataset); record as finding, not as failure.
+
+---
+
+### Test B — Mechanism-class ARG burden targets
+
+**Target construction:**
+For each mechanism class, compute per-genome count of ARGs in that class (from ResFinder output).
+Apply the same tertile logic as primary Q2 (tertile within species; binary median fallback per PA-1
+if tertile fails). Create one binary label per (species × class): high_class vs low_class.
+Middle-class genomes excluded from that classifier (same as Q2 middle tertile exclusion).
+
+**Mechanism classes included:** All classes where ≥2 ESKAPE species pass the 30/30 floor
+(defined below). Expected inclusions: β-lactam, aminoglycoside, sulfonamide. Fluoroquinolone,
+tetracycline, glycopeptide included if floor is met. Classes failing the floor in a given species
+are excluded from that species' analysis — they are not excluded from other species.
+
+**Sample size floor — 30/30 rule (non-negotiable):**
+A (species × mechanism class) classifier is run only if the training set contains ≥30 high_class
+AND ≥30 low_class genomes after tertile construction and middle exclusion. See §10 note below
+for justification. Cells failing this floor are documented in results as "excluded: insufficient
+class size" — they are not imputed or combined.
+
+**Features:** Original `dp_*` filtered set (265 features, same as Phase 8/9 Q2). No change to features.
+
+**Model:** Random Forest, same hyperparameters as Phase 8. GroupKFold on same 95 phylogroups.
+
+**CV strategy:** GroupKFold mandatory. No standard stratified CV for any primary result.
+BH correction applied across all (species × class) tests within Test B. Significance threshold: q=0.05.
+
+**Primary outcome:** AUROC per (species × class). Hypothesis: plasmid-mediated classes
+(β-lactam, aminoglycoside) show higher AUROC and greater RM feature importance than
+chromosomal classes (fluoroquinolone).
+
+**Expected direction of SHAP for RM features:**
+- β-lactam: RM presence → negative SHAP (restricts plasmid-mediated ARG acquisition)
+- aminoglycoside: RM presence → negative SHAP (often plasmid-borne in Gram-negative)
+- fluoroquinolone: RM SHAP ≈ 0 (chromosomal mutations, no RM gating)
+
+If SHAP direction matches prediction: this is the strongest mechanistic confirmation of
+RESTRICT available in this dataset. If it does not match: total-ARG RESTRICT signal may
+reflect genome-wide correlates rather than direct plasmid gating.
+
+**Null hypothesis:** Defence system profile predicts mechanism-class ARG burden no better
+than total ARG burden (i.e., Test B AUROC ≈ Phase 8 AUROC for each species).
+
+---
+
+### Ordering requirement
+
+Test A must be run and reported before Test B. If Test A shows RM count == RM presence for
+most genomes, this is informative context for interpreting Test B SHAP output (RM SHAP in
+Test B reflects binary presence, not count).
+
+---
+
+### What Phase 12 does NOT pre-specify
+
+- Combining Test A features and Test B targets simultaneously. If both Tests A and B improve
+  performance, a combined run is permitted as a supplementary exploratory analysis only.
+  It must be labelled explicitly as exploratory.
+- Changing the GroupKFold grouping structure. The 95 phylogroups defined in Phase 6 are fixed.
+- Adding ARG features to Q1 (species classification). ARGs are a consequence of defence
+  architecture, not a feature. Including ARG counts in Q1 would trivially improve accuracy
+  by adding a label-correlated feature — this is leakage.
+
+---
+
+### 30/30 floor justification (for referee queries)
+
+Three convergent lines of reasoning converge on n≥30 per class as the minimum viable floor.
+
+**1. Statistical power for AUROC (Hanley & McNeil 1982).**
+Using the Hanley-McNeil variance formula for the AUROC (equivalent to the Wilcoxon-Mann-Whitney
+statistic), with n₁=n₂=30 and SE₀≈0.075 (at AUROC=0.5 null):
+
+| AUROC | Z statistic | p (one-sided) | Survives BH (20 tests, q=0.05)? |
+|---|---|---|---|
+| 0.60 | 1.33 | 0.092 | No |
+| 0.65 | 1.99 | 0.023 | Marginal |
+| 0.70 | 2.66 | 0.004 | Yes |
+| 0.75 | 3.33 | 0.0004 | Yes |
+
+With n=20/20, SE₀≈0.092, and AUROC=0.70 gives p=0.015 — fails BH correction for 20 tests.
+With n=30/30, AUROC=0.70 gives p=0.004 — survives BH correction for 30 tests.
+The floor of 30 is thus the minimum that makes moderate effect sizes (AUROC≥0.70) reliably
+detectable after multiple testing correction.
+
+**2. Cross-validation stability.**
+Under 5-fold GroupKFold with n₁=30 positives, each test fold receives ~6 positives.
+Fold-level AUROC SE ≈ 0.13. Bootstrap CI over 5 fold-level scores: ±0.11.
+This CI is borderline: it can distinguish AUROC=0.65 from 0.50 but not 0.60 from 0.50.
+Below n₁=30, the CI exceeds ±0.15 and is uninformative (CI spans null to moderate effect).
+
+**3. Random Forest stability.**
+Bootstrap sampling in RF draws ~63.2% of training observations per tree. With n₁=30 positives
+in train (~80% split = 24 positives), each tree sees ~15 positives. This is the minimum for
+finding 2-3 non-random splits on positive-class signal. Below this (n_train_pos ≈ 10), trees
+learn noise, and permutation importance / SHAP values become unreliable even when the
+classifier appears to function on held-out data.
+
+---
+
 ## 8. What this plan does not pre-specify
 
 Secondary analyses that emerge from results are permitted but must be labelled
