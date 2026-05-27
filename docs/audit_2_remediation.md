@@ -147,7 +147,7 @@ display artefact. Does not affect significant-pairs analysis.
 
 ## Ph11-C1 — Q3 primary conclusion must be stated as negative finding
 
-**Status:** PENDING
+**Status:** FIXED 2026-05-27
 
 **What was wrong:**
 The biological synthesis and manuscript language sections were written for an ARI of
@@ -170,7 +170,7 @@ archetype structure."
 
 ## Ph11-C2 — RESTRICT/FACILITATE "recovery" must be reframed
 
-**Status:** PENDING
+**Status:** FIXED 2026-05-27
 
 **What was wrong:**
 Manuscript language section states: "unsupervised clustering cross-validates the published
@@ -191,7 +191,7 @@ independently cross-validate RESTRICT/FACILITATE, as it disappears after derepli
 
 ## Ph11-C3 — Q5b K=2 reframed as gradient, not archetype discovery
 
-**Status:** PENDING
+**Status:** FIXED 2026-05-27
 
 **What was wrong:**
 Q5b was designed to test whether discrete phage-permissive archetypes emerge. The result
@@ -213,7 +213,7 @@ within defence loci) rather than a count-based approach."
 
 ## Ph11-H1 — Silhouette <0.07 never explicitly interpreted as "no structure"
 
-**Status:** PENDING
+**Status:** FIXED 2026-05-27
 
 **What was wrong:**
 The notebook computes silhouette, plots it, and proceeds to run K=10 clustering. It never
@@ -229,7 +229,7 @@ the data does not partition into distinct natural groups in this feature space."
 
 ## Ph11-H2 — KM vs HC ARI=0.47 not interpreted as unstable partition
 
-**Status:** PENDING
+**Status:** FIXED 2026-05-27
 
 **What was wrong:**
 ARI=0.47 between K-means and hierarchical clustering is printed but not interpreted. For
@@ -245,7 +245,7 @@ the 10-cluster partition is not robustly recoverable across methods."
 
 ## Ph11-H3 — ARI vs ARG tertile ≈ 0 not stated as direct Q3 answer
 
-**Status:** PENDING
+**Status:** FIXED 2026-05-27
 
 **What was wrong:**
 ARI vs ARG tertile is 0.031 (K-means), 0.021 (HC), 0.030 (K=6) — all printed but not
@@ -260,7 +260,7 @@ archetypes, as identified by unsupervised clustering, are uninformative for ARG 
 
 ## Ph11-H4 — Cluster 5 (192 genomes, AB/EC/PA mixed) uninterpreted
 
-**Status:** PENDING
+**Status:** FIXED 2026-05-27
 
 **What was wrong:**
 The second-largest cluster (192/878 = 22% of all genomes) contains 50 AB, 51 EC, 69 PA,
@@ -277,7 +277,7 @@ bucket rather than a biologically distinctive archetype."
 
 ## Ph11-M1 — f-string bug: 'Hierarchical Ward K={best_k}' prints literally
 
-**Status:** PENDING
+**Status:** FIXED 2026-05-27
 
 **What was wrong:**
 Second row of ARI summary table: `'Hierarchical Ward K={best_k}'` — missing `f` prefix.
@@ -289,7 +289,7 @@ Prints as literal text, not evaluated K value.
 
 ## Ph11-M2 — FEAT_COLS hardcoded in Phase 11 vs dynamically computed in Phase 10
 
-**Status:** PENDING
+**Status:** FIXED 2026-05-27
 
 **What was wrong:**
 Phase 11 hardcodes a 9-element TAXONOMIC_MARKERS list. Phase 10 derives markers dynamically
@@ -302,7 +302,7 @@ Replace hardcoded list with same dynamic computation used in Phase 10.
 
 ## Ph11-M3 — Gap statistic missing (pre-registered deliverable)
 
-**Status:** PENDING
+**Status:** FIXED 2026-05-27
 
 **What was wrong:**
 CLAUDE.md Phase 11 deliverables specify "Silhouette and gap-statistic for K selection."
@@ -317,7 +317,7 @@ random uniform data). ~10 lines using sklearn or manual computation.
 
 ## Ph11-M4 — RESTRICT check uses dp_RM_Type_I only, not all RM subtypes
 
-**Status:** PENDING
+**Status:** FIXED 2026-05-27
 
 **What was wrong:**
 The RESTRICT archetype is characterised by any RM presence. Code uses `rm_cols[0]`
