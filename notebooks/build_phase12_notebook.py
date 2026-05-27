@@ -1006,34 +1006,71 @@ print("Figure saved: 02_testb_auroc_heatmap.pdf")
 """)
 
 code("""\
-# Figure 2: RM SHAP sign heatmap for significant cells
+# Figure 2: RM SHAP sign heatmap — Audit 3 fix: show most-negative dp_RM_* per cell
+# Rationale: the restriction signal may reside in Type II or IIG, not Type I.
+# Filtering to only dp_RM_Type_I produces a misleading figure (e.g., KP/aminoglycoside
+# shows near-zero for Type I even though Type II = -0.0039 is the restriction carrier).
+# Instead: for each cell, take the dp_RM_* feature with the most negative signed SHAP.
+# Annotate with the value; label the responsible subtype in a second annotation line.
 if shap_sign_results:
-    sign_rows = []
+    best_rows = []
     for (sp, cls), rm_vals in shap_sign_results.items():
-        for feat, val in rm_vals.items():
-            sign_rows.append({"species": sp, "arg_class": cls, "rm_feature": feat, "signed_shap": val})
-    sign_df = pd.DataFrame(sign_rows)
+        dp_vals = {k: v for k, v in rm_vals.items() if k.startswith("dp_RM")}
+        if not dp_vals:
+            continue
+        best_feat = min(dp_vals, key=dp_vals.get)
+        best_val  = dp_vals[best_feat]
+        subtype   = best_feat.replace("dp_RM_", "")   # e.g. "Type_II"
+        best_rows.append({
+            "species": sp, "arg_class": cls,
+            "best_rm_feat": best_feat, "signed_shap": best_val,
+            "subtype_label": subtype,
+        })
 
-    if not sign_df.empty:
-        pivot_shap = sign_df[sign_df["rm_feature"]=="dp_RM_Type_I"].pivot_table(
+    if best_rows:
+        best_df   = pd.DataFrame(best_rows)
+        pivot_val = best_df.pivot_table(
             index="species", columns="arg_class", values="signed_shap", aggfunc="first"
         )
-        if not pivot_shap.empty:
-            fig, ax = plt.subplots(figsize=(max(6, len(pivot_shap.columns)*1.2), 3))
-            sns.heatmap(
-                pivot_shap, annot=True, fmt="+.3f", cmap="coolwarm_r",
-                vmin=-0.02, vmax=0.02, center=0,
-                linewidths=0.5, ax=ax,
-            )
-            ax.set_title("RM Type I signed mean SHAP per (species × ARG class)", fontsize=10)
-            ax.set_xlabel("ARG mechanism class")
-            ax.set_ylabel("")
-            plt.tight_layout()
-            plt.savefig(FIG / "03_rm_shap_sign_heatmap.pdf", bbox_inches="tight")
-            plt.show()
-            print("Figure saved: 03_rm_shap_sign_heatmap.pdf")
-        else:
-            print("No dp_RM_Type_I entries in significant cells — check feature set.")
+        pivot_sub = best_df.pivot_table(
+            index="species", columns="arg_class", values="subtype_label", aggfunc="first"
+        )
+        pivot_sub = pivot_sub.reindex_like(pivot_val)
+
+        fig, ax = plt.subplots(figsize=(max(6, len(pivot_val.columns)*1.4), max(3, len(pivot_val)*0.8)))
+        sns.heatmap(
+            pivot_val, annot=False, cmap="coolwarm_r",
+            vmin=-0.02, vmax=0.02, center=0,
+            linewidths=0.5, ax=ax,
+        )
+
+        # Dual annotation: numeric value on top line, subtype label on bottom
+        for i, sp in enumerate(pivot_val.index):
+            for j, cls in enumerate(pivot_val.columns):
+                val = pivot_val.at[sp, cls] if sp in pivot_val.index and cls in pivot_val.columns else None
+                sub = pivot_sub.at[sp, cls] if sp in pivot_sub.index and cls in pivot_sub.columns else None
+                if pd.notna(val) and pd.notna(sub):
+                    ax.text(j + 0.5, i + 0.35, f"{val:+.3f}", ha="center", va="center",
+                            fontsize=7.5, fontweight="bold",
+                            color="white" if abs(val) > 0.010 else "black")
+                    ax.text(j + 0.5, i + 0.65, sub.replace("_", " "), ha="center", va="center",
+                            fontsize=6, color="white" if abs(val) > 0.010 else "black")
+
+        ax.set_title(
+            "Most-negative dp_RM_* signed mean SHAP per (species × ARG class)\\n"
+            "Value = min(dp_RM_*) across all RM subtypes; label = responsible subtype",
+            fontsize=9,
+        )
+        ax.set_xlabel("ARG mechanism class")
+        ax.set_ylabel("")
+        plt.tight_layout()
+        plt.savefig(FIG / "03_rm_shap_sign_heatmap.pdf", bbox_inches="tight")
+        plt.show()
+        print("Figure saved: 03_rm_shap_sign_heatmap.pdf")
+        print("\\nCell-level detail (best RM subtype per significant cell):")
+        for _, row in best_df.sort_values(["species","arg_class"]).iterrows():
+            print(f"  {row['species']:<20} {row['arg_class']:<20} "
+                  f"{row['best_rm_feat']:<25} {row['signed_shap']:+.4f}")
     else:
         print("No SHAP sign data collected (no significant cells, or SHAP empty).")
 else:
