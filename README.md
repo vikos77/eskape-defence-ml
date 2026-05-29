@@ -39,7 +39,7 @@ Machine learning extension of Muthuraman et al. (2026), *Journal of Applied Micr
 | 6 | 04_phylogenetic_grouping | Mash distances → phylogroups (GroupedKFold) | **COMPLETE** |
 | 7 | 05_baseline_classifier | Null baseline, Logistic Regression | **COMPLETE** |
 | **8** | **06_random_forest** | **Random Forest + SHAP feature importance** | **COMPLETE** |
-| 9 | 07_gradient_boosting | XGBoost / LightGBM + calibration | pending |
+| 9 | 07_gradient_boosting | XGBoost / LightGBM + calibration | **COMPLETE** |
 | 10 | 08_model_interpretation | SHAP biological synthesis | pending |
 | 11 | 09_unsupervised_archetypes | K-means archetypes + publication figures | pending |
 
