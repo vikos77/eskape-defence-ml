@@ -206,8 +206,9 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-# Personal learning documents — kept local only
+# Personal/internal documents — kept local only
 docs/learning/
+docs/audit*.md
 
 # Genomics data — large files, never commit raw genomes
 data/raw/
