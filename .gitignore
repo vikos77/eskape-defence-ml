@@ -209,6 +209,7 @@ __marimo__/
 # Personal/internal documents — kept local only
 docs/learning/
 docs/audit*.md
+docs/comprehension_review.md
 
 # Genomics data — large files, never commit raw genomes
 data/raw/
@@ -245,3 +246,15 @@ results/models/*.json
 .conda/
 .keras/
 Library/
+
+# Supplementary data — source: Muthuraman et al. (2026) JAM paper; deposited to Zenodo on release
+# S1 is required by notebooks/08_model_interpretation.ipynb (C3 holdout validation)
+Supplementary_Data_*.xlsx
+
+# Notebook builder scripts — development tools used to generate notebooks programmatically
+notebooks/build_*.py
+
+# Model output arrays and tables — reproducible from notebooks; deposited to Zenodo on release
+results/*.parquet
+results/*.npy
+results/*.csv

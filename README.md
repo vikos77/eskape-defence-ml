@@ -129,20 +129,28 @@ pre-commit install
 
 ```
 eskape-defence-ml/
-├── notebooks/          # Jupyter notebooks (01–10) + builder scripts
+├── notebooks/          # Jupyter notebooks (01–10, numbered by phase)
 ├── data/
-│   ├── raw/            # Downloaded genomes (gitignored)
-│   ├── interim/        # Tool outputs (DefenseFinder, ResFinder, etc.)
-│   └── processed/      # feature_matrix.parquet, phylogroups.parquet
+│   ├── raw/            # Downloaded genomes (gitignored — download via Snakemake)
+│   ├── interim/        # Tool outputs (DefenseFinder, ResFinder, etc.; gitignored)
+│   └── processed/      # feature_matrix.parquet, cv_groups.parquet (gitignored — Zenodo on release)
 ├── results/
-│   ├── figures/        # PDF figures per phase
-│   └── *.parquet       # Saved model results (q2_rf_results, q2_gb_results, testb_results)
+│   ├── figures/        # PNG figures per phase (tracked in git)
+│   ├── models/         # Serialised models (gitignored — Zenodo on release)
+│   └── *.parquet       # Model output tables (gitignored — Zenodo on release)
 ├── docs/
 │   ├── pre_analysis_plan.md
-│   ├── decisions.md    # All design decisions + audit remediation log
-│   └── audit_*.md      # Phase audit findings
+│   └── decisions.md    # All design decisions + audit log
 └── config/             # species.yaml, params.yaml, arg_class_mapping.yaml
 ```
+
+### External data dependency
+
+`notebooks/08_model_interpretation.ipynb` (Phase 10 holdout validation) requires
+`Supplementary_Data_S1.xlsx` at the project root. This file contains the published
+*Acinetobacter* cohort metadata from Muthuraman et al. (2026) JAM and is available
+as supplementary material from the journal or via the Zenodo release of this project.
+It is not tracked in git (3.5 MB binary).
 
 ## Citation
 
