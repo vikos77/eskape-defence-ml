@@ -1,4 +1,4 @@
-# ESKAPE Defence Systems — ML Extension
+# ESKAPE Defence Systems - ML Extension
 
 Machine learning extension of Muthuraman et al. (2026), *Journal of Applied Microbiology*.
 
@@ -50,28 +50,28 @@ Machine learning extension of Muthuraman et al. (2026), *Journal of Applied Micr
 
 ## Key findings
 
-### Phase 4 — EDA
+### Phase 4 - EDA
 - RESTRICT/FACILITATE is not pan-ESKAPE: in KP and PA, RM systems co-occur with ARGs on shared plasmids rather than acting as chromosomal gatekeepers.
 - IME-ARG co-acquisition is universal across all 6 species (ρ = +0.65–0.77).
 
-### Phase 5 — Dimensionality reduction
+### Phase 5 - Dimensionality reduction
 - Species separate cleanly in UMAP (Jaccard metric). AB far left (depauperate IC2 profile); EF far bottom-right (Gram-positive). KP and EC consistently adjacent (Enterobacterales).
 - 103 PCs required for 80% variance — high-dimensional sparse feature space.
 
-### Phase 6 — Phylogenetic grouping
+### Phase 6 - Phylogenetic grouping
 - 95 phylogroups via Mash distance clustering. MLST concordance 99.1% (108/109 STs co-assigned).
 - All subsequent CV uses GroupKFold(5) on phylogroups to prevent phylogenetic leakage.
 
-### Phase 7 — Baseline classifiers (Logistic Regression)
+### Phase 7 - Baseline classifiers (Logistic Regression)
 - Q1 primary: BA = 0.837 [0.813–0.859].
 - Q2 signal in EC and KP; AB Q2 AUROC inverted (low-ARG class predicted as high), replicating the published RESTRICT phenotype.
 
-### Phase 8 — Random Forest
+### Phase 8 - Random Forest
 - Q1: RF BA = 0.878 [0.859–0.898]. Best params: max_depth=20, max_features=sqrt, min_samples_leaf=1, n_estimators=100.
 - Per-class recall: SA=0.993, EF=0.953, PA=0.893, KP=0.856, EC=0.849, AB=0.700 (worst — IC2 clones confused with EF in feature space).
 - Q2 significant species (RF, AUROC): PA=0.677 (RF wins over XGB).
 
-### Phase 9 — Gradient boosting (XGBoost)
+### Phase 9 - Gradient boosting (XGBoost)
 - Q1: XGB BA = 0.884 [0.863–0.901] — marginal gain over RF.
 - Q2 significant species (XGB, AUROC): EC=0.872, KP=0.924. XGB primary for EC/KP; RF primary for PA.
 - EC, KP significant under both models; PA significant under RF only (chromosomal ARG routes weaken XGB signal).
