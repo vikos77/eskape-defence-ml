@@ -873,3 +873,38 @@ Section 13 synthesis.
 
 Added comment: "ResFinder dirs may include up to 883 accessions (5 more than fm's 878).
 The 5 extra are MLST-excluded genomes. Dropped automatically by merge with fm."
+
+---
+
+## 2026-06-02 — Bootstrap CI correction: genome-level to cluster bootstrap
+
+**Decision:** Replace genome-level bootstrap (resampling 878 individual predictions) with
+cluster bootstrap (resampling 95 phylogroups) for Q1 and Q2 primary analyses, where
+n_phylogroups >= 15.
+
+**Why:** Subsection 4 of the Methods states that effective sample size = 95 phylogroups,
+not 878 genomes. Bootstrapping individual out-of-fold predictions treats clonal genomes
+as independent observations, contradicting the GroupedStratifiedKFold design rationale
+and producing CIs that are anticonservatively narrow.
+
+**Implementation:**
+- New utility: src/evaluation/bootstrap.py — bootstrap_ci_auto() selects cluster vs
+  genome-level based on n_phylogroups threshold (>= 15 = cluster, < 15 = genome).
+- Notebooks 06 and 07 patched via notebooks/patch_cluster_bootstrap.py.
+- Cluster bootstrap applies to: Q1 (95 groups), Q2-EC (20), Q2-KP (16), Q2-PA (26).
+- Genome-level bootstrap retained for: Q2-AB (13), Q2-SA (9), Q2-EF (7) — too few
+  clusters for reliable percentile CI estimation.
+- Phase 12 (Test A/B) uses fold-level bootstrap (resampling 5 fold AUROC values) — already
+  conservative; cluster bootstrap would require collecting per-genome predictions in
+  Test B's inner CV loop, which was not refactored to avoid scope creep.
+
+**Before/after (Q1, approximate from validation run):**
+- RF:  genome-level CI width 0.044 -> cluster bootstrap CI width ~0.063 (43% wider)
+- XGB: genome-level CI width 0.047 -> cluster bootstrap CI width ~0.097 (107% wider)
+  (exact values to be confirmed after notebook re-run)
+
+**Point estimates (BA, AUROC):** unaffected — CV loop unchanged.
+**McNemar results:** unaffected — paired predictions unchanged.
+
+**Action required:** Re-run notebooks 06 and 07 to produce updated CI values.
+Log before/after numbers here once re-run is complete.
