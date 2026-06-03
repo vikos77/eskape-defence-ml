@@ -16,4 +16,4 @@ repos:
     hooks:
       - id: nbstripout
         # strips cell outputs from notebooks before commit
-        # keeps code, strips results — reproducibility requires rerunning, not trusting saved output
+        # keeps code, strips results  -  reproducibility requires rerunning, not trusting saved output

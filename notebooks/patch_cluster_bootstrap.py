@@ -144,7 +144,7 @@ def patch_notebook_07():
             "np.save(RES / 'q1_xgb_pred_groups.npy', groups)"
         ),
 
-        # Early-stopping XGB F1 call (cell 15) — add groups_arg
+        # Early-stopping XGB F1 call (cell 15)  -  add groups_arg
         (
             "mean_f1_xgb, lo_f1_xgb, hi_f1_xgb = bootstrap_ci(mc_true_xgb, mc_pred_xgb,\n"
             "    metric_fn=lambda yt, yp: f1_score(yt, yp, average=\"macro\"))",
@@ -160,7 +160,7 @@ def patch_notebook_07():
             "np.save(RES / 'q1_lgbm_pred_pred.npy', mc_pred_lgbm)"
         ),
 
-        # Early-stopping LGBM F1 call (cell 17) — add groups_arg
+        # Early-stopping LGBM F1 call (cell 17)  -  add groups_arg
         (
             "mean_f1_lgbm, lo_f1_lgbm, hi_f1_lgbm = bootstrap_ci(mc_true_lgbm, mc_pred_lgbm,\n"
             "    metric_fn=lambda yt, yp: f1_score(yt, yp, average=\"macro\"))",
@@ -168,7 +168,7 @@ def patch_notebook_07():
             "    groups_arg=groups, metric_fn=lambda yt, yp: f1_score(yt, yp, average=\"macro\"))"
         ),
 
-        # Fixed-iter XGB BA (cell 21) — add groups_arg + save
+        # Fixed-iter XGB BA (cell 21)  -  add groups_arg + save
         (
             "ba_xf,  lo_xf,  hi_xf  = bootstrap_ci(mc_true_fixed, mc_pred_xgb_fixed)",
             "ba_xf,  lo_xf,  hi_xf  = bootstrap_ci(mc_true_fixed, mc_pred_xgb_fixed, groups_arg=groups)\n"
@@ -177,7 +177,7 @@ def patch_notebook_07():
             "np.save(RES / 'q1_xgb_fixed_pred_groups.npy', groups)"
         ),
 
-        # Fixed-iter LGBM BA (cell 21) — add groups_arg
+        # Fixed-iter LGBM BA (cell 21)  -  add groups_arg
         (
             "ba_lf,  lo_lf,  hi_lf  = bootstrap_ci(mc_true_fixed, mc_pred_lgbm_fixed)",
             "ba_lf,  lo_lf,  hi_lf  = bootstrap_ci(mc_true_fixed, mc_pred_lgbm_fixed, groups_arg=groups)"
@@ -198,7 +198,7 @@ def patch_notebook_12():
         (OLD_BOOTSTRAP_DEF, BOOTSTRAP_IMPORT_BLOCK),
         # Test A and Test B bootstrap calls use grp_sp (per-species groups)
         # These patterns need to be verified against the actual notebook content
-        # They are marked as approximate — check output after patching
+        # They are marked as approximate  -  check output after patching
     ]
 
     return patch_notebook(path, patches)

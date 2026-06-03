@@ -1,4 +1,4 @@
-# Pre-Analysis Plan — ESKAPE Defence Systems ML Extension
+# Pre-Analysis Plan  -  ESKAPE Defence Systems ML Extension
 
 **Registered:** 2026-04-21
 **Author:** Vigneshwaran Muthuraman
@@ -12,15 +12,15 @@ analyses are clearly labelled exploratory in the manuscript.
 
 ## 1. Primary research questions
 
-### Q1 — Species classification (supervised, multi-class)
+### Q1  -  Species classification (supervised, multi-class)
 Can defence system repertoire alone classify ESKAPE species?
-Which features drive classification — do they match the published *Acinetobacter*
+Which features drive classification  -  do they match the published *Acinetobacter*
 findings (RM systems, SspBCDE, Gao_Qat)?
 
 **Null hypothesis:** A stratified random classifier cannot be beaten by any
 defence-system-based model.
 
-### Q2 — ARG burden prediction (supervised, binary)
+### Q2  -  ARG burden prediction (supervised, binary)
 Within and across species, can defence system profile predict high-ARG-burden
 genomes?
 Does the RESTRICT/FACILITATE signature from *Acinetobacter* generalise?
@@ -31,7 +31,7 @@ unique ARG genes per genome (ResFinder output). Tertile boundaries computed
 *within each species* to prevent species-level ARG baseline differences from
 confounding the label (see decisions.md 2026-05-13).
 
-**Label definition (fallback — Protocol Amendment PA-1, 2026-05-14):**
+**Label definition (fallback  -  Protocol Amendment PA-1, 2026-05-14):**
 For any species where `pd.qcut(q=3)` cannot form three distinct tertile bins
 because the 33rd percentile equals the distribution minimum (floor effect),
 a binary split at the within-species median is used instead:
@@ -42,11 +42,11 @@ a binary split at the within-species median is used instead:
 
 This fallback applies to *P. aeruginosa* in this dataset (37% of PA genomes at
 ARG = 5, the species minimum). It answers a slightly weaker question ("below
-vs above average ARG burden") rather than "bottom third vs top third" — an
+vs above average ARG burden") rather than "bottom third vs top third"  -  an
 intentional compromise to retain the species in Q2 rather than exclude it.
 PA Q2 results must be interpreted alongside this methodological note.
 
-The fallback condition — 0th percentile equals 33rd percentile — is a
+The fallback condition  -  0th percentile equals 33rd percentile  -  is a
 data-structure criterion defined prospectively before any modelling, not chosen
 because it improves results. It is applied uniformly to any species that meets
 this criterion in this or any future dataset extending this analysis.
@@ -54,7 +54,7 @@ this criterion in this or any future dataset extending this analysis.
 **Null hypothesis:** Defence system profile has no predictive value for ARG
 burden beyond a stratified null baseline.
 
-### Q3 — Unsupervised archetypes (unsupervised)
+### Q3  -  Unsupervised archetypes (unsupervised)
 Do genomes cluster by defence-system archetype independently of species?
 Species labels are hidden during clustering. Labels applied only post-hoc
 for interpretation.
@@ -65,7 +65,7 @@ for interpretation.
   independent biological structure.
 - Neither outcome is a failure.
 
-### Q4 — Interpretability (SHAP)
+### Q4  -  Interpretability (SHAP)
 Top 10 SHAP features for each classifier compared to published Fisher's exact
 ranks from Muthuraman et al. (2026). Agreement = cross-genus generalisation.
 Disagreement = genus-specific architecture.
@@ -164,16 +164,16 @@ and a prospective modification is required. Amendments are defined *before* any
 modelling results are seen. Post-hoc modifications are logged in `decisions.md` as
 exploratory, not here.
 
-### PA-1 — Q2 binary split fallback (2026-05-14)
+### PA-1  -  Q2 binary split fallback (2026-05-14)
 
 **Trigger:** During Phase 3 feature matrix construction, `pd.qcut(q=3)` failed for
 *P. aeruginosa* with `ValueError: Bin labels must be one fewer than the number of bin
 edges`. Root cause: 56/150 PA genomes (37%) have `arg_count_unique = 5` (the species
 minimum), making the 0th and 33rd percentiles identical. After `duplicates='drop'`,
-only 2 distinct bins remain — insufficient for 3 labels.
+only 2 distinct bins remain  -  insufficient for 3 labels.
 
 **Why this happened specifically for PA:** P. aeruginosa's clinical isolates almost
-universally carry a small set of near-baseline acquired ARGs — chromosomal
+universally carry a small set of near-baseline acquired ARGs  -  chromosomal
 cephalosporinase derivatives (blaPDC) and housekeeping efflux pump genes are
 ubiquitous, creating a hard floor at 5 unique ARGs in ResFinder output. The
 right-skewed tail (some PA genomes reaching ARG = 29) represents genomes with
@@ -182,11 +182,11 @@ No equivalent floor effect is observed in the other 5 ESKAPE species.
 
 **Options considered before choosing the amendment:**
 
-*Option 1: Keep PA excluded from Q2* — Pre-registration intact; exclusion is honest;
+*Option 1: Keep PA excluded from Q2*  -  Pre-registration intact; exclusion is honest;
 simple to report. Loss: PA genomes with ARG = 20+ (genuine high-burden) are excluded
 entirely, weakening cross-species generalisability.
 
-*Option 2: Binary split at the median (chosen)* — PA genomes below median → low_ARG;
+*Option 2: Binary split at the median (chosen)*  -  PA genomes below median → low_ARG;
 above median → high_ARG; at median → mid_ARG (excluded). Brings PA back into Q2.
 Answers a slightly weaker biological question ("below vs above species-average ARG
 burden" rather than "bottom vs top third"), but the question remains coherent and
@@ -194,17 +194,17 @@ directly tests the RESTRICT/FACILITATE hypothesis for PA. The 56 genomes at the 
 floor (low_ARG) vs the 64 genomes with above-median burden (high_ARG) provide a
 meaningful contrast.
 
-*Option 3: Rank-based tertile* — Rank genomes by ARG count, split ranks into thirds.
+*Option 3: Rank-based tertile*  -  Rank genomes by ARG count, split ranks into thirds.
 Rejected: 56 PA genomes share ARG = 5 exactly. Assigning different labels to
 identical-valued genomes based on arbitrary rank order would introduce noise as
-signal — any classifier learning this split would be memorising random assignment,
+signal  -  any classifier learning this split would be memorising random assignment,
 not biology.
 
 **Why the amendment is methodologically sound:**
-1. Defined *before* any modelling — this is a Phase 3 (feature engineering) fix,
+1. Defined *before* any modelling  -  this is a Phase 3 (feature engineering) fix,
    not a Phase 6+ retroactive change. No model performance numbers have been seen.
 2. The fallback criterion ("0th percentile == 33rd percentile") is a data-structure
-   test, not an outcome test — it cannot be gamed post-hoc.
+   test, not an outcome test  -  it cannot be gamed post-hoc.
 3. The binary split is a standard, pre-existing method (median split is weaker than
    tertile but not arbitrary). It is prospectively documented and therefore confirmatory,
    not exploratory.
@@ -225,7 +225,7 @@ above-average ARG burden rather than bottom vs top third."
 
 ---
 
-### PA-2 — Q1 feature specificity sensitivity analysis (2026-05-18)
+### PA-2  -  Q1 feature specificity sensitivity analysis (2026-05-18)
 
 **Trigger:** Preliminary LR baseline classifier (04_baseline_classifier.ipynb) achieved
 Q1 balanced accuracy = 0.984, which exceeded the pre-specified 0.95 investigation
@@ -234,9 +234,9 @@ universal in exactly one species or one clade, acting as taxonomic markers rathe
 defence architecture signals. Sensitivity analysis was run before any Phase 7 modelling.
 
 **Two orthogonal validity problems identified:**
-1. *Clone contamination* — closely related genomes split across train/test folds.
-   Fixed by phylogenetic GroupedStratifiedKFold (Phase 6 — pre-existing plan).
-2. *Taxonomic markers* — defence features near-universal in one species inflate
+1. *Clone contamination*  -  closely related genomes split across train/test folds.
+   Fixed by phylogenetic GroupedStratifiedKFold (Phase 6  -  pre-existing plan).
+2. *Taxonomic markers*  -  defence features near-universal in one species inflate
    classification accuracy independently of clone-level phylogeny.
    Fixed by feature specificity filtering (this amendment).
 
@@ -252,7 +252,7 @@ reported as supplementary comparisons.
 
 **Sensitivity analysis result (standard CV, for reference only):**
 - Full features (274): 0.984; filtered <0.70 std (266): 0.936; filtered <0.50 (259):
-  0.902; filtered <0.35 (252): 0.874. Genuine defence signal is present — accuracy
+  0.902; filtered <0.35 (252): 0.874. Genuine defence signal is present  -  accuracy
   remains at 0.744 even with features capped at std < 0.20 (225 features). The 0.984
   is not fabricated by markers alone.
 
@@ -269,7 +269,7 @@ feature sets, each evaluated under phylogenetically-grouped cross-validation."
 
 ---
 
-## 10. Phase 12 — Mechanism-level ARG burden and RM count sensitivity (pre-registered 2026-05-27)
+## 10. Phase 12  -  Mechanism-level ARG burden and RM count sensitivity (pre-registered 2026-05-27)
 
 ### Motivation
 
@@ -284,8 +284,8 @@ as the target. Two unresolved questions motivate Phase 12:
    All other features remain `dp_*` (presence/absence).
 
 2. **Mechanism-class ARG target (Test B):** Total ARG count conflates plasmid-mediated ARGs
-   (β-lactam, aminoglycoside — where RM gating is biologically expected) with chromosomal
-   ARGs (fluoroquinolone point mutations — where no RM gating is predicted). A classifier
+   (β-lactam, aminoglycoside  -  where RM gating is biologically expected) with chromosomal
+   ARGs (fluoroquinolone point mutations  -  where no RM gating is predicted). A classifier
    predicting total ARG burden sees a mixed signal. Test B re-runs Q2 with mechanism-class
    ARG burden as the target: one binary classifier per (species × ARG mechanism class), using
    original `dp_*` features. This tests whether the RESTRICT/FACILITATE principle is
@@ -296,7 +296,7 @@ simultaneously would prevent attribution of any accuracy change to the correct c
 
 ---
 
-### Test A — RM count features in Q2
+### Test A  -  RM count features in Q2
 
 **Feature change:** Replace `dp_RM_Type_I`, `dp_RM_Type_II`, `dp_RM_Type_IIG`, `dp_RM_Type_III`
 with `dc_RM_Type_I`, `dc_RM_Type_II`, `dc_RM_Type_IIG`, `dc_RM_Type_III` in Q2 RF.
@@ -320,7 +320,7 @@ largely binary in this dataset); record as finding, not as failure.
 
 ---
 
-### Test B — Mechanism-class ARG burden targets
+### Test B  -  Mechanism-class ARG burden targets
 
 **Target construction:**
 For each mechanism class, compute per-genome count of ARGs in that class (from ResFinder output).
@@ -331,13 +331,13 @@ Middle-class genomes excluded from that classifier (same as Q2 middle tertile ex
 **Mechanism classes included:** All classes where ≥2 ESKAPE species pass the 30/30 floor
 (defined below). Expected inclusions: β-lactam, aminoglycoside, sulfonamide. Fluoroquinolone,
 tetracycline, glycopeptide included if floor is met. Classes failing the floor in a given species
-are excluded from that species' analysis — they are not excluded from other species.
+are excluded from that species' analysis  -  they are not excluded from other species.
 
-**Sample size floor — 30/30 rule (non-negotiable):**
+**Sample size floor  -  30/30 rule (non-negotiable):**
 A (species × mechanism class) classifier is run only if the training set contains ≥30 high_class
 AND ≥30 low_class genomes after tertile construction and middle exclusion. See §10 note below
 for justification. Cells failing this floor are documented in results as "excluded: insufficient
-class size" — they are not imputed or combined.
+class size"  -  they are not imputed or combined.
 
 **Features:** Original `dp_*` filtered set (265 features, same as Phase 8/9 Q2). No change to features.
 
@@ -380,7 +380,7 @@ Test B reflects binary presence, not count).
 - Changing the GroupKFold grouping structure. The 95 phylogroups defined in Phase 6 are fixed.
 - Adding ARG features to Q1 (species classification). ARGs are a consequence of defence
   architecture, not a feature. Including ARG counts in Q1 would trivially improve accuracy
-  by adding a label-correlated feature — this is leakage.
+  by adding a label-correlated feature  -  this is leakage.
 
 ---
 
@@ -399,8 +399,8 @@ statistic), with n₁=n₂=30 and SE₀≈0.075 (at AUROC=0.5 null):
 | 0.70 | 2.66 | 0.004 | Yes |
 | 0.75 | 3.33 | 0.0004 | Yes |
 
-With n=20/20, SE₀≈0.092, and AUROC=0.70 gives p=0.015 — fails BH correction for 20 tests.
-With n=30/30, AUROC=0.70 gives p=0.004 — survives BH correction for 30 tests.
+With n=20/20, SE₀≈0.092, and AUROC=0.70 gives p=0.015  -  fails BH correction for 20 tests.
+With n=30/30, AUROC=0.70 gives p=0.004  -  survives BH correction for 30 tests.
 The floor of 30 is thus the minimum that makes moderate effect sizes (AUROC≥0.70) reliably
 detectable after multiple testing correction.
 
@@ -437,14 +437,14 @@ confirmatory (pre-specified) from exploratory (post-hoc).
 
 Deviations are logged here for transparency. Each must also appear in `decisions.md`.
 
-### Amendment 1 — Primary Q1 model selection criterion (2026-05-25)
+### Amendment 1  -  Primary Q1 model selection criterion (2026-05-25)
 
 **Pre-registered criterion:** The primary Q1 model is the model with the highest
 balanced accuracy, provided the 95% bootstrap CI does not overlap with the LR
 reference CI.
 
 **Observed result:** RF CI [0.859--0.898], LR CI [0.813--0.859]. The lower bound of
-the RF CI equals the upper bound of the LR CI to four decimal places — a technical
+the RF CI equals the upper bound of the LR CI to four decimal places  -  a technical
 overlap of 0.0002 units.
 
 **Deviation:** The non-overlap criterion is technically violated. RF was nonetheless
@@ -452,8 +452,8 @@ selected as the primary Q1 model.
 
 **Justification:** The 0.0002 overlap falls below the precision floor of a bootstrap
 CI estimated from 5 fold-level scores (2000 resamples of n=5 cannot reliably resolve
-intervals at 4 decimal places). The intent of the criterion — preventing a 0.001
-difference from being declared a win — is not violated by a delta of 0.041. All five
+intervals at 4 decimal places). The intent of the criterion  -  preventing a 0.001
+difference from being declared a win  -  is not violated by a delta of 0.041. All five
 individual CV folds showed RF > LR; the boundary touch is a CI construction artefact.
 Full rationale in decisions.md (2026-05-25).
 

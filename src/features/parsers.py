@@ -1,11 +1,11 @@
 """
-Phase 3 parsers — one function per tool, all return a tidy DataFrame indexed by genome_id.
+Phase 3 parsers  -  one function per tool, all return a tidy DataFrame indexed by genome_id.
 
 Each parser follows the same contract:
     - Input:  path to the tool's output for one species (or a glob pattern)
     - Output: pd.DataFrame with 'genome_id' as the index and tool-specific columns
     - Empty output files → zero counts (not NaN); missing files → NaN with a warning
-    - No parser modifies global state or reads the system_name_map — that join
+    - No parser modifies global state or reads the system_name_map  -  that join
       happens in the notebook after all parsers have run.
 
 Column naming conventions:
@@ -85,9 +85,9 @@ def parse_defensefinder(interim_dir: Path) -> pd.DataFrame:
     """Parse all defense_finder_systems.tsv files under interim_dir/defensefinder/.
 
     Returns one row per genome with columns:
-        df_systems: list[str]           — defence subtype names detected
-        df_anti_systems: list[str]      — anti-defence subtype names detected
-        df_raw: pd.DataFrame (attached) — full systems table (for merging later)
+        df_systems: list[str]            -  defence subtype names detected
+        df_anti_systems: list[str]       -  anti-defence subtype names detected
+        df_raw: pd.DataFrame (attached)  -  full systems table (for merging later)
 
     For the feature matrix we return a long-format DataFrame:
         genome_id | df_subtype | df_type | activity | count
@@ -115,7 +115,7 @@ def parse_defensefinder(interim_dir: Path) -> pd.DataFrame:
             continue
 
         if d.empty:
-            # Tool ran, found zero systems — this is a valid result, not missing data
+            # Tool ran, found zero systems  -  this is a valid result, not missing data
             records.append({
                 "genome_id": genome_id,
                 "df_subtype": "__none__",
@@ -244,7 +244,7 @@ def parse_blast_hits(
         alignment_length / query_protein_length >= coverage_min
 
     An empty file is valid (zero hits) and returns an empty DataFrame.
-    A missing file raises FileNotFoundError — callers must handle this.
+    A missing file raises FileNotFoundError  -  callers must handle this.
 
     Parameters
     ----------
@@ -269,7 +269,7 @@ def parse_blast_hits(
     if missing_qlens:
         warnings.warn(
             f"{tsv_path.name}: {missing_qlens} hits have qseqid not found in "
-            "query FASTA — these hits are dropped (check FASTA matches DB used for BLAST).",
+            "query FASTA  -  these hits are dropped (check FASTA matches DB used for BLAST).",
             stacklevel=2,
         )
     hits = hits.dropna(subset=["qlen"])

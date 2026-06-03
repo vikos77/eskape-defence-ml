@@ -25,7 +25,7 @@ import urllib.parse
 import urllib.request
 from collections import Counter, defaultdict
 
-import yaml  # requires pyyaml — run after: conda activate eskape-ml
+import yaml  # requires pyyaml  -  run after: conda activate eskape-ml
 
 EUTILS = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 API_KEY = os.environ.get("NCBI_API_KEY", "")
@@ -197,7 +197,7 @@ def stratified_sample(
     Sample `target_n` records with:
       1. Per-country cap: no more than `country_cap` from any single country.
       2. Year-bin balance: within the country-capped pool, prefer even
-         representation across year bins (best effort — not enforced as hard cap).
+         representation across year bins (best effort  -  not enforced as hard cap).
       3. Random tie-breaking with fixed seed.
 
     Why this order: country cap is the hard constraint (geographic bias
@@ -207,7 +207,7 @@ def stratified_sample(
     random.seed(seed)
     random.shuffle(records)   # randomise before any selection
 
-    # Step 1 — apply country cap
+    # Step 1  -  apply country cap
     country_counts: Counter = Counter()
     country_capped: list[dict] = []
     for r in records:
@@ -219,7 +219,7 @@ def stratified_sample(
     if len(country_capped) <= target_n:
         return country_capped   # can't reach target even without further filtering
 
-    # Step 2 — year-bin stratification within country-capped pool
+    # Step 2  -  year-bin stratification within country-capped pool
     # Group by year bin, then interleave to spread years evenly
     by_year: dict = defaultdict(list)
     for r in country_capped:

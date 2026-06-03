@@ -42,7 +42,7 @@ def cluster_bootstrap_ci(y_true, y_pred, groups, metric_fn, n_boot=2000, seed=42
 
     if n_groups < MIN_CLUSTERS_FOR_CLUSTER_BOOTSTRAP:
         raise ValueError(
-            f"Only {n_groups} phylogroups — cluster bootstrap unreliable below "
+            f"Only {n_groups} phylogroups  -  cluster bootstrap unreliable below "
             f"{MIN_CLUSTERS_FOR_CLUSTER_BOOTSTRAP}. Use genome_bootstrap_ci with caveat."
         )
 

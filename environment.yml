@@ -4,7 +4,7 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  # Python version — pinned to 3.11 for full scikit-learn/shap/umap compatibility
+  # Python version  -  pinned to 3.11 for full scikit-learn/shap/umap compatibility
   - python=3.11
 
   # Data wrangling

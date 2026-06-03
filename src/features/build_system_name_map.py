@@ -1,5 +1,5 @@
 """
-Build config/system_name_map.csv — the canonical system name harmonisation table.
+Build config/system_name_map.csv  -  the canonical system name harmonisation table.
 
 Pass 1: automated exact and case-insensitive matches between DefenseFinder subtypes
         and PADLOC system names.
@@ -8,14 +8,14 @@ Pass 2: manual curations for cross-tool naming discrepancies (CBASS, BREX, Cas,
         exclusions (DMS_other).
 
 Output: config/system_name_map.csv with columns:
-    canonical_name      — name used in the feature matrix
-    df_type             — DefenseFinder 'type' field
-    df_subtype          — DefenseFinder 'subtype' field (empty if PADLOC-only)
-    padloc_system       — PADLOC 'system' field (empty if DF-only)
-    source              — 'both' | 'df_only' | 'padloc_only' | 'df_antidefense' | 'exclude'
-    df_genome_count     — number of genomes DF calls this system
-    padloc_genome_count — number of genomes PADLOC calls this system
-    notes               — curation rationale
+    canonical_name       -  name used in the feature matrix
+    df_type              -  DefenseFinder 'type' field
+    df_subtype           -  DefenseFinder 'subtype' field (empty if PADLOC-only)
+    padloc_system        -  PADLOC 'system' field (empty if DF-only)
+    source               -  'both' | 'df_only' | 'padloc_only' | 'df_antidefense' | 'exclude'
+    df_genome_count      -  number of genomes DF calls this system
+    padloc_genome_count  -  number of genomes PADLOC calls this system
+    notes                -  curation rationale
 """
 
 from collections import Counter
@@ -142,8 +142,8 @@ base = pd.DataFrame(rows)
 # Format: (canonical, df_subtype, padloc_system, source, notes)
 manual: list[tuple] = [
     # KEY PUBLISHED-PAPER SYSTEMS
-    ("SspBCDE",         "SspBCDE",                  "PT_SspABCD",        "both",        "SspBCDE(DF)=PT_SspABCD(PADLOC) — key FACILITATE system in published paper"),
-    ("Gao_Qat",         "Gao_Qat",                  "qatABCD",           "both",        "Gao_Qat(DF)=qatABCD(PADLOC) — key FACILITATE system in published paper"),
+    ("SspBCDE",         "SspBCDE",                  "PT_SspABCD",        "both",        "SspBCDE(DF)=PT_SspABCD(PADLOC)  -  key FACILITATE system in published paper"),
+    ("Gao_Qat",         "Gao_Qat",                  "qatABCD",           "both",        "Gao_Qat(DF)=qatABCD(PADLOC)  -  key FACILITATE system in published paper"),
     # CBASS
     ("CBASS_I",         "CBASS_I",                  "cbass_type_I",      "both",        "naming convention differs between tools"),
     ("CBASS_II",        "CBASS_II",                 "cbass_type_II",     "both",        "naming convention differs between tools"),
@@ -159,7 +159,7 @@ manual: list[tuple] = [
     # CAS/CRISPR
     ("CAS_I-C",         "CAS_Class1-Subtype-I-C",   "cas_type_I-C",      "both",        "naming convention differs between tools"),
     ("CAS_I-E",         "CAS_Class1-Subtype-I-E",   "cas_type_I-E",      "both",        "naming convention differs between tools"),
-    ("CAS_I-F",         "CAS_Class1-Subtype-I-F",   "cas_type_I-F1",     "both",        "DF uses I-F; PADLOC uses I-F1 — same CRISPR-Cas subtype"),
+    ("CAS_I-F",         "CAS_Class1-Subtype-I-F",   "cas_type_I-F1",     "both",        "DF uses I-F; PADLOC uses I-F1  -  same CRISPR-Cas subtype"),
     ("CAS_III-A",       "CAS_Class1-Subtype-III-A", "cas_type_III-A",    "both",        "naming convention differs between tools"),
     ("CAS_IV-A",        "CAS_Class1-Subtype-IV-A",  "cas_type_IV-A",     "both",        "naming convention differs between tools"),
     ("CAS_II-A",        "CAS_Class2-Subtype-II-A",  "cas_type_II-A",     "both",        "naming convention differs between tools"),
@@ -188,12 +188,12 @@ manual: list[tuple] = [
     ("Gao_Tmn",         "Gao_Tmn",                  "tmn",               "both",        "Gao_Tmn(DF)=tmn(PADLOC)"),
     ("Gao_Upx",         "Gao_Upx",                  "upx",               "both",        "Gao_Upx(DF)=upx(PADLOC)"),
     ("Gao_TerY",        "Gao_TerY",                 "TerY-P",            "both",        "Gao_TerY(DF)=TerY-P(PADLOC)"),
-    ("Gao_Iet_df",      "Gao_Iet",                  "",                  "df_only",     "UNCERTAIN: Gao_Iet(DF=10) vs ietAS(PADLOC=89) — large count discrepancy, kept separate pending manual check"),
-    ("padloc_ietAS",    "",                         "ietAS",             "padloc_only", "UNCERTAIN: ietAS(PADLOC=89) vs Gao_Iet(DF=10) — large count discrepancy, kept separate pending manual check"),
+    ("Gao_Iet_df",      "Gao_Iet",                  "",                  "df_only",     "UNCERTAIN: Gao_Iet(DF=10) vs ietAS(PADLOC=89)  -  large count discrepancy, kept separate pending manual check"),
+    ("padloc_ietAS",    "",                         "ietAS",             "padloc_only", "UNCERTAIN: ietAS(PADLOC=89) vs Gao_Iet(DF=10)  -  large count discrepancy, kept separate pending manual check"),
     ("mza_other",       "",                         "mza_other",         "padloc_only", "PADLOC-only mza variant"),
     ("TerY-P_other",    "",                         "TerY-P_other",      "padloc_only", "PADLOC-only TerY-P variant"),
     ("qatABCD_other",   "",                         "qatABCD_other",     "padloc_only", "PADLOC-only qat variant"),
-    # SOFIC DISCREPANCY (DF=6 vs PADLOC=410 — 68x difference, kept separate)
+    # SOFIC DISCREPANCY (DF=6 vs PADLOC=410  -  68x difference, kept separate)
     ("df_SoFic",        "SoFic",                    "",                  "df_only",     "DISCREPANCY: DF=6 vs PADLOC=410; detection threshold differs substantially; kept separate"),
     ("padloc_SoFic",    "",                         "SoFic",             "padloc_only", "DISCREPANCY: DF=6 vs PADLOC=410; detection threshold differs substantially; kept separate"),
     # PHOSPHOROTHIOATION
@@ -290,7 +290,7 @@ new_rows = [
 
 df_final = pd.concat([df, pd.DataFrame(new_rows)], ignore_index=True)
 
-# Fix SEFIR: both tools have it — automated pass put it as padloc_only due to case issue
+# Fix SEFIR: both tools have it  -  automated pass put it as padloc_only due to case issue
 sefir_mask = df_final["canonical_name"].isin(["SEFIR", "padloc_SEFIR"])
 df_final = df_final.drop(index=df_final[sefir_mask].index).reset_index(drop=True)
 df_final = pd.concat([df_final, pd.DataFrame([{

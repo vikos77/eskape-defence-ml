@@ -492,7 +492,7 @@ species:
     genome_size_mb_approx: 3.9
     target_n: 150
     country_cap: 30
-    note: Reference species — published data from Muthuraman et al. 2026 used as held-out
+    note: Reference species  -  published data from Muthuraman et al. 2026 used as held-out
       validation set
     ncbi_taxids:
     - taxid: '470'

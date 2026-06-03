@@ -9,7 +9,7 @@ Each entry: what was wrong, what changed, before/after impact on conclusions.
 
 ---
 
-## Ph10-H5 — Holdout recall 0.939 vs CV 0.700: binomial test + IC2 composition check
+## Ph10-H5  -  Holdout recall 0.939 vs CV 0.700: binomial test + IC2 composition check
 
 **Status:** FIXED 2026-05-27
 
@@ -31,7 +31,7 @@ Most likely explanation: holdout cohort is enriched for non-IC2 A. baumannii."
 
 ---
 
-## Ph10-H6 — Global beeswarm uses signed SHAP: cancels opposing class effects
+## Ph10-H6  -  Global beeswarm uses signed SHAP: cancels opposing class effects
 
 **Status:** FIXED 2026-05-27
 
@@ -44,12 +44,12 @@ and RM_Type_I in the global visual.
 Change beeswarm computation to `np.abs(shap_3d).mean(axis=2)` to match the global bar
 ranking cell which already uses absolute values.
 
-**Before:** Global beeswarm uses signed mean — class-opposing features appear small.
-**After:** Global beeswarm uses abs mean — true global importance visible.
+**Before:** Global beeswarm uses signed mean  -  class-opposing features appear small.
+**After:** Global beeswarm uses abs mean  -  true global importance visible.
 
 ---
 
-## Ph10-H7 — PDC-S02/PDC-M30 at SHAP ranks 8–9 absent from alignment table
+## Ph10-H7  -  PDC-S02/PDC-M30 at SHAP ranks 8–9 absent from alignment table
 
 **Status:** FIXED 2026-05-27
 
@@ -68,7 +68,7 @@ follow-up."
 
 ---
 
-## Ph10-H8 — Alignment scatter uses global SHAP rank vs AB-only Fisher's: category mismatch
+## Ph10-H8  -  Alignment scatter uses global SHAP rank vs AB-only Fisher's: category mismatch
 
 **Status:** FIXED 2026-05-27
 
@@ -83,13 +83,13 @@ Regenerate the alignment scatter using AB-class SHAP rank on the y-axis. The AB-
 SHAP values are already computed in the per-class SHAP cells.
 
 **Before:** Alignment scatter mixes AB-specific published analysis with global ML ranks.
-**After:** Alignment scatter uses AB-class SHAP rank — fair comparison to published AB analysis.
+**After:** Alignment scatter uses AB-class SHAP rank  -  fair comparison to published AB analysis.
 
 ---
 
-## Ph10-M5 — SHAP clonal inflation not quantified
+## Ph10-M5  -  SHAP clonal inflation not quantified
 
-**Status:** DEFERRED — Phase 12
+**Status:** DEFERRED  -  Phase 12
 
 **What was wrong:**
 Limitation #4 in biological synthesis acknowledges "SHAP captures lineage-level signals
@@ -105,7 +105,7 @@ Compute mean SHAP for SspBCDE in the AB class using: (a) all 150 AB genomes vs
 
 ---
 
-## Ph10-M6 — 2 zero-defence holdout genomes not investigated
+## Ph10-M6  -  2 zero-defence holdout genomes not investigated
 
 **Status:** FIXED 2026-05-27
 
@@ -123,7 +123,7 @@ against S2 metadata. Confirm species and check whether they affected the recall 
 
 ---
 
-## Ph10-M7 — Self-OR=100 truncation artefact in S16 not flagged
+## Ph10-M7  -  Self-OR=100 truncation artefact in S16 not flagged
 
 **Status:** FIXED 2026-05-27
 
@@ -145,7 +145,7 @@ display artefact. Does not affect significant-pairs analysis.
 
 ---
 
-## Ph11-C1 — Q3 primary conclusion must be stated as negative finding
+## Ph11-C1  -  Q3 primary conclusion must be stated as negative finding
 
 **Status:** FIXED 2026-05-27
 
@@ -168,7 +168,7 @@ archetype structure."
 
 ---
 
-## Ph11-C2 — RESTRICT/FACILITATE "recovery" must be reframed
+## Ph11-C2  -  RESTRICT/FACILITATE "recovery" must be reframed
 
 **Status:** FIXED 2026-05-27
 
@@ -189,7 +189,7 @@ independently cross-validate RESTRICT/FACILITATE, as it disappears after derepli
 
 ---
 
-## Ph11-C3 — Q5b K=2 reframed as gradient, not archetype discovery
+## Ph11-C3  -  Q5b K=2 reframed as gradient, not archetype discovery
 
 **Status:** FIXED 2026-05-27
 
@@ -211,7 +211,7 @@ within defence loci) rather than a count-based approach."
 
 ---
 
-## Ph11-H1 — Silhouette <0.07 never explicitly interpreted as "no structure"
+## Ph11-H1  -  Silhouette <0.07 never explicitly interpreted as "no structure"
 
 **Status:** FIXED 2026-05-27
 
@@ -227,7 +227,7 @@ the data does not partition into distinct natural groups in this feature space."
 
 ---
 
-## Ph11-H2 — KM vs HC ARI=0.47 not interpreted as unstable partition
+## Ph11-H2  -  KM vs HC ARI=0.47 not interpreted as unstable partition
 
 **Status:** FIXED 2026-05-27
 
@@ -243,12 +243,12 @@ the 10-cluster partition is not robustly recoverable across methods."
 
 ---
 
-## Ph11-H3 — ARI vs ARG tertile ≈ 0 not stated as direct Q3 answer
+## Ph11-H3  -  ARI vs ARG tertile ≈ 0 not stated as direct Q3 answer
 
 **Status:** FIXED 2026-05-27
 
 **What was wrong:**
-ARI vs ARG tertile is 0.031 (K-means), 0.021 (HC), 0.030 (K=6) — all printed but not
+ARI vs ARG tertile is 0.031 (K-means), 0.021 (HC), 0.030 (K=6)  -  all printed but not
 interpreted as the direct answer to Q3's secondary question.
 
 **Fix required:**
@@ -258,7 +258,7 @@ archetypes, as identified by unsupervised clustering, are uninformative for ARG 
 
 ---
 
-## Ph11-H4 — Cluster 5 (192 genomes, AB/EC/PA mixed) uninterpreted
+## Ph11-H4  -  Cluster 5 (192 genomes, AB/EC/PA mixed) uninterpreted
 
 **Status:** FIXED 2026-05-27
 
@@ -275,19 +275,19 @@ bucket rather than a biologically distinctive archetype."
 
 ---
 
-## Ph11-M1 — f-string bug: 'Hierarchical Ward K={best_k}' prints literally
+## Ph11-M1  -  f-string bug: 'Hierarchical Ward K={best_k}' prints literally
 
 **Status:** FIXED 2026-05-27
 
 **What was wrong:**
-Second row of ARI summary table: `'Hierarchical Ward K={best_k}'` — missing `f` prefix.
+Second row of ARI summary table: `'Hierarchical Ward K={best_k}'`  -  missing `f` prefix.
 Prints as literal text, not evaluated K value.
 
 **Fix required:** Add `f` prefix: `f'Hierarchical Ward K={best_k}'`.
 
 ---
 
-## Ph11-M2 — FEAT_COLS hardcoded in Phase 11 vs dynamically computed in Phase 10
+## Ph11-M2  -  FEAT_COLS hardcoded in Phase 11 vs dynamically computed in Phase 10
 
 **Status:** FIXED 2026-05-27
 
@@ -300,7 +300,7 @@ Replace hardcoded list with same dynamic computation used in Phase 10.
 
 ---
 
-## Ph11-M3 — Gap statistic missing (pre-registered deliverable)
+## Ph11-M3  -  Gap statistic missing (pre-registered deliverable)
 
 **Status:** FIXED 2026-05-27
 
@@ -315,7 +315,7 @@ random uniform data). ~10 lines using sklearn or manual computation.
 
 ---
 
-## Ph11-M4 — RESTRICT check uses dp_RM_Type_I only, not all RM subtypes
+## Ph11-M4  -  RESTRICT check uses dp_RM_Type_I only, not all RM subtypes
 
 **Status:** FIXED 2026-05-27
 

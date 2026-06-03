@@ -1,11 +1,11 @@
 """
 NCBI availability survey for ESKAPE species.
 
-Uses NCBI E-utilities (Entrez) API — stable, well-documented, no extra installs.
+Uses NCBI E-utilities (Entrez) API  -  stable, well-documented, no extra installs.
 Queries complete genome counts and samples metadata (country, year, isolation
 source) for sampling strategy decisions in Phase 2.
 
-Runs on system Python 3.9+ — only stdlib (urllib, xml, json, collections).
+Runs on system Python 3.9+  -  only stdlib (urllib, xml, json, collections).
 
 Usage:
     cd eskape-defence-ml
