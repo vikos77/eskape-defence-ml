@@ -80,10 +80,10 @@ def genome_bootstrap_ci(y_true, y_pred, metric_fn, n_boot=2000, seed=42):
 
     rng = np.random.RandomState(seed)
     n = len(y_true)
-    boot_scores = [
-        metric_fn(y_true[idx], y_pred[idx])
-        for idx in (rng.randint(0, n, size=n) for _ in range(n_boot))
-    ]
+    boot_scores = []
+    for _ in range(n_boot):
+        idx = rng.randint(0, n, size=n)  # one index array; both arrays use same idx
+        boot_scores.append(metric_fn(y_true[idx], y_pred[idx]))
     lo, hi = np.percentile(boot_scores, [2.5, 97.5])
     return float(lo), float(hi)
 

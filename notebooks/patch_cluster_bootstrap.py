@@ -25,6 +25,7 @@ BOOTSTRAP_IMPORT_BLOCK = """\
 import sys as _sys
 _sys.path.insert(0, str(Path("..") / "src"))
 from evaluation.bootstrap import bootstrap_ci_auto as _bootstrap_ci_auto
+from evaluation.bootstrap import genome_bootstrap_ci as _genome_bci
 
 def bootstrap_ci(y_true, y_pred, groups_arg=None, metric_fn=None, n_boot=N_BOOT, seed=42):
     \"\"\"
@@ -36,13 +37,7 @@ def bootstrap_ci(y_true, y_pred, groups_arg=None, metric_fn=None, n_boot=N_BOOT,
         metric_fn = balanced_accuracy_score
     mean_val = metric_fn(y_true, y_pred)
     if groups_arg is None:
-        # No group info: genome-level (legacy path, should not be used for new calls)
-        import numpy as _np
-        rng = _np.random.RandomState(seed)
-        n = len(y_true)
-        scores = [metric_fn(y_true[rng.randint(0, n, n)], y_pred[rng.randint(0, n, n)])
-                  for _ in range(n_boot)]
-        lo, hi = _np.percentile(scores, [2.5, 97.5])
+        lo, hi = _genome_bci(y_true, y_pred, metric_fn, n_boot, seed)
     else:
         lo, hi, _ = _bootstrap_ci_auto(y_true, y_pred, groups_arg, metric_fn, n_boot, seed)
     return mean_val, lo, hi
@@ -139,10 +134,8 @@ def patch_notebook_07():
 
     patches = [
         (OLD_BOOTSTRAP_DEF, BOOTSTRAP_IMPORT_BLOCK),
-        # XGB Q1 bootstrap call (groups is in scope at that point)
-        # Pattern varies — patch any remaining genome-level calls
-        # We use the conservative approach: add groups_arg wherever bootstrap_ci is called
-        # with positional yt/yp args only
+
+        # Early-stopping XGB BA call (cell 15)
         (
             "mean_ba_xgb, lo_xgb, hi_xgb = bootstrap_ci(mc_true_xgb, mc_pred_xgb)",
             "mean_ba_xgb, lo_xgb, hi_xgb = bootstrap_ci(mc_true_xgb, mc_pred_xgb, groups_arg=groups)\n"
@@ -150,20 +143,44 @@ def patch_notebook_07():
             "np.save(RES / 'q1_xgb_pred_pred.npy', mc_pred_xgb)\n"
             "np.save(RES / 'q1_xgb_pred_groups.npy', groups)"
         ),
+
+        # Early-stopping XGB F1 call (cell 15) — add groups_arg
+        (
+            "mean_f1_xgb, lo_f1_xgb, hi_f1_xgb = bootstrap_ci(mc_true_xgb, mc_pred_xgb,\n"
+            "    metric_fn=lambda yt, yp: f1_score(yt, yp, average=\"macro\"))",
+            "mean_f1_xgb, lo_f1_xgb, hi_f1_xgb = bootstrap_ci(mc_true_xgb, mc_pred_xgb,\n"
+            "    groups_arg=groups, metric_fn=lambda yt, yp: f1_score(yt, yp, average=\"macro\"))"
+        ),
+
+        # Early-stopping LGBM BA call (cell 17)
         (
             "mean_ba_lgbm, lo_lgbm, hi_lgbm = bootstrap_ci(mc_true_lgbm, mc_pred_lgbm)",
             "mean_ba_lgbm, lo_lgbm, hi_lgbm = bootstrap_ci(mc_true_lgbm, mc_pred_lgbm, groups_arg=groups)\n"
             "np.save(RES / 'q1_lgbm_pred_true.npy', mc_true_lgbm)\n"
             "np.save(RES / 'q1_lgbm_pred_pred.npy', mc_pred_lgbm)"
         ),
-        # Fixed-iter variants
+
+        # Early-stopping LGBM F1 call (cell 17) — add groups_arg
         (
-            "mean_ba_xgb, lo_xgb, hi_xgb = bootstrap_ci(mc_true_fixed, mc_pred_xgb_fixed)",
-            "mean_ba_xgb, lo_xgb, hi_xgb = bootstrap_ci(mc_true_fixed, mc_pred_xgb_fixed, groups_arg=groups)"
+            "mean_f1_lgbm, lo_f1_lgbm, hi_f1_lgbm = bootstrap_ci(mc_true_lgbm, mc_pred_lgbm,\n"
+            "    metric_fn=lambda yt, yp: f1_score(yt, yp, average=\"macro\"))",
+            "mean_f1_lgbm, lo_f1_lgbm, hi_f1_lgbm = bootstrap_ci(mc_true_lgbm, mc_pred_lgbm,\n"
+            "    groups_arg=groups, metric_fn=lambda yt, yp: f1_score(yt, yp, average=\"macro\"))"
         ),
+
+        # Fixed-iter XGB BA (cell 21) — add groups_arg + save
         (
-            "mean_ba_lgbm, lo_lgbm, hi_lgbm = bootstrap_ci(mc_true_fixed, mc_pred_lgbm_fixed)",
-            "mean_ba_lgbm, lo_lgbm, hi_lgbm = bootstrap_ci(mc_true_fixed, mc_pred_lgbm_fixed, groups_arg=groups)"
+            "ba_xf,  lo_xf,  hi_xf  = bootstrap_ci(mc_true_fixed, mc_pred_xgb_fixed)",
+            "ba_xf,  lo_xf,  hi_xf  = bootstrap_ci(mc_true_fixed, mc_pred_xgb_fixed, groups_arg=groups)\n"
+            "np.save(RES / 'q1_xgb_fixed_pred_true.npy', mc_true_fixed)\n"
+            "np.save(RES / 'q1_xgb_fixed_pred_pred.npy', mc_pred_xgb_fixed)\n"
+            "np.save(RES / 'q1_xgb_fixed_pred_groups.npy', groups)"
+        ),
+
+        # Fixed-iter LGBM BA (cell 21) — add groups_arg
+        (
+            "ba_lf,  lo_lf,  hi_lf  = bootstrap_ci(mc_true_fixed, mc_pred_lgbm_fixed)",
+            "ba_lf,  lo_lf,  hi_lf  = bootstrap_ci(mc_true_fixed, mc_pred_lgbm_fixed, groups_arg=groups)"
         ),
     ]
 
