@@ -934,3 +934,27 @@ with constrained depth.
 **Impact on manuscript:** Results and Discussion sections will report RF as primary Q1
 model. XGB and LGBM are reported as secondary comparators. The manuscript claim is
 "RF achieves BA=0.874 [0.852-0.895]; gradient boosting did not improve on RF."
+
+---
+
+## 2026-06-03 — LR Q1 CI recomputed with cluster bootstrap for consistency
+
+**Decision:** Recompute Phase 7 LR Q1 CI using cluster bootstrap to match the method
+used for RF, XGB, LGBM.
+
+**Implementation:** Exact Phase 7 params (C=1.0, L2, lbfgs, no class_weight) re-run;
+fold scores confirmed to match parquet exactly [0.9074, 0.8875, 0.8235, 0.7958, 0.9192].
+Cluster bootstrap (n=95 phylogroups, 2000 iterations) applied to pooled predictions.
+
+**Before (genome-level): BA=0.8367  [0.8128-0.8594]  width=0.047**
+**After  (cluster):       BA=0.8367  [0.7890-0.9113]  width=0.122**
+
+Wide CI reflects genuine instability: LR fold scores span 0.796-0.907. The simple model
+is sensitive to exactly which phylogroups it sees at training time. RF ensemble averaging
+suppresses this variance (width=0.043). The widening is honest, not a problem.
+
+**Final Q1 cluster-bootstrap table (all models):**
+- LR:   0.8367  [0.7890-0.9113]
+- RF:   0.8742  [0.8520-0.8950]
+- LGBM: 0.8595  [0.8139-0.8970]
+- XGB:  0.8062  [0.7758-0.8778]
