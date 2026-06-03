@@ -71,8 +71,9 @@ Machine learning extension of Muthuraman et al. (2026), *Journal of Applied Micr
 - Per-class recall: SA=0.993, EF=0.953, PA=0.893, KP=0.856, EC=0.849, AB=0.700 (worst — IC2 clones confused with EF in feature space).
 - Q2 significant species (RF, AUROC): PA=0.677 (RF wins over XGB).
 
-### Phase 9 - Gradient boosting (XGBoost)
-- Q1: XGB BA = 0.884 [0.863–0.901] — marginal gain over RF.
+### Phase 9 - Gradient boosting (XGBoost / LightGBM)
+- Q1: XGB BA=0.806 [0.776–0.878], LGBM BA=0.860 [0.814–0.897] — neither outperforms RF.
+- RF remains primary Q1 classifier. XGB with max_depth=4 underperforms on sparse binary features.
 - Q2 significant species (XGB, AUROC): EC=0.872, KP=0.924. XGB primary for EC/KP; RF primary for PA.
 - EC, KP significant under both models; PA significant under RF only (chromosomal ARG routes weaken XGB signal).
 

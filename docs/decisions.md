@@ -908,3 +908,29 @@ and producing CIs that are anticonservatively narrow.
 
 **Action required:** Re-run notebooks 06 and 07 to produce updated CI values.
 Log before/after numbers here once re-run is complete.
+
+---
+
+## 2026-06-03 — XGB README correction and Q1 final model ranking
+
+**Decision:** Accept RF as primary Q1 classifier. README XGB BA value (0.884) was incorrect.
+
+**Finding:** Two independent runs (parquet from original Phase 9 execution and the
+cluster-bootstrap recompute) both produce XGB Q1 BA ~0.81. The README value of 0.884
+does not correspond to any stored output and was written incorrectly.
+
+**Confirmed Q1 cluster bootstrap results:**
+- LR:   BA=0.8370  [0.8130-0.8590]  (genome-level bootstrap; Phase 7 value retained)
+- RF:   BA=0.8742  [0.8520-0.8950]  (cluster bootstrap, n=95 groups)
+- LGBM: BA=0.8595  [0.8139-0.8970]  (cluster bootstrap, n=95 groups)
+- XGB:  BA=0.8062  [0.7758-0.8778]  (cluster bootstrap, n=95 groups)
+
+**Interpretation:** RF is the top-performing Q1 classifier. LGBM is comparable (CIs
+overlap). XGB underperforms RF and LGBM; shallow max_depth=4 is insufficient for 265-
+column sparse binary features. The "more complex = better" hierarchy does not hold —
+RF's tree diversity and native handling of sparse binary inputs outperforms boosting
+with constrained depth.
+
+**Impact on manuscript:** Results and Discussion sections will report RF as primary Q1
+model. XGB and LGBM are reported as secondary comparators. The manuscript claim is
+"RF achieves BA=0.874 [0.852-0.895]; gradient boosting did not improve on RF."
