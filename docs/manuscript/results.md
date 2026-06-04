@@ -111,20 +111,28 @@ CRISPR-Cas prevalence in clinical PA isolates in this dataset.
 
 **Test A (RM copy number vs binary presence).** RM Type I was the only subtype with
 substantial multi-copy variation (31% of genomes carrying more than one copy, range
-1-6). In all three species with significant Q2 signal, substituting the RM Type I
-copy-number feature (dc_RM_Type_I) for binary presence (dp_RM_Type_I) degraded AUROC:
-EC -0.069 (0.853 to 0.784), PA -0.142 (0.722 to 0.580), KP -0.040 (0.896 to 0.856).
-SHAP attribution in the Test A models ranked dc_RM_Type_I third among 265 features
-for KP and first for PA, yet AUROC still fell, indicating that count adds noise
-relative to the binary threshold signal. RM presence/absence is the operative encoding
-for this dataset.
+1-6). Substituting the RM Type I copy-number feature (dc_RM_Type_I) for binary
+presence (dp_RM_Type_I) in the primary RF Q2 models degraded AUROC relative to the
+primary RF AUROC baseline in all three significant species: PA -0.142 (0.722 to 0.580),
+EC -0.050 (0.853 to 0.803), KP -0.012 (0.896 to 0.884). The degradation was strongest
+in PA and moderate in EC; the KP delta (-0.012) was minimal. SHAP attribution in the
+Test A models ranked dc_RM_Type_I third among 265 features for KP and first for PA,
+yet AUROC still fell in both, indicating that copy-number adds noise relative to the
+binary threshold signal. RM presence/absence is the operative encoding for this dataset;
+the conclusion holds most strongly for PA and EC.
 
 **Test B (mechanism-class-specific ARG burden).** Seven (species x ARG class) cells
-reached BH-corrected significance (q = 0.05) across 21 cells passing the 30/30 sample
-floor (Table S1; Fig. 5). Significant cells were: *K. pneumoniae*/aminoglycoside
-(AUROC = 0.803 [0.735-0.879], p_adj = 0.0077), *P. aeruginosa*/beta-lactam
-(0.793 [0.677-0.893], p_adj = 0.011), *E. cloacae*/beta-lactam (0.750 [0.661-0.826],
-p_adj = 0.011), *K. pneumoniae*/beta-lactam (0.676 [0.592-0.736], p_adj = 0.012),
+reached BH-corrected significance (q = 0.05) across eight cells passing the 30/30
+sample floor (Table S1; Fig. 5). One additional cell, *A. baumannii*/aminoglycoside,
+passed the floor numerically but was excluded prior to modelling because IC2 clonal
+lineages dominate the high-ARG tertile and their concentration in a subset of the 13 AB
+phylogroups would confound tertile label with clonal ancestry. Quinolone resistance,
+pre-specified as a negative control because it is predominantly chromosomal, failed
+the 30/30 floor in all six species, consistent with near-binary count distributions.
+Significant cells were: *K. pneumoniae*/aminoglycoside (AUROC = 0.803 [0.735-0.879],
+p_adj = 0.0077), *P. aeruginosa*/beta-lactam (0.793 [0.677-0.893], p_adj = 0.011),
+*E. cloacae*/beta-lactam (0.750 [0.661-0.826], p_adj = 0.011),
+*K. pneumoniae*/beta-lactam (0.676 [0.592-0.736], p_adj = 0.012),
 *K. pneumoniae*/sulfonamide (0.817 [0.675-0.949], p_adj = 0.020),
 *E. faecium*/macrolide-MLSB (0.743 [0.587-0.912], p_adj = 0.049), and
 *E. faecium*/tetracycline (0.814 [0.617-1.000], p_adj = 0.048). Significance in
@@ -132,9 +140,12 @@ p_adj = 0.011), *K. pneumoniae*/beta-lactam (0.676 [0.592-0.736], p_adj = 0.012)
 resistance classes in Gram-positive bacteria, extends the restriction signal beyond
 Gram-negative species.
 
-SHAP attribution for the pre-specified plasmid-mediated ARG classes confirmed a
-restrictive RM signal (negative SHAP on the high-ARG-burden class) in KP/aminoglycoside,
-driven by RM Type II and RM Type IIG rather than Type I. For the beta-lactam cells,
-RM SHAP values were near zero or weakly positive, indicating that the beta-lactam signal
-is driven by features other than canonical RM restriction; possible mechanistic
-explanations are addressed in the Discussion.
+SHAP attribution confirmed a restrictive RM signal (negative SHAP on the high-ARG-burden
+class) in three of the seven significant cells: KP/aminoglycoside (RM Type II,
+mean signed SHAP = -0.0039), EF/macrolide-MLSB (RM Type IIG, -0.0052), and
+EF/tetracycline (RM Type II, -0.0040). In all three, the restriction signal was carried
+by Type II or Type IIG rather than Type I, which showed SHAP values near zero. For the
+four remaining significant cells (three beta-lactam cells and KP/sulfonamide), RM SHAP
+values were near zero or weakly positive, indicating that the signal in these cells is
+driven by features other than canonical RM restriction; possible mechanistic explanations
+are addressed in the Discussion.
