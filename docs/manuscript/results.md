@@ -33,9 +33,11 @@ a broader set of *A. baumannii* lineages rather than exclusively IC2 clones.
 
 Separate binary classifiers (RF and XGBoost) were trained per species to distinguish
 high-ARG genomes (top tertile) from low-ARG genomes (bottom tertile), using
-within-species defence system presence/absence features. Statistical significance was
-assessed by one-sample t-test of fold-level balanced accuracies against a null of
-BA = 0.5, with Benjamini-Hochberg correction applied across the six species (q = 0.05).
+within-species defence system presence/absence features. Middle-tertile genomes were
+excluded, leaving the following per-species Q2 sample sizes: EC n=97, KP n=86,
+PA n=120, EF n=104, SA n=106, AB n=101. Statistical significance was assessed by
+one-sample t-test of fold-level balanced accuracies against a null of BA = 0.5, with
+Benjamini-Hochberg correction applied across the six species (q = 0.05).
 
 Defence system profiles yielded significantly above-chance prediction in three of six
 species (Fig. 2; Table 3). For *E. cloacae* complex, RF BA = 0.753 [0.661-0.837]
@@ -43,7 +45,7 @@ species (Fig. 2; Table 3). For *E. cloacae* complex, RF BA = 0.753 [0.661-0.837]
 [0.642-0.763] (p_adj = 0.011), AUROC = 0.896 [0.797-0.969]. For *P. aeruginosa*,
 RF BA = 0.677 [0.580-0.765] (p_adj = 0.014), AUROC = 0.722 [0.619-0.830]. XGBoost
 exceeded RF in EC (BA = 0.824, p_adj < 0.001) and KP (BA = 0.789, p_adj = 0.013) but
-not PA (BA = 0.568, p_adj = 0.137). All AUROC CIs are 95% fold-level bootstrap
+not PA (BA = 0.568, p_adj = 0.137). AUROC CIs are 95% fold-level bootstrap
 (2000 iterations); BA CIs are 95% cluster bootstrap on phylogroups.
 
 The remaining three species did not exceed the null. For *S. aureus*, BA = 0.514
@@ -54,9 +56,8 @@ classifiable signal. For *E. faecium*, BA = 0.489 (p_adj = 0.120), AUROC = 0.892
 [0.676-1.000]. The point estimate of 0.892 is arithmetically accurate but should be
 read alongside its wide CI: EF has only seven phylogroups, one fold was excluded
 because it lacked both ARG-burden classes, and per-fold AUROC varied from 0.75 to 1.0
-across the four valid folds. The fold-level bootstrap CI [0.676-1.000] captures this
-variance honestly; the non-significant BA test (p_adj = 0.120) is the operative
-significance criterion.
+across the four valid folds. The fold-level bootstrap CI captures this variance; the
+non-significant BA test (p_adj = 0.120) is the operative significance criterion.
 
 
 ## 3. ESKAPE defence profiles form a continuum rather than discrete archetypes
