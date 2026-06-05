@@ -23,8 +23,7 @@ near-featureless profile that partially overlaps with other species at low defen
 counts. Per-class recall for the remaining species was: PA 0.893, KP 0.856, EC 0.849.
 
 External validation on the 33 published *A. baumannii* genomes from Muthuraman et al.
-(2026) that were held out from all training (C3 holdout) confirmed the primary result:
-overall BA = 0.902, with AB recall = 0.939. The higher AB recall in the holdout
+(2026) that were held out from all training (C3 holdout) confirmed the primary result, returning overall BA = 0.902 and AB recall = 0.939. The higher AB recall in the holdout
 relative to the cross-validated estimate (0.700) reflects the holdout being drawn from
 a broader set of *A. baumannii* lineages rather than exclusively IC2 clones.
 
@@ -54,7 +53,7 @@ The remaining three species did not exceed the null. For *S. aureus*, BA = 0.514
 eliminating the within-species ARG variance that would otherwise generate a
 classifiable signal. For *E. faecium*, BA = 0.489 (p_adj = 0.120), AUROC = 0.892
 [0.676-1.000]. The point estimate of 0.892 is arithmetically accurate but should be
-read alongside its wide CI: EF has only seven phylogroups, one fold was excluded
+read alongside its wide CI, as EF has only seven phylogroups, one fold was excluded
 because it lacked both ARG-burden classes, and per-fold AUROC varied from 0.75 to 1.0
 across the four valid folds. The fold-level bootstrap CI captures this variance; the
 non-significant BA test (p_adj = 0.120) is the operative significance criterion.
@@ -70,7 +69,7 @@ partition and species labels was 0.383; however, this value was artefactual. Whe
 clustering was repeated on the 95 phylogroup representatives (one genome per
 phylogroup), best K dropped to 2 (silhouette = 0.194) and ARI against species collapsed
 to -0.004, indistinguishable from random (Table 4). The full-dataset ARI of 0.383 was
-driven by IC2 clonal inflation: the 150 *A. baumannii* genomes, dominated by near-
+driven by IC2 clonal inflation. The 150 *A. baumannii* genomes, dominated by near-
 identical IC2 clones, formed a high-density cloud that was trivially separated by
 K-means regardless of defence architecture. Agreement between K-means and hierarchical
 Ward linkage at K = 10 was ARI = 0.468, below the 0.70 threshold considered evidence
