@@ -1,26 +1,35 @@
-# Snakefile — ESKAPE defence ML pipeline
-# Phase 2: genome download, QC, and annotation
+# Snakefile — ESKAPE defence ML pipeline (4× scaling study)
 #
-# Extends: github.com/vikos77/acinetobacter-defence-pipeline
-# All tool versions pinned in workflow/envs/*.yaml
+# Adapted from: eskape-defence-ml/workflow/Snakefile
+# Changes from original:
+#   - All DB paths repointed to original project (read-only, no DB setup rules)
+#   - DB setup rules removed: checkm2_db, defensefinder_models,
+#     padloc_db_update, amrfinderplus_db — all DBs exist in original project
+#   - Species config: 3,460 genomes (config/species.yaml in this project)
 #
-# Usage:
+# Usage (run from eskape-defence-ml_2/):
 #   conda activate eskape-ml
-#   snakemake --use-conda --cores 8 --rerun-incomplete
+#   snakemake -n --use-conda \
+#     --conda-prefix /Users/Vicky/Acinetobacter_ML_2/eskape-defence-ml/.snakemake/conda/ \
+#     --rerun-triggers mtime
 #
-# For a dry-run (see what would run without running it):
-#   snakemake --use-conda --cores 8 -n
+#   snakemake --cores 8 --use-conda \
+#     --conda-prefix /Users/Vicky/Acinetobacter_ML_2/eskape-defence-ml/.snakemake/conda/ \
+#     --rerun-incomplete --rerun-triggers mtime
 
 import yaml
 import os
 
 configfile: "config/params.yaml"
 
+# ── Original project root (read-only — databases live here) ──────────────────
+ORIG = "/Users/Vicky/Acinetobacter_ML_2/eskape-defence-ml"
+
 # ── Load species and accessions from config ───────────────────────────────────
 with open("config/species.yaml") as f:
     SPECIES_CFG = yaml.safe_load(f)
 
-SPECIES   = list(SPECIES_CFG["species"].keys())
+SPECIES    = list(SPECIES_CFG["species"].keys())
 ACCESSIONS = {
     sp: cfg["accessions"]
     for sp, cfg in SPECIES_CFG["species"].items()
@@ -38,16 +47,18 @@ def acc_to_fname(acc: str) -> str:
     return acc.replace(".", "_")
 
 
-# ── Reference databases (run workflow/scripts/setup_databases.sh first) ───────
-BACMET_DB   = "data/raw/databases/BacMet2_EXP_database.fasta"
-ICEBERG_DB  = "data/raw/databases/ICEberg_IME.fasta"
-RESFINDER_DB = "data/raw/databases/db_resfinder"
+# ── Reference databases (read-only: all in original project) ──────────────────
+BACMET_DB    = f"{ORIG}/data/raw/databases/BacMet2_EXP_database.fasta"
+ICEBERG_DB   = f"{ORIG}/data/raw/databases/ICEberg_IME.fasta"
+RESFINDER_DB = f"{ORIG}/data/raw/databases/db_resfinder"
 
-# ── AMRFinderPlus: database flag + species → organism lookup ──────────────────
-# amrfinder -u only writes to the default location within its conda env.
-# The flag file records that the download completed; subsequent runs reuse it.
-AMRFINDER_FLAG = "data/raw/databases/amrfinderplus_ready.flag"
+CHECKM2_DB         = f"{ORIG}/data/raw/databases/checkm2/CheckM2_database/uniref100.KO.1.dmnd"
+DEFENSEFINDER_FLAG = f"{ORIG}/data/raw/databases/defensefinder_models_ready.flag"
+DEFENSEFINDER_DIR  = f"{ORIG}/data/raw/databases/defensefinder_models"
+PADLOC_FLAG        = f"{ORIG}/data/raw/databases/padloc_db_ready.flag"
+AMRFINDER_FLAG     = f"{ORIG}/data/raw/databases/amrfinderplus_ready.flag"
 
+# ── AMRFinderPlus: species → organism lookup ──────────────────────────────────
 AMRFINDER_ORGANISM = {
     "abaumannii":  "Acinetobacter_baumannii",
     "ecloaceae":   "Enterobacter_cloacae",
@@ -100,7 +111,7 @@ rule all:
         expand("data/interim/{sp}/mlst/mlst_results.tsv", sp=SPECIES),
         # Consolidated per-species metadata tables
         expand("data/interim/{sp}/metadata.tsv", sp=SPECIES),
-        # AMRFinderPlus metal resistance (replaces BacMet — cross-species safe)
+        # AMRFinderPlus metal resistance (hmrg source)
         expand(
             "data/interim/{sp}/amrfinderplus/{acc_fn}_amrfinder.tsv",
             zip,
@@ -110,15 +121,10 @@ rule all:
 
 
 # ── 1. Download genomes ───────────────────────────────────────────────────────
-# Downloads the FASTA for one accession using ncbi-datasets-cli.
-# Output flagged with a sentinel file so re-download is not triggered if the
-# FASTA already exists.
-
 rule download_genome:
     output:
         fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
     params:
-        # GCF_043738335_1 → GCF_043738335.1 (only the last underscore becomes a dot)
         acc = lambda wc: wc.acc_fn.rsplit("_", 1)[0] + "." + wc.acc_fn.rsplit("_", 1)[1],
         outdir_prefix = "data/raw/genomes/{sp}/tmp_{acc_fn}",
     conda: "envs/blast.yaml"
@@ -200,70 +206,8 @@ PY
         """
 
 
-# ── 2a. CheckM2 database setup (runs once) ────────────────────────────────────
-rule checkm2_db:
-    output:
-        db = "data/raw/databases/checkm2/CheckM2_database/uniref100.KO.1.dmnd",
-    params:
-        db_dir = "data/raw/databases/checkm2",
-        archive = "data/raw/databases/checkm2/checkm2_database.tar.gz",
-        url = "https://zenodo.org/api/records/14897628/files/checkm2_database.tar.gz/content",
-        md5 = "07c10655620843b517d0df0c160d911f",
-    conda:
-        "/Users/Vicky/crc/.conda_envs/checkm2"
-    shell:
-        """
-        mkdir -p {params.db_dir}
-        for attempt in 1 2 3 4 5 6 7 8; do
-            curl_status=0
-            curl -fL -C - --retry 5 --retry-delay 10 --retry-all-errors \
-                {params.url} \
-                -o {params.archive} || curl_status=$?
-
-            actual_md5="$(python - {params.archive} <<'PY'
-import hashlib
-import sys
-from pathlib import Path
-
-archive = Path(sys.argv[1])
-if not archive.exists():
-    print("")
-    raise SystemExit
-
-digest = hashlib.md5()
-with archive.open("rb") as handle:
-    for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-        digest.update(chunk)
-print(digest.hexdigest())
-PY
-)"
-
-            if [ "$actual_md5" = "{params.md5}" ]; then
-                break
-            fi
-
-            echo "CheckM2 database checksum mismatch or incomplete download on attempt $attempt/8." >&2
-            if [ "$curl_status" -eq 0 ]; then
-                rm -f {params.archive}
-            fi
-            sleep $((attempt * 30))
-        done
-
-        if [ "$actual_md5" != "{params.md5}" ]; then
-            echo "Failed to download a valid CheckM2 database archive." >&2
-            exit 1
-        fi
-
-        rm -rf {params.db_dir}/CheckM2_database
-        tar -xzf {params.archive} -C {params.db_dir}
-        test -f {output.db}
-        """
-
-
-# ── 2b. CheckM2 QC (per species, runs on all genomes at once) ─────────────────
-# CheckM2 is more accurate than CheckM1 and does not require a reference tree.
-# We run it per-species in batch mode rather than per-genome for speed.
-
+# ── 2. CheckM2 QC (per species, runs on all genomes at once) ─────────────────
+# DB is read from the original project (read-only). checkm2_db rule removed.
 rule checkm2:
     input:
         fastas = lambda wc: expand(
@@ -271,7 +215,7 @@ rule checkm2:
             sp=wc.sp,
             acc_fn=[acc_to_fname(a) for a in ACCESSIONS[wc.sp]],
         ),
-        db = "data/raw/databases/checkm2/CheckM2_database/uniref100.KO.1.dmnd",
+        db = CHECKM2_DB,
     output:
         report = "data/interim/{sp}/qc/checkm2_quality_report.tsv",
     params:
@@ -288,8 +232,6 @@ rule checkm2:
 import multiprocessing as mp
 import sys
 
-# macOS defaults to spawn, which breaks CheckM2 1.1.0 private multiprocessing
-# targets. Fork mode matches the Linux behavior CheckM2 expects.
 mp.set_start_method("fork", force=True)
 
 from checkm2.main import main
@@ -309,47 +251,20 @@ PY
         """
 
 
-# ── 3a. DefenseFinder models (runs once) ──────────────────────────────────────
-# defense-finder 2.0.1 currently installs CasFinder 3.1.1, whose XML grammar
-# (vers=2.1) is rejected by the bundled macsyfinder 2.1.4 parser. We replace it
-# with the last 2.0-compatible release.
-rule defensefinder_models:
-    output:
-        flag = "data/raw/databases/defensefinder_models_ready.flag",
-    params:
-        models_dir = "data/raw/databases/defensefinder_models",
-        casfinder_url = "https://github.com/macsy-models/CasFinder/archive/refs/tags/3.1.0.tar.gz",
-    conda: "envs/defensefinder.yaml"
-    shell:
-        """
-        rm -rf {params.models_dir}
-        mkdir -p {params.models_dir}
-        defense-finder update --models-dir {params.models_dir}
-        rm -rf {params.models_dir}/CasFinder
-        curl -fL {params.casfinder_url} -o {params.models_dir}/CasFinder-3.1.0.tar.gz
-        tar -xzf {params.models_dir}/CasFinder-3.1.0.tar.gz -C {params.models_dir}
-        mv {params.models_dir}/CasFinder-3.1.0 {params.models_dir}/CasFinder
-        rm -f {params.models_dir}/CasFinder-3.1.0.tar.gz
-        touch {output.flag}
-        """
-
-
-# ── 3b. DefenseFinder (+ AntiDefenseFinder via --antidefensefinder flag) ─────
-# defense-finder 2.0.1 crashes on nucleotide FASTA input in the pyhmmer parsing
-# path. We precompute proteins with the same pyrodigal logic defense-finder uses,
-# then run on the protein FASTA against a workflow-owned, version-compatible
-# model bundle.
+# ── 3. DefenseFinder (+ AntiDefenseFinder via --antidefensefinder) ────────────
+# Models dir and flag are read from the original project. defensefinder_models
+# rule removed.
 rule defensefinder:
     input:
-        fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
-        models_flag = "data/raw/databases/defensefinder_models_ready.flag",
+        fasta       = "data/raw/genomes/{sp}/{acc_fn}.fna",
+        models_flag = DEFENSEFINDER_FLAG,
     output:
-        systems = "data/interim/{sp}/defensefinder/{acc_fn}/defense_finder_systems.tsv",
-        genes   = "data/interim/{sp}/defensefinder/{acc_fn}/defense_finder_genes.tsv",
-    params:
-        outdir = "data/interim/{sp}/defensefinder/{acc_fn}",
+        systems  = "data/interim/{sp}/defensefinder/{acc_fn}/defense_finder_systems.tsv",
+        genes    = "data/interim/{sp}/defensefinder/{acc_fn}/defense_finder_genes.tsv",
         proteins = "data/interim/{sp}/defensefinder/{acc_fn}/{acc_fn}.prt",
-        models_dir = "data/raw/databases/defensefinder_models",
+    params:
+        outdir     = "data/interim/{sp}/defensefinder/{acc_fn}",
+        models_dir = DEFENSEFINDER_DIR,
     conda: "envs/defensefinder.yaml"
     shell:
         """
@@ -359,7 +274,7 @@ from pyhmmer.easel import Alphabet, SequenceFile, TextSequence
 import pyrodigal
 
 input_fasta = "{input.fasta}"
-protein_fasta = "{params.proteins}"
+protein_fasta = "{output.proteins}"
 
 with SequenceFile(input_fasta) as sf, open(protein_fasta, "w") as protein_out:
     seq = TextSequence()
@@ -383,8 +298,7 @@ PY
             --models-dir {params.models_dir} \
             --antidefensefinder \
             --out-dir {params.outdir} \
-            {params.proteins}
-        # defense-finder prefixes outputs with genome name — rename to fixed names
+            {output.proteins}
         mv -f {params.outdir}/{wildcards.acc_fn}_defense_finder_systems.tsv {output.systems} 2>/dev/null \
             || touch {output.systems}
         mv -f {params.outdir}/{wildcards.acc_fn}_defense_finder_genes.tsv {output.genes} 2>/dev/null \
@@ -392,22 +306,12 @@ PY
         """
 
 
-# ── 4a. PADLOC database setup (runs once) ────────────────────────────────────
-rule padloc_db_update:
-    output:
-        flag = "data/raw/databases/padloc_db_ready.flag",
-    conda: "envs/padloc.yaml"
-    shell:
-        """
-        padloc --db-update
-        touch {output.flag}
-        """
-
-# ── 4b. PADLOC annotation ─────────────────────────────────────────────────────
+# ── 4. PADLOC annotation ──────────────────────────────────────────────────────
+# DB flag read from original project. padloc_db_update rule removed.
 rule padloc:
     input:
         fasta   = "data/raw/genomes/{sp}/{acc_fn}.fna",
-        db_flag = "data/raw/databases/padloc_db_ready.flag",
+        db_flag = PADLOC_FLAG,
     output:
         csv = "data/interim/{sp}/padloc/{acc_fn}_padloc.csv",
     params:
@@ -424,7 +328,6 @@ rule padloc:
 
 
 # ── 5. ResFinder (ARG detection) ──────────────────────────────────────────────
-# Uses existing resfinder_env — matches published Acinetobacter pipeline version.
 rule resfinder:
     input:
         fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
@@ -450,12 +353,7 @@ rule resfinder:
         """
 
 
-# ── 6. ISEScan — insertion sequence detection ────────────────────────────────
-# IS elements are distinct from IMEs/ICEs (caught by ICEberg tBLASTn).
-# ISEScan creates output in {run_dir}/{sp}/{acc_fn}.fna.{tsv,sum} — the
-# subdirectory is derived from the input file's parent directory name.
-# Intermediate proteome and HMM files (~25 MB per genome) are deleted after
-# the TSV and sum are extracted to keep disk usage manageable.
+# ── 6. ISEScan — insertion sequence detection ─────────────────────────────────
 rule isescan:
     input:
         fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
@@ -469,21 +367,20 @@ rule isescan:
     shell:
         """
         mkdir -p {params.run_dir}
-        isescan.py \
-            --seqfile {input.fasta} \
-            --output {params.run_dir} \
-            --nthread {threads}
-        mv -f {params.run_dir}/{wildcards.sp}/{wildcards.acc_fn}.fna.tsv {output.tsv} 2>/dev/null \
+        cp {input.fasta} {params.run_dir}/{wildcards.acc_fn}.fna
+        (cd {params.run_dir} && isescan.py \
+            --seqfile {wildcards.acc_fn}.fna \
+            --output . \
+            --nthread {threads})
+        mv -f {params.run_dir}/{wildcards.acc_fn}.fna.tsv {output.tsv} 2>/dev/null \
             || touch {output.tsv}
-        mv -f {params.run_dir}/{wildcards.sp}/{wildcards.acc_fn}.fna.sum {output.sum} 2>/dev/null \
+        mv -f {params.run_dir}/{wildcards.acc_fn}.fna.sum {output.sum} 2>/dev/null \
             || touch {output.sum}
         rm -rf {params.run_dir}
         """
 
 
 # ── 7. ICEberg IME tBLASTn ────────────────────────────────────────────────────
-# Searches for integrative mobile elements using protein sequences from ICEberg.
-# Same approach as published Acinetobacter pipeline.
 rule iceberg_tblastn:
     input:
         fasta  = "data/raw/genomes/{sp}/{acc_fn}.fna",
@@ -491,9 +388,7 @@ rule iceberg_tblastn:
     output:
         tsv = "data/interim/{sp}/iceberg/{acc_fn}_iceberg.tsv",
     params:
-        evalue  = 1e-5,
-        # pident >= 40 filter applied in Phase 3 post-processing (tblastn 2.17.0
-        # does not support -perc_identity; same fix as bacmet_tblastn)
+        evalue = 1e-5,
     conda: "envs/blast.yaml"
     shell:
         """
@@ -508,7 +403,7 @@ rule iceberg_tblastn:
         """
 
 
-# ── 9. BacMet HMRG tBLASTn ───────────────────────────────────────────────────
+# ── 8. BacMet HMRG tBLASTn ───────────────────────────────────────────────────
 rule bacmet_tblastn:
     input:
         fasta = "data/raw/genomes/{sp}/{acc_fn}.fna",
@@ -516,7 +411,7 @@ rule bacmet_tblastn:
     output:
         tsv = "data/interim/{sp}/bacmet/{acc_fn}_bacmet.tsv",
     params:
-        evalue  = 1e-5,
+        evalue = 1e-5,
     conda: "envs/blast.yaml"
     shell:
         """
@@ -530,7 +425,7 @@ rule bacmet_tblastn:
         """
 
 
-# ── 10. MLST typing (per species, all genomes) ────────────────────────────────
+# ── 9. MLST typing (per species, all genomes) ─────────────────────────────────
 rule mlst:
     input:
         fastas = lambda wc: expand(
@@ -550,9 +445,7 @@ rule mlst:
         """
 
 
-# ── 11. Collect NCBI metadata per species ─────────────────────────────────────
-# Assembles the per-genome metadata table from pre-fetched JSON files.
-# The JSON was written by build_accession_lists.py to data/interim/.
+# ── 10. Collect NCBI metadata per species ─────────────────────────────────────
 rule collect_metadata:
     input:
         json = "data/interim/{sp}_accession_metadata.json",
@@ -571,27 +464,10 @@ rule collect_metadata:
             w.writerows(records)
 
 
-# ── 12a. AMRFinderPlus database (runs once per conda env lifetime) ────────────
-# amrfinder -u only writes to the default path inside its own conda env;
-# --database is not permitted with -u.  The flag file serves as Snakemake's
-# dependency marker so this step runs once and is skipped on re-runs.
-rule amrfinderplus_db:
-    output:
-        flag = AMRFINDER_FLAG,
-    conda: "envs/amrfinderplus.yaml"
-    shell:
-        """
-        amrfinder -u && touch {output.flag}
-        """
-
-
-# ── 12b. AMRFinderPlus per genome ─────────────────────────────────────────────
-# Uses the .prt protein predictions already produced by the DefenseFinder rule
-# (pyrodigal-translated, Prodigal-format headers) — no re-annotation needed.
-# --plus activates the METAL/BIOCIDE/STRESS gene families.
-# --organism applies species-specific HMM profiles; critical for correct
-# gram-positive metal resistance detection (SA CopAZ, EF cadmium, etc.).
-# Filter for metal resistance genes in Phase 3: Subtype == "METAL".
+# ── 11. AMRFinderPlus per genome ──────────────────────────────────────────────
+# DB flag read from original project. amrfinderplus_db rule removed.
+# Uses .prt from defensefinder rule (no re-annotation needed).
+# --plus activates METAL/BIOCIDE/STRESS families; filter Subtype == "METAL" in Phase 3.
 rule amrfinderplus:
     input:
         proteins = "data/interim/{sp}/defensefinder/{acc_fn}/{acc_fn}.prt",
@@ -615,10 +491,9 @@ rule amrfinderplus:
                 --protein {input.proteins} \
                 --plus \
                 --output {output.tsv} 2>/dev/null; then
-            : # fallback: pan-bacterial run succeeded (no organism-specific profiles)
+            : # fallback: pan-bacterial run succeeded
         else
             # Both runs crashed (known amr_report v4.2.7 HMM domain parsing bug).
-            # Write header-only TSV; genome coded as zero metal resistance in Phase 3.
             printf "${{AMR_HEADER}}\n" > {output.tsv}
         fi
         """

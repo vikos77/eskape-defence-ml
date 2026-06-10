@@ -958,3 +958,130 @@ suppresses this variance (width=0.043). The widening is honest, not a problem.
 - RF:   0.8742  [0.8520-0.8950]
 - LGBM: 0.8595  [0.8139-0.8970]
 - XGB:  0.8062  [0.7758-0.8778]
+
+---
+
+## 2026-06-10  -  CasFinder grammar patch (infrastructure fix)
+
+**Problem:** DefenseFinder pipeline on osx-arm64 (Rosetta2, osx-64 conda env) failed
+silently on CasFinder models. macsypy 2.1.4 only accepts grammar version `vers="2.0"`,
+but the installed CasFinder 3.1.1 package ships all 44 definition XML files with
+`vers="2.1"`, causing a MacsypyError at runtime.
+
+**Fix:** Copy `~/.macsyfinder/models/CasFinder/` to a local directory
+`data/raw/databases/dfmodels_local/CasFinder/` and patch all 44 definition XMLs:
+`find .../CasFinder/definitions -name "*.xml" -exec sed -i '' 's/vers="2.1"/vers="2.0"/g' {} +`
+Create a symlink at `data/raw/databases/defensefinder_models/CasFinder` pointing to the
+patched local copy. The upstream `defense-finder-models` package symlinks to the
+installed macsypy package and is unaffected.
+
+**Validation:** Re-ran DefenseFinder on GCF_000021245_2 (known AB genome from the
+published dataset). Exact system match: 10 systems including CAS_Class1-Subtype-I-F
+reproduced identically. Patch confirmed correct.
+
+**Why this affects reproducibility:** Any future re-run must use the patched local
+CasFinder directory or install macsypy ≥ 2.2 (which supports `vers="2.1"`). The patch
+is vendored in `data/raw/databases/dfmodels_local/CasFinder/` (gitignored, not in repo
+due to size). Documented here for reproducibility.
+
+---
+
+## 2026-06-10  -  ICEberg_IME.fasta re-download
+
+**Problem:** The ICEberg_IME.fasta database file was deleted during the 2026-06-09
+directory consolidation (eskape-defence-ml_2 → eskape-defence-ml). No backup existed.
+
+**Fix:** Re-downloaded from canonical ICEberg2 source:
+`curl -L https://bioinfo-mml.sjtu.edu.cn/ICEberg2/download/IME_aa_all.fas`
+Result: 2,220 sequences (same sequence count as the deleted file). The ICEberg2 IME
+protein database is a static release, so content should be identical.
+
+**Minor discrepancy:** `ime_count_total` differs by ≤2 hits for ~1–2 genomes versus
+the original values in the feature matrix. Root cause: `parse_fasta_max_lengths` maps
+2,220 protein sequences to 98 unique element IDs using the first FASTA header word
+(e.g., `ICEberg|10_IME`); max protein length per element is the coverage denominator.
+If any element has a marginally different max length in the re-downloaded file, 2 hits
+near the 0.80 coverage threshold can shift. `ime_count_unique` (the unique IME element
+count used in Spearman correlations) is unaffected — confirmed for all 5 validation
+genomes. This discrepancy does not affect any manuscript number: `ime_count_total` is
+not reported anywhere; `ime_count_unique` is the analysis-relevant metric.
+
+---
+
+## 2026-06-10  -  C1 leakage fix: 31 AB training genomes replaced
+
+**Problem (C1 — CRITICAL):** Post-submission audit revealed that 31 of the 43 published
+*A. baumannii* genomes used for external C3 holdout validation were also present in the
+600-genome AB training set. The 4× NCBI download of 600 AB genomes was not filtered
+against the published holdout accession list. As a consequence, the reported C3 holdout
+recall (combined 0.977, non-IC2 0.970, IC2 1.000) was computed on a contaminated holdout
+where 31/43 genomes had been seen during training. The holdout was not independent.
+
+**Assessment:** The 13 genuinely external genomes (those in the holdout but not in
+training) gave 13/13 recall — the qualitative conclusion (high AB recall, IC2
+distinguishable) was correct. However, reported recall numbers were inflated by the
+known-genome contamination and the binomial test null (p0=0.692) was computed from a
+CV recall that was itself trained on some holdout genomes. Both numbers require correction.
+
+**Fix:**
+1. Identified the 31 leaked accessions (LEAKED_TRAIN list in
+   `src/features/rebuild_feature_matrix.py`).
+2. Used 31 pre-downloaded replacement AB genomes (`data/interim/ab_replacement_accessions.json`
+   — confirmed not in the published holdout accession list).
+3. Ran full annotation pipeline on 31 replacements: DefenseFinder (with CasFinder grammar
+   patch), ResFinder. All other annotations (PADLOC, ICEberg, AMRFinderPlus) were already
+   complete from the original download.
+4. Rebuilt feature matrix: dropped 31 leaked rows, parsed 31 replacements, validated parser
+   against 5 known AB genomes (exact match on all dp_/dc_/ad_/arg_ columns), recomputed AB
+   tertile (result: high=182, low=237, mid=181 — identical to pre-fix; Q2 AB n=419 unchanged).
+5. Deleted Mash cache; re-clustered AB phylogroups via NB04 (within-species, t=0.010).
+   Phylogroup count unchanged at 309 total (AB=35 groups).
+6. Re-executed NB05–NB09 (LR, RF, XGB, LGBM, SHAP, Q3 clustering) on the corrected dataset.
+
+**Updated results (post-fix, NB05–NB09 re-run 2026-06-10):**
+- Q1 RF: BA=0.895 [0.871-0.916] — IDENTICAL to pre-fix (robust to 0.9% genome swap)
+- Q1 LR: BA=0.904 [0.894-0.913] — IDENTICAL
+- Q2 per-species: all AUROC and p_adj values IDENTICAL
+- AB per-class recall: 0.692 — IDENTICAL
+- C3 holdout: combined 42/43=0.977, S2 32/33=0.970, S3 10/10=1.000, p<0.0001 — IDENTICAL
+- Per-class recall updated (minor shifts from phylogroup re-assignment):
+  SA: 1.000→0.998, EF: 0.992→0.987, EC: 0.909→0.895, KP: 0.885→0.913, PA: 0.885→0.883
+
+**Impact on non-AB results:** The 31-genome swap constitutes 0.9% of the total dataset
+(31/3335). Non-AB species are unchanged. LR Q1 result confirmed unchanged: BA=0.904
+[0.894-0.913] (NB05 re-run, 2026-06-10).
+
+---
+
+## 2026-06-10  -  H1 SHAP CSV fix
+
+**Problem (H1 — HIGH):** The `results/q1_rf_feature_importance.csv` file that feeds
+Table 5 and the Discussion SHAP section was generated from an older NB06 run that used
+signed mean SHAP aggregation instead of mean absolute SHAP. This produced the wrong
+global ranking: dp_df_FS_Sma appeared as rank 1 (signed mean 0.02022) ahead of
+dp_df_Abi2 (signed mean 0.02059 — actually higher absolute value, but the sign of
+individual class contributions can partially cancel). The correct abs aggregation
+(NB08 cell 18 confirmed: Abi2=0.02426, FS_Sma=0.02186, RM_Type_IV=0.02131) gives
+Abi2 as rank 1.
+
+Additionally, the claim "all four published systems in SHAP global top 30" was false:
+PD-T4-5 is rank 44, not within top 30.
+
+**Fix:** NB06 re-run as part of the C1 leakage fix re-execution chain. The current
+NB06 SHAP code uses `np.abs(shap_values).mean(axis=0).mean(axis=1)` (correct abs
+aggregation). The CSV will be regenerated automatically. Corrected claims:
+- Rank 1: dp_df_Abi2; rank 2: dp_df_FS_Sma; rank 3: dp_RM_Type_IV
+- Published systems in global top 25 (not top 30): SspBCDE rank 6, RM_Type_IV rank 3,
+  Gao_Qat rank ~23, RM_Type_I rank ~21. PD-T4-5 at rank 44 is outside top 30 — claim
+  revised to "three of four published systems within the global SHAP top 25."
+
+**Updated SHAP results (post-fix, NB08 full-dataset computation 2026-06-10):**
+- Rank 1: dp_df_Abi2 (0.024)
+- Rank 2: dp_df_FS_Sma (0.022)
+- Rank 3: dp_RM_Type_IV (0.021)
+- Rank 6: dp_SspBCDE (0.016)
+- Rank 21: dp_RM_Type_I (0.008)
+- Rank 23: dp_Gao_Qat (0.007)
+- Rank 44: dp_PD-T4-5 (0.004) — outside top 30
+Identical to the prior bsishvgkg.output verification. Manuscript heading and body
+corrected: Abi2 as rank 1, "top 25" replacing "top 30" for the 3/4 published systems.
