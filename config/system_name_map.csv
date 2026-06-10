@@ -255,7 +255,7 @@ df_Ogmios,Ogmios,Ogmios,,df_only,5,0,automated_df_only
 df_Old_exonuclease,Old_exonuclease,Old_exonuclease,,df_only,6,0,automated_df_only
 df_Oshun,Oshun,Oshun,,df_only,1,0,automated_df_only
 df_PD-T4-8,PD-T4-8,PD-T4-8,,df_only,8,0,automated_df_only
-df_PD-T4-9,PD-T4-9,PD-T4-9,,df_only,3,0,automated_df_only
+PD-T4-9,PD-T4-9,PD-T4-9,PD-T4-9,both,13,1,exact name match; updated df_only→both after 4x expansion
 df_PD-T7-1,PD-T7-1,PD-T7-1,,df_only,65,0,automated_df_only
 df_PD-T7-2,PD-T7-2,PD-T7-2,,df_only,70,0,automated_df_only
 df_PD-T7-5,PD-T7-5,PD-T7-5,,df_only,29,0,automated_df_only
@@ -332,7 +332,7 @@ hachiman_other,,,hachiman_other,padloc_only,0,1,PADLOC-only
 mza_other,,,mza_other,padloc_only,0,3,PADLOC-only mza variant
 padloc_AbiO-Nhi_family,,,AbiO-Nhi_family,padloc_only,0,8,automated_padloc_only
 padloc_Dynamins,,,Dynamins,padloc_only,0,14,automated_padloc_only
-padloc_HEC-06,,,HEC-06,padloc_only,0,36,automated_padloc_only
+HEC-06,,HEC-06,HEC-06,both,4,204,exact name match; updated padloc_only→both after 4x expansion
 padloc_Juk,,,Juk,padloc_only,0,7,automated_padloc_only
 padloc_Menshen_other,,,Menshen_other,padloc_only,0,1,automated_padloc_only
 padloc_Old,,,Old,padloc_only,0,6,automated_padloc_only
@@ -447,3 +447,58 @@ pycsar_unknown,,,pycsar_unknown,padloc_only,0,1,PADLOC-only
 qatABCD_other,,,qatABCD_other,padloc_only,0,1,PADLOC-only qat variant
 septu_other,,,septu_other,padloc_only,0,1,PADLOC-only
 wadjet_other,,,wadjet_other,padloc_only,0,6,PADLOC-only
+df_DS-8,DS-8,DS-8,,df_only,9,0,new system in 4x dataset
+df_Gao_Ape,Gao_Ape,Gao_Ape,,df_only,8,0,new system in 4x dataset
+df_gcuWGS21,gcuWGS21,gcuWGS21,,df_only,7,0,new system in 4x dataset
+df_DS-11,DS-11,DS-11,,df_only,5,0,new system in 4x dataset
+df_VP1796,VP1796,VP1796,,df_only,5,0,new system in 4x dataset
+df_DS-27,DS-27,DS-27,,df_only,4,0,new system in 4x dataset
+df_UG5_small,All_UG,UG5_small,,df_only,4,0,new system in 4x dataset
+df_CAS_Class1-Type-I,Cas,CAS_Class1-Type-I,,df_only,4,0,new system in 4x dataset
+df_DS-43,DS-43,DS-43,,df_only,3,0,new system in 4x dataset
+df_DS-44,DS-44,DS-44,,df_only,3,0,new system in 4x dataset
+df_Retron_XII,Retron,Retron_XII,,df_only,3,0,new system in 4x dataset
+df_Retron_VII_2,Retron,Retron_VII_2,,df_only,2,0,new system in 4x dataset
+df_Gao_Her_SIR,Gao_Her,Gao_Her_SIR,,df_only,2,0,new system in 4x dataset
+df_VP1826,VP1826,VP1826,,df_only,2,0,new system in 4x dataset
+df_gcu167,gcu167,gcu167,,df_only,1,0,new system in 4x dataset
+df_pAgo_S1A,pAgo,pAgo_S1A,,df_only,1,0,new system in 4x dataset
+df_AbiO,AbiO,AbiO,,df_only,1,0,new system in 4x dataset
+df_gcu142,gcu142,gcu142,,df_only,1,0,new system in 4x dataset
+df_UG8,All_UG,UG8,,df_only,1,0,new system in 4x dataset
+df_DRT6,DRT,DRT6,,df_only,1,0,new system in 4x dataset
+df_DS-41,DS-41,DS-41,,df_only,1,0,new system in 4x dataset
+df_UG29,All_UG,UG29,,df_only,1,0,new system in 4x dataset
+df_Viperin,Viperin,Viperin,,df_only,1,0,new system in 4x dataset
+AbiV,AbiV,AbiV,AbiV,both,4,3,exact name match; both tools detect; new in 4x dataset
+HEC-03,HEC-03,HEC-03,HEC-03,both,3,3,exact name match; both tools detect; new in 4x dataset
+PD-T4-10,PD-T4-10,PD-T4-10,PD-T4-10,both,2,2,exact name match; both tools detect; new in 4x dataset
+Wadjet_II,Wadjet,Wadjet_II,wadjet_type_II,both,1,1,Wadjet_II(DF)=wadjet_type_II(PADLOC); naming convention differs; new in 4x dataset
+CAS_II-C,Cas,CAS_Class2-Subtype-II-C,cas_type_II-C,both,1,1,CAS_Class2-Subtype-II-C(DF)=cas_type_II-C(PADLOC); naming convention differs; new in 4x dataset
+adf_acrif1,Anti_CRISPR,acrif1,,df_antidefense,10,0,new anti-defence system in 4x dataset
+adf_dar_ddr_hdf_ulx,Anti_RM,dar_ddr_hdf_ulx,,df_antidefense,3,0,new anti-defence system in 4x dataset
+adf_gnarl1,Other,gnarl1,,df_antidefense,3,0,new anti-defence system in 4x dataset
+adf_acric3,Anti_CRISPR,acric3,,df_antidefense,3,0,new anti-defence system in 4x dataset
+adf_acric4,Anti_CRISPR,acric4,,df_antidefense,3,0,new anti-defence system in 4x dataset
+adf_acrie6,Anti_CRISPR,acrie6,,df_antidefense,3,0,new anti-defence system in 4x dataset
+adf_acrie7,Anti_CRISPR,acrie7,,df_antidefense,3,0,new anti-defence system in 4x dataset
+adf_gad1,Anti_Gabija,gad1,,df_antidefense,1,0,new anti-defence system in 4x dataset
+adf_ddra,Anti_RM,ddra,,df_antidefense,1,0,new anti-defence system in 4x dataset
+adf_hdf,Anti_RM,hdf,,df_antidefense,1,0,new anti-defence system in 4x dataset
+padloc_PDC-M02,,,PDC-M02,padloc_only,0,5,new system in 4x dataset
+padloc_argonaute_solo,,,argonaute_solo,padloc_only,0,4,new system in 4x dataset
+padloc_PDC-M29,,,PDC-M29,padloc_only,0,3,new system in 4x dataset
+padloc_PDC-M35,,,PDC-M35,padloc_only,0,2,new system in 4x dataset
+padloc_PDC-M54,,,PDC-M54,padloc_only,0,2,new system in 4x dataset
+padloc_PDC-M36,,,PDC-M36,padloc_only,0,2,new system in 4x dataset
+padloc_PDC-M71,,,PDC-M71,padloc_only,0,2,new system in 4x dataset
+padloc_retron_V,,,retron_V,padloc_only,0,2,new system in 4x dataset
+padloc_PT_PbeABCD,,,PT_PbeABCD,padloc_only,0,1,new system in 4x dataset
+padloc_thoeris_other,,,thoeris_other,padloc_only,0,1,new system in 4x dataset
+padloc_retron_IX,,,retron_IX,padloc_only,0,1,new system in 4x dataset
+padloc_PDC-S63,,,PDC-S63,padloc_only,0,1,new system in 4x dataset
+padloc_PDC-M12,,,PDC-M12,padloc_only,0,1,new system in 4x dataset
+padloc_PDC-M69,,,PDC-M69,padloc_only,0,1,new system in 4x dataset
+padloc_PDC-S44,,,PDC-S44,padloc_only,0,1,new system in 4x dataset
+padloc_PDC-M61,,,PDC-M61,padloc_only,0,1,new system in 4x dataset
+padloc_PDC-S68,,,PDC-S68,padloc_only,0,1,new system in 4x dataset
