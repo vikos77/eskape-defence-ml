@@ -78,8 +78,12 @@ Disagreement = genus-specific architecture.
 - ~150 complete genomes per ESKAPE species downloaded from NCBI RefSeq
 - Quality gates: CheckM2 completeness ≥95%, contamination ≤5%
 - Stratified by country of origin and isolation year where metadata permits
-- Annotated with: DefenseFinder v2.0.2, PADLOC v2.0.0, CRISPRCasFinder,
-  ResFinder, AntiDefenseFinder, ICEberg tBLASTn, BacMet tBLASTn
+- Annotated with: DefenseFinder v2.0.1 (with AntiDefenseFinder --antidefensefinder),
+  PADLOC v2.0.0, ResFinder v4.7.2, AMRFinderPlus v4.2.7, ICEberg tBLASTn, ISEScan v1.7.2.3,
+  BacMet tBLASTn
+  [Note: tool set updated vs original registration; CRISPRCasFinder removed (ARM64
+  unavailable, redundant); BacMet tBLASTn collected but excluded from classifiers
+  (RND efflux artefact); ISEScan added; AMRFinderPlus added. See decisions.md.]
 
 ### Held-out validation set (not used in training or hyperparameter tuning)
 - Published 132 complete *A. baumannii* genomes from Muthuraman et al. (2026)

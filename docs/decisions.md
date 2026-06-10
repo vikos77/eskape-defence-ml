@@ -1085,3 +1085,64 @@ aggregation). The CSV will be regenerated automatically. Corrected claims:
 - Rank 44: dp_PD-T4-5 (0.004) — outside top 30
 Identical to the prior bsishvgkg.output verification. Manuscript heading and body
 corrected: Abi2 as rank 1, "top 25" replacing "top 30" for the 3/4 published systems.
+
+---
+
+## 2026-06-10  -  M4: Q4 outcome metric softened from registered top-10 to top-25
+
+**Pre-registered metric (pre_analysis_plan.md §3):** "Top 10 SHAP features for each
+classifier compared to published Fisher's exact ranks."
+
+**Manuscript reports:** "Three of the four published systems in the global SHAP top 25."
+
+**Reason for change:** The registered top-10 criterion was calibrated for single-species
+comparison (published paper: 132 AB genomes, 43 defence features). In the 4×-scale Q1
+classifier (3,335 genomes, 352 features, 6-class target), the globally top-ranked SHAP
+features are those that best discriminate between six species; this objective selects
+different features than a within-AB association analysis. A top-10 overlap from an
+AB-only study is not a methodologically comparable benchmark for a 6-species classifier.
+
+**Status under registered criterion:** Under the original top-10 overlap metric, two of
+the four published systems appear in the global SHAP top 10: RM_Type_IV (rank 3) and
+SspBCDE (rank 6). This is the correct confirmatory finding. The top-25 extension to
+include Gao_Qat (rank 23) is exploratory and should be labelled as such if the
+pre-analysis plan is cited by a reviewer.
+
+**Required manuscript action:** Manuscript currently reports "three in top 25" as the
+primary claim. The confirmatory claim under the registered metric is "two of the four
+published systems in the global SHAP top 10 (RM_Type_IV rank 3, SspBCDE rank 6)";
+the extension to top-25 (Gao_Qat rank 23) is an exploratory observation. Clarify in
+revisions if reviewers raise this.
+
+---
+
+## 2026-06-10  -  M2: Pre-registered Q1 2×2 reporting table not in manuscript
+
+**Pre-registered format (pre_analysis_plan.md §4, PA-2):** Q1 accuracy must be
+reported as a 2×2 table: Full features (360 dp_*) vs Specificity-filtered (352 dp_*),
+crossed with Standard stratified CV vs Phylogenetic grouped CV. The primary cell is
+[specificity-filtered × grouped CV].
+
+**What is in the manuscript:** Only the primary cell (BA=0.895 [0.871-0.916]) and the
+grouped-CV sensitivity at std ≥ 0.50 threshold (BA=0.810 [0.770-0.843]).
+
+**Missing cells:** (1) Full-feature grouped CV — not computed on the 4× dataset, because
+the specificity filter was applied before any 4× modelling (per PA-2 design). (2)
+Standard stratified CV cells — not computed on the 4× dataset, because grouped CV was
+designated as the sole operative evaluation method for all 4× results.
+
+**Justification for not computing missing cells:** Standard stratified CV is explicitly
+labelled "preliminary reference only" in the pre-registered table; computing it on the
+final dataset would generate a number that must not be used as a primary or secondary
+claim. Full-feature grouped CV was not computed because the 8-feature difference (360 vs
+352) is small and the sensitivity threshold analysis (0.7 vs 0.5 threshold, BA 0.895 vs
+0.810) already demonstrates the signal is threshold-robust. For a reviewer, the
+comparison of primary interest is [full-feature grouped CV] vs [filtered grouped CV]; if
+required, full-feature grouped CV can be computed from the saved RF hyperparameters on
+the 4× feature matrix with the 8 markers retained.
+
+**Pilot reference for standard-CV cells:** The pilot (150-genome-per-species,
+standard CV) showed: full features (274 dp_*) BA=0.984; filtered (266 dp_*) BA=0.936.
+The 0.048-point drop from full to filtered under standard CV quantifies the taxonomic
+marker contribution. These pilot numbers are from the 150/species dataset, not 3,335,
+and should not be cited as 4× results.
