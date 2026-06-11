@@ -171,18 +171,18 @@ exploratory, not here.
 ### PA-1  -  Q2 binary split fallback
 
 **Rule:** If `pd.qcut(q=3, duplicates='drop')` raises a `ValueError` for a species
-(fewer than 3 distinct bin edges — floor effect where 0th == 33rd percentile), apply a
-binary split at the within-species median instead: below median → `low_ARG`, above →
-`high_ARG`, at median → `mid_ARG` (excluded from Q2 as for the standard middle tertile).
+(fewer than 3 distinct bin edges, floor effect where 0th == 33rd percentile), apply a
+binary split at the within-species median instead: below median to `low_ARG`, above to
+`high_ARG`, at median to `mid_ARG` (excluded from Q2 as for the standard middle tertile).
 
 **Why:** A floor effect means many genomes share the species minimum ARG count. A
-rank-based tertile would assign different labels to identical values — noise as signal.
-A median split is weaker than a tertile contrast but asks a coherent biological
-question (below vs above species-average ARG burden) that still tests the
+rank-based tertile would assign different labels to identical values, introducing noise
+as signal. A median split is weaker than a tertile contrast but asks a coherent
+biological question (below vs above species-average ARG burden) that still tests the
 RESTRICT/FACILITATE hypothesis.
 
 **Validity criteria:**
-1. Applied in Phase 3 before any model performance is seen — data-structure test only.
+1. Applied in Phase 3 before any model performance is seen, data-structure test only.
 2. The fallback criterion is species-agnostic and prospectively documented.
 3. Binary median split is a standard method; not arbitrary.
 
