@@ -227,6 +227,14 @@ labelled high-ARG burden, and median-tied genomes were excluded from Q2 as for t
 middle tertile. The Q2 classifier for PA therefore contrasts below-average vs
 above-average ARG burden rather than bottom vs top third."
 
+**Status update (2026-06-11, 4× scale — 600 PA genomes):** Amendment PA-1 was **not
+triggered** in the 600-genome dataset. The ARG distribution at 4× scale produces 3
+distinct bin edges; `pd.qcut(q=3, duplicates='drop')` succeeds without error. PA uses
+the standard tertile split: `low_ARG` = 275, `mid_ARG` = 129, `high_ARG` = 196. The
+fallback code remains in the feature engineering notebook for any future species that
+exhibits a floor effect, but the binary-split path is not executed. The manuscript
+statement above is therefore not required for the 600-genome analysis.
+
 ---
 
 ### PA-2  -  Q1 feature specificity sensitivity analysis (2026-05-18)
