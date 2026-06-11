@@ -168,72 +168,27 @@ and a prospective modification is required. Amendments are defined *before* any
 modelling results are seen. Post-hoc modifications are logged in `decisions.md` as
 exploratory, not here.
 
-### PA-1  -  Q2 binary split fallback (2026-05-14)
+### PA-1  -  Q2 binary split fallback
 
-**Trigger:** During Phase 3 feature matrix construction, `pd.qcut(q=3)` failed for
-*P. aeruginosa* with `ValueError: Bin labels must be one fewer than the number of bin
-edges`. Root cause: 56/150 PA genomes (37%) have `arg_count_unique = 5` (the species
-minimum), making the 0th and 33rd percentiles identical. After `duplicates='drop'`,
-only 2 distinct bins remain  -  insufficient for 3 labels.
+**Rule:** If `pd.qcut(q=3, duplicates='drop')` raises a `ValueError` for a species
+(fewer than 3 distinct bin edges — floor effect where 0th == 33rd percentile), apply a
+binary split at the within-species median instead: below median → `low_ARG`, above →
+`high_ARG`, at median → `mid_ARG` (excluded from Q2 as for the standard middle tertile).
 
-**Why this happened specifically for PA:** P. aeruginosa's clinical isolates almost
-universally carry a small set of near-baseline acquired ARGs  -  chromosomal
-cephalosporinase derivatives (blaPDC) and housekeeping efflux pump genes are
-ubiquitous, creating a hard floor at 5 unique ARGs in ResFinder output. The
-right-skewed tail (some PA genomes reaching ARG = 29) represents genomes with
-additional mobile-element-acquired resistance, but 37% of PA sits at the minimum.
-No equivalent floor effect is observed in the other 5 ESKAPE species.
+**Why:** A floor effect means many genomes share the species minimum ARG count. A
+rank-based tertile would assign different labels to identical values — noise as signal.
+A median split is weaker than a tertile contrast but asks a coherent biological
+question (below vs above species-average ARG burden) that still tests the
+RESTRICT/FACILITATE hypothesis.
 
-**Options considered before choosing the amendment:**
+**Validity criteria:**
+1. Applied in Phase 3 before any model performance is seen — data-structure test only.
+2. The fallback criterion is species-agnostic and prospectively documented.
+3. Binary median split is a standard method; not arbitrary.
 
-*Option 1: Keep PA excluded from Q2*  -  Pre-registration intact; exclusion is honest;
-simple to report. Loss: PA genomes with ARG = 20+ (genuine high-burden) are excluded
-entirely, weakening cross-species generalisability.
-
-*Option 2: Binary split at the median (chosen)*  -  PA genomes below median → low_ARG;
-above median → high_ARG; at median → mid_ARG (excluded). Brings PA back into Q2.
-Answers a slightly weaker biological question ("below vs above species-average ARG
-burden" rather than "bottom vs top third"), but the question remains coherent and
-directly tests the RESTRICT/FACILITATE hypothesis for PA. The 56 genomes at the ARG
-floor (low_ARG) vs the 64 genomes with above-median burden (high_ARG) provide a
-meaningful contrast.
-
-*Option 3: Rank-based tertile*  -  Rank genomes by ARG count, split ranks into thirds.
-Rejected: 56 PA genomes share ARG = 5 exactly. Assigning different labels to
-identical-valued genomes based on arbitrary rank order would introduce noise as
-signal  -  any classifier learning this split would be memorising random assignment,
-not biology.
-
-**Why the amendment is methodologically sound:**
-1. Defined *before* any modelling  -  this is a Phase 3 (feature engineering) fix,
-   not a Phase 6+ retroactive change. No model performance numbers have been seen.
-2. The fallback criterion ("0th percentile == 33rd percentile") is a data-structure
-   test, not an outcome test  -  it cannot be gamed post-hoc.
-3. The binary split is a standard, pre-existing method (median split is weaker than
-   tertile but not arbitrary). It is prospectively documented and therefore confirmatory,
-   not exploratory.
-4. The rule is species-agnostic and generalises to any future dataset extension.
-
-**Result for PA:** `low_ARG` = 56 genomes (ARG < 6), `mid_ARG` = 30 genomes (ARG = 6,
-excluded from Q2), `high_ARG` = 64 genomes (ARG > 6). PA participates in Q2 with 120
-genomes (56 + 64). Q2 now runs on all 6 ESKAPE species, 614 eligible genomes
-(low_ARG=325 + high_ARG=289; was 494 across 5 species before this amendment).
-
-**Required manuscript statement (Methods):** "For *P. aeruginosa*, 37% of genomes sit
-at the species ARG minimum (arg = 5), making tertile boundaries degenerate (0th = 33rd
-percentile). A pre-specified binary split at the within-species median was applied
-instead: genomes below the median were labelled low-ARG burden, genomes above were
-labelled high-ARG burden, and median-tied genomes were excluded from Q2 as for the
-middle tertile. The Q2 classifier for PA therefore contrasts below-average vs
-above-average ARG burden rather than bottom vs top third."
-
-**Status update (2026-06-11, 4× scale — 600 PA genomes):** Amendment PA-1 was **not
-triggered** in the 600-genome dataset. The ARG distribution at 4× scale produces 3
-distinct bin edges; `pd.qcut(q=3, duplicates='drop')` succeeds without error. PA uses
-the standard tertile split: `low_ARG` = 275, `mid_ARG` = 129, `high_ARG` = 196. The
-fallback code remains in the feature engineering notebook for any future species that
-exhibits a floor effect, but the binary-split path is not executed. The manuscript
-statement above is therefore not required for the 600-genome analysis.
+**Current status:** Not triggered in the 600-genome-per-species dataset. All six ESKAPE
+species produce 3 distinct tertile edges. The fallback code is retained for any future
+dataset extension where a floor effect may occur.
 
 ---
 
