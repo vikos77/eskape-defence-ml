@@ -3,7 +3,7 @@
 rebuild_feature_matrix.py
 
 Surgical feature matrix rebuild:
-  1. Drop 31 leaked training rows from feature_matrix_3460.parquet
+  1. Drop 31 leaked training rows from feature_matrix_3335.parquet
   2. Parse annotations for 31 replacement genomes (Ab)
   3. Validate parser against 5 known Ab genomes (exact match required)
   4. Append 31 new rows; recompute derived features
@@ -213,7 +213,7 @@ def main() -> None:
     print("STEP 0: Load existing feature matrix and configuration")
     print("=" * 70)
 
-    fm = pd.read_parquet(PROC / "feature_matrix_3460.parquet")
+    fm = pd.read_parquet(PROC / "feature_matrix_3335.parquet")
     print(f"  FM shape: {fm.shape}")
     assert all(a in fm.index for a in LEAKED_TRAIN), "Not all leaked accessions in FM index"
 
@@ -442,7 +442,7 @@ def main() -> None:
     print("STEP 6: Save")
     print("=" * 70)
 
-    out_path = PROC / "feature_matrix_3460.parquet"
+    out_path = PROC / "feature_matrix_3335.parquet"
     fm_rebuilt.to_parquet(out_path)
     check = pd.read_parquet(out_path)
     assert check.shape == fm_rebuilt.shape, "Round-trip shape mismatch"

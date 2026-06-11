@@ -56,7 +56,7 @@ assert ROOT.name == "eskape-defence-ml_2", (
 )
 DATA    = ROOT / "data" / "processed"
 FIG_DIR = ROOT / "results" / "figures" / "archetypes"
-assert (DATA / "feature_matrix_3460.parquet").exists(), "FM not found"
+assert (DATA / "feature_matrix_3335.parquet").exists(), "FM not found"
 assert (DATA / "cv_groups_3460.parquet").exists(), "cv_groups not found"
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -68,7 +68,7 @@ print(f"Figures dir  : {FIG_DIR}")
 
 LOAD_FM = """\
 # ── Feature matrix ──────────────────────────────────────────────────────────
-fm = pd.read_parquet(DATA / "feature_matrix_3460.parquet")
+fm = pd.read_parquet(DATA / "feature_matrix_3335.parquet")
 print(f"Feature matrix: {fm.shape[0]} genomes x {fm.shape[1]} columns")
 
 # ── FEAT_COLS: mirror training-notebook logic exactly ────────────────────────

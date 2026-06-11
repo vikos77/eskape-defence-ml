@@ -26,7 +26,7 @@ RANDOM_STATE = 42
 N_SPLITS     = 5
 
 # ── Load data ────────────────────────────────────────────────────────────────
-fm = pd.read_parquet(PROC / "feature_matrix_3460.parquet")
+fm = pd.read_parquet(PROC / "feature_matrix_3335.parquet")
 cg = pd.read_parquet(PROC / "cv_groups_3460.parquet")
 if "phylogroup" not in fm.columns:
     fm = fm.join(cg, how="left")

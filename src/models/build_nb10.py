@@ -5,7 +5,7 @@ Run from eskape-defence-ml_2 project root:
     conda run -n eskape-ml python src/models/build_nb10.py
 
 Key differences from the 878-genome original:
-- feature_matrix_3460.parquet  (3335 × 791, 352 dp_ FEAT_COLS)
+- feature_matrix_3335.parquet  (3335 × 791, 352 dp_ FEAT_COLS)
 - cv_groups_3460.parquet joined for phylogroup  (309 groups)
 - q2_gb_results_3460.parquet and q2_rf_results_3460.parquet
 - Ab (0.767, p=0.049) and Ef (0.701, p=0.024) are now significant — enter Test A scope
@@ -74,7 +74,7 @@ RES  = ROOT / "results"
 FIG  = RES / "figures" / "phase12"
 FIG.mkdir(parents=True, exist_ok=True)
 
-assert (PROC / "feature_matrix_3460.parquet").exists(), "FM not found"
+assert (PROC / "feature_matrix_3335.parquet").exists(), "FM not found"
 assert (PROC / "cv_groups_3460.parquet").exists(), "cv_groups not found"
 assert (RES / "q2_gb_results_3460.parquet").exists(), "Q2 GB parquet not found"
 assert (RES / "q2_rf_results_3460.parquet").exists(), "Q2 RF parquet not found"
@@ -105,7 +105,7 @@ to what was used in NB06-NB08. The 0.70 threshold removes 8 taxonomic markers.
 """
 
 LOAD_FM_CODE = """\
-fm = pd.read_parquet(PROC / "feature_matrix_3460.parquet")
+fm = pd.read_parquet(PROC / "feature_matrix_3335.parquet")
 fm["accession"] = fm.index   # expose index as column for downstream joins
 
 # Ensure phylogroup column is present (may already be in FM or needs joining)

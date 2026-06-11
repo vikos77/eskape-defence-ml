@@ -166,7 +166,7 @@ def main() -> None:
     )
 
     # ── FEAT_COLS (identical to training) ─────────────────────────────────────
-    fm         = pd.read_parquet(PROC / "feature_matrix_3460.parquet")
+    fm         = pd.read_parquet(PROC / "feature_matrix_3335.parquet")
     dp_cols    = sorted([c for c in fm.columns if c.startswith("dp_")])
     sp_prev    = fm.groupby("species")[dp_cols].mean()
     spec_score = sp_prev.std() / 0.5

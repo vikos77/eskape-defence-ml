@@ -42,7 +42,7 @@ BEST_PARAMS = dict(
 
 
 def main():
-    fm = pd.read_parquet(PROC / "feature_matrix_3460.parquet")
+    fm = pd.read_parquet(PROC / "feature_matrix_3335.parquet")
     dp_cols = sorted([c for c in fm.columns if c.startswith("dp_")])
 
     # Specificity filter identical to Q1 (remove 8 taxonomic markers)
