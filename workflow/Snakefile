@@ -30,8 +30,17 @@ with open("config/species.yaml") as f:
     SPECIES_CFG = yaml.safe_load(f)
 
 SPECIES    = list(SPECIES_CFG["species"].keys())
+
+# Load accessions excluded due to leakage (published paper genomes accidentally downloaded)
+_excluded_path = "config/excluded_accessions.yaml"
+EXCLUDED = {}
+if os.path.exists(_excluded_path):
+    with open(_excluded_path) as _f:
+        _excl = yaml.safe_load(_f) or {}
+    EXCLUDED = {sp: set(accs) for sp, accs in _excl.items()}
+
 ACCESSIONS = {
-    sp: cfg["accessions"]
+    sp: [a for a in cfg["accessions"] if a not in EXCLUDED.get(sp, set())]
     for sp, cfg in SPECIES_CFG["species"].items()
 }
 

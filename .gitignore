@@ -211,6 +211,7 @@ docs/learning/
 docs/audit*.md
 docs/comprehension_review.md
 docs/manuscript/
+docs/peer_review/
 
 # Tutor-mode reference notebooks — local only, not for publication
 notebooks/tutor_reference/
@@ -218,6 +219,7 @@ notebooks/tutor_reference/
 # Genomics data — large files, never commit raw genomes
 data/raw/
 data/interim/
+data/leaked_genomes/
 *.fasta
 *.fna
 *.gbff
