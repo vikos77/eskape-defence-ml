@@ -380,7 +380,7 @@ rule isescan:
         (cd {params.run_dir} && isescan.py \
             --seqfile {wildcards.acc_fn}.fna \
             --output . \
-            --nthread {threads})
+            --nthread {threads}) || true
         mv -f {params.run_dir}/{wildcards.acc_fn}.fna.tsv {output.tsv} 2>/dev/null \
             || touch {output.tsv}
         mv -f {params.run_dir}/{wildcards.acc_fn}.fna.sum {output.sum} 2>/dev/null \
