@@ -1,159 +1,190 @@
 # ESKAPE Defence Systems - ML Extension
 
-Machine learning extension of Muthuraman et al. (2026), *Journal of Applied Microbiology*.
+> Machine learning extension of Muthuraman et al. (2026), *Journal of Applied Microbiology*.
+> Does the RESTRICT/FACILITATE defence-system dichotomy generalise across ESKAPE pathogens?
 
-**Research question:** Does the RESTRICT/FACILITATE defence-system dichotomy identified in *Acinetobacter* generalise across ESKAPE pathogens?
+![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
+![conda](https://img.shields.io/badge/env-eskape--ml-green)
+![license](https://img.shields.io/badge/license-MIT-lightgrey)
 
-## Published baseline
+---
 
-- 132 complete *Acinetobacter* genomes
-- Key finding: RM systems restrict ARG/MGE acquisition; SspBCDE and Gao_Qat facilitate it
-- Published pipeline: [acinetobacter-defence-pipeline](https://github.com/vikos77/acinetobacter-defence-pipeline)
+## Background
 
-## This extension
+A prior analysis of *Acinetobacter* spp. identified a RESTRICT/FACILITATE dichotomy in
+defence system biology: restriction-modification (RM) systems negatively correlated with
+ARG and mobile genetic element (MGE) counts, while SspBCDE and Gao_Qat were positively
+correlated, consistent with co-acquisition on MGEs. Whether this dichotomy is specific to
+*Acinetobacter* or reflects a general feature of defence-resistance co-evolution in
+clinical pathogens was untested.
 
-| Question | Method | Notebook |
-|---|---|---|
-| Q1: Can defence repertoire classify ESKAPE species? | Logistic Regression, Random Forest, XGBoost | 05, 06, 07 |
-| Q2: Can defence profile predict high-ARG-burden genomes? | Binary RF/XGB, species-stratified, GroupKFold | 05, 06, 07 |
-| Q3: Do pan-ESKAPE defence archetypes exist? | K-means, hierarchical clustering, silhouette | 09 |
-| Q4: Which features drive classification? | SHAP, permutation importance | 08 |
-| Q5 (sensitivity): Does RM count outperform binary presence? | Test A: dc_RM vs dp_RM in Q2 | 10 |
-| Q6 (sensitivity): Is restriction ARG-class-specific? | Test B: mechanism-class RF per species | 10 |
+This repository applies supervised machine learning to 3,335 complete and high-quality
+genomes spanning all six ESKAPE species to test generalisation of that pattern. Four
+research questions were pre-registered before any model training (see
+`docs/pre_analysis_plan.md`).
+
+---
+
+## Pipeline
+
+```
+NCBI genomes (ncbi-datasets-cli)
+        |
+        v
+Quality control (CheckM2 >= 95% completeness)
+        |
+        v
+Defence annotation          ARG detection       MGE / IS detection
+DefenseFinder + PADLOC      ResFinder           ISEScan + ICEberg tBLASTn
+        |                         |                      |
+        +-------------------------+----------------------+
+                                  |
+                                  v
+                     Feature matrix  (01_feature_engineering)
+                     3,335 genomes x 367 dp_* features
+                                  |
+                    +-------------+-------------+
+                    |                           |
+                    v                           v
+        Phylogenetic grouping          Exploratory analysis
+        Mash distances                 PCA / UMAP / t-SNE
+        309 phylogroups                (02_eda, 03_dimensionality_reduction)
+        (04_phylogenetic_grouping)
+                    |
+                    v
+        Grouped 5-fold CV (GroupedStratifiedKFold on phylogroups)
+                    |
+         +----------+----------+----------+
+         |          |          |          |
+         v          v          v          v
+        Q1         Q2         Q3         Q4
+   Species      ARG burden  Archetypes  SHAP
+classification  prediction  K-means     attribution
+  LR / RF /     RF per      (09)        (08)
+  XGB / LGBM    species
+  (05-07)       (05-07)
+```
+
+---
+
+## Key results
+
+| Question | Result |
+|----------|--------|
+| Q1: Species classification from defence profiles | RF balanced accuracy = 0.895 [95% CI: 0.871-0.923]; null baseline = 0.167 |
+| Q2: ARG burden prediction within species | Significant in 4/6 species (EC, KP, PA, EF); AUROC 0.739-0.822; facilitative direction in all four |
+| Q3: Pan-ESKAPE defence archetypes | Continuum, not discrete clusters; K-means ARI vs species = -0.004 on dereplicated representatives |
+| Q4: SHAP generalisation of Acinetobacter findings | 3/4 published systems in global SHAP top 30; RM restriction specific to AB; facilitative direction conserved |
+
+All models evaluated under phylogenetically grouped 5-fold cross-validation
+(309 Mash-derived phylogroups; MLST concordance 92.4%).
+
+---
 
 ## Dataset
 
-- **878 genomes** across 6 ESKAPE species (900 downloaded; 22 excluded for MLST mismatch)
-- Species breakdown: AB=150, EC=146, EF=150, KP=132, PA=150, SA=150
-- Features: 265 defence system presence/absence (`dp_*`) columns used for classification
-- Full feature matrix: 878 × 631 (dp_* + dc_* + genomic context columns)
-- Phylogenetic control: 95 Mash-derived phylogroups (AB=13, EC=22, EF=7, KP=18, PA=26, SA=9)
-- All CV: GroupKFold(5) grouping on phylogroups from Phase 6 onwards
+| Property | Value |
+|----------|-------|
+| Genomes | 3,335 (3,460 downloaded; 125 excluded by MLST quality filter) |
+| Species | AB n=600, EC n=507, EF n=524, KP n=504, PA n=600, SA n=600 |
+| Defence features (dp_*) | 367 binary presence/absence columns |
+| Full feature matrix | 3,335 x 806 (defence + ARG + MGE + genomic context) |
+| Phylogroups | 309 (Mash k=21, s=1000; average linkage; per-species thresholds 0.005-0.010) |
+| Cross-validation | GroupedStratifiedKFold(5) on phylogroup labels |
 
-## Phase progress
+---
 
-| # | Notebook | Topic | Status |
-|---|---|---|---|
-| 0 |  -  | Environment + repo scaffolding | **COMPLETE** |
-| 1 |  -  | Literature ramp-up + pre-analysis plan | **COMPLETE** |
-| 2 |  -  | Data acquisition (NCBI, 878 genomes × 6 species) | **COMPLETE** |
-| 3 | 02_feature_engineering | Feature matrix construction (878 × 631) | **COMPLETE** |
-| 4 | 01_eda | Exploratory data analysis | **COMPLETE** |
-| 5 | 03_dimensionality_reduction | PCA, UMAP, t-SNE | **COMPLETE** |
-| 6 | 04_phylogenetic_grouping | Mash distances → 95 phylogroups | **COMPLETE** |
-| 7 | 05_baseline_classifier | Null baseline, Logistic Regression | **COMPLETE** |
-| 8 | 06_random_forest | Random Forest Q1 + Q2 + SHAP | **COMPLETE** |
-| 9 | 07_gradient_boosting | XGBoost Q1 + Q2 + calibration | **COMPLETE** |
-| 10 | 08_model_interpretation | SHAP biological synthesis + holdout validation | **COMPLETE** |
-| 11 | 09_unsupervised_archetypes | K-means archetypes + robustness (dereplicated) | **COMPLETE** |
-| 12 | 10_phase12_sensitivity | RM count vs binary (Test A) + mechanism-class ARG (Test B) | **COMPLETE** |
-
-## Key findings
-
-### Phase 4 - EDA
-- RESTRICT/FACILITATE is not pan-ESKAPE: in KP and PA, RM systems co-occur with ARGs on shared plasmids rather than acting as chromosomal gatekeepers.
-- IME-ARG co-acquisition is universal across all 6 species (ρ = +0.65–0.77).
-
-### Phase 5 - Dimensionality reduction
-- Species separate cleanly in UMAP (Jaccard metric). AB far left (depauperate IC2 profile); EF far bottom-right (Gram-positive). KP and EC consistently adjacent (Enterobacterales).
-- 103 PCs required for 80% variance  -  high-dimensional sparse feature space.
-
-### Phase 6 - Phylogenetic grouping
-- 95 phylogroups via Mash distance clustering. MLST concordance 99.1% (108/109 STs co-assigned).
-- All subsequent CV uses GroupKFold(5) on phylogroups to prevent phylogenetic leakage.
-
-### Phase 7 - Baseline classifiers (Logistic Regression)
-- Q1 primary: BA = 0.837 [0.813–0.859].
-- Q2 signal in EC and KP; AB Q2 AUROC inverted (low-ARG class predicted as high), replicating the published RESTRICT phenotype.
-
-### Phase 8 - Random Forest
-- Q1: RF BA = 0.878 [0.859–0.898]. Best params: max_depth=20, max_features=sqrt, min_samples_leaf=1, n_estimators=100.
-- Per-class recall: SA=0.993, EF=0.953, PA=0.893, KP=0.856, EC=0.849, AB=0.700 (worst  -  IC2 clones confused with EF in feature space).
-- Q2 significant species (RF, AUROC): PA=0.677 (RF wins over XGB).
-
-### Phase 9 - Gradient boosting (XGBoost / LightGBM)
-- Q1: XGB BA=0.806 [0.776–0.878], LGBM BA=0.860 [0.814–0.897]  -  neither outperforms RF.
-- RF remains primary Q1 classifier. XGB with max_depth=4 underperforms on sparse binary features.
-- Q2 significant species (XGB, AUROC): EC=0.872, KP=0.924. XGB primary for EC/KP; RF primary for PA.
-- EC, KP significant under both models; PA significant under RF only (chromosomal ARG routes weaken XGB signal).
-
-### Phase 10  -  Model interpretation + holdout validation
-- C3 holdout (33 published AB genomes): holdout BA=0.902, AB recall=0.939 vs CV recall=0.700. Gap explained by lower IC2 proportion in published cohort.
-- SHAP Q1 rank 1: `dp_df_SspBCDE` (positive for AB, driven by IC2 dominance).
-- Per-species SHAP rank 1: AB=SspBCDE, EF=AbiH (Gram-positive Abi), PA=CRISPR-Cas.
-- Alignment with published Fisher's exact: agreement at top-3 (RM, SspBCDE, Gao_Qat). Divergence below rank 3 is expected  -  Fisher's estimates within-AB co-occurrence; SHAP estimates between-species discrimination. Different estimands, not a failure.
-
-### Phase 11  -  Unsupervised archetypes
-- Full dataset (878 genomes): best K=10 by silhouette (score=0.068). ARI vs species=0.383  -  ARTEFACTUAL (clonal inflation).
-- Dereplicated (95 phylogroup representatives): best K=2, ARI vs species=−0.004 (near random).
-- **Conclusion: ESKAPE defence profiles form a continuum, not discrete archetypes.**
-- RESTRICT/FACILITATE recovered in full clustering: Cluster 2 (20 AB, RM-high/SspBCDE-low) = RESTRICT; Cluster 8 (79 AB, RM-low/SspBCDE-high) = FACILITATE (IC2). Requires within-AB clustering to study robustly.
-- Q5b (defence + anti-defence + IS): K=2 split reflects genome complexity (large Gram-negatives vs small Gram-positives), not phage-permissive biology. IS burden nearly identical between clusters  -  phage-permissive hypothesis refuted; IS position (not count) is the correct proxy.
-
-### Phase 12  -  Sensitivity analyses (pre-registered 2026-05-27)
-
-**Test A  -  RM count (dc_) vs binary presence (dp_) in Q2:**
-- Only RM Type I has real count variation (31.2% of genomes have dc≠dp); Types II–IV are effectively binary (<5% differ).
-- Substituting `dc_RM_Type_I` for `dp_RM_Type_I` **degraded** AUROC in all three species: EC=−0.069, KP=−0.040, PA=−0.142.
-- Interpretation: binary RM presence captures the biologically relevant threshold effect. The RESTRICT signal saturates at presence/absence  -  a gate model, not a dose-response model.
-
-**Test B  -  mechanism-class ARG burden (7 BH-significant cells, q=0.05):**
-
-| Cell | AUROC [95% CI] | p_adj |
-|---|---|---|
-| KP / aminoglycoside | 0.803 [0.735–0.879] | 0.0077 |
-| KP / sulfonamide | 0.817 [0.675–0.949] | 0.0202 |
-| KP / beta-lactam | 0.676 [0.592–0.736] | 0.0116 |
-| EC / beta-lactam | 0.750 [0.661–0.826] | 0.0107 |
-| PA / beta-lactam | 0.793 [0.677–0.893] | 0.0112 |
-| EF / macrolide_mlsb | 0.743 [0.587–0.912] | 0.0490 |
-| EF / tetracycline | 0.814 | 0.0475 |
-
-- Quinolone fails the 30/30 floor across all species (near-binary distribution)  -  consistent with predominantly chromosomal quinolone resistance and no RM gating.
-- AB/aminoglycoside permanently excluded: GroupKFold(5) structurally infeasible due to IC2 clonal compression into 13 phylogroups.
-
-**Test B SHAP direction  -  RM subtype finding:**
-- Pre-registered prediction: `dp_RM_Type_I` negative in plasmid-mediated classes. Confirmed in 1/5 pre-specified cells (KP/aminoglycoside  -  via Type II, not Type I).
-- **Restriction signal is in RM Type II and IIG, not Type I:** KP/aminoglycoside (Type II = −0.0039), EF/tetracycline (Type II = −0.0040), EF/macrolide_mlsb (Type IIG = −0.0052).
-- PA/beta-lactam positive RM Type I SHAP (+0.0050) = genomic complexity confound; PA beta-lactam resistance is chromosomal (AmpC, OprD, efflux pumps)  -  no plasmid gate applies.
-- **Exploratory finding:** RESTRICT principle extends to Gram-positive ESKAPE. EF tetracycline (tet(M) on Tn916) and macrolide/MLSB (erm(B) on Tn1545) are plasmid-borne in *E. faecium*  -  RM Type II/IIG restriction signal is biologically coherent.
-
-## Setup
+## Quick start
 
 ```bash
+# 1. Create environment
 conda env create -f environment.yml
 conda activate eskape-ml
+
+# 2. Install pre-commit hooks
 pre-commit install
+
+# 3. Download genomes and run annotation pipeline (requires NCBI datasets CLI)
+snakemake --cores 8 --use-conda
+
+# 4. Run notebooks in order (01 through 10)
+jupyter lab
 ```
+
+Raw genomes and interim tool outputs are gitignored. The processed feature matrix and
+CV groups are released via Zenodo on publication (see Data availability below).
+
+**External data dependency:** `08_model_interpretation.ipynb` requires
+`Supplementary_Data_S1.xlsx` at the project root. This file contains the published
+*Acinetobacter* holdout cohort from Muthuraman et al. (2026) and is available as
+journal supplementary material or via Zenodo.
+
+---
+
+## Notebooks
+
+| Notebook | Phase | Contents |
+|----------|-------|----------|
+| `01_feature_engineering` | 3 | Parse DefenseFinder, PADLOC, ResFinder, ISEScan, BacMet outputs into tidy feature matrix |
+| `02_eda` | 4 | Per-species summary statistics, within/between-species variance, RESTRICT/FACILITATE correlation matrices |
+| `03_dimensionality_reduction` | 5 | PCA (scree, loadings), UMAP (Jaccard metric, n_neighbors sweep), t-SNE |
+| `04_phylogenetic_grouping` | 6 | Mash sketching, pairwise distances, hierarchical clustering, MLST concordance validation |
+| `05_baseline_classifier` | 7 | Null baseline, Logistic Regression Q1 + Q2, learning curves |
+| `06_random_forest` | 8 | RF Q1 + Q2, hyperparameter tuning, Gini + permutation + SHAP importance |
+| `07_gradient_boosting` | 9 | XGBoost and LightGBM Q1 + Q2, early stopping, calibration, McNemar tests |
+| `08_model_interpretation` | 10 | Per-class SHAP summary plots, holdout validation, alignment with published findings |
+| `09_unsupervised_archetypes` | 11 | K-means, hierarchical clustering, silhouette + gap statistic, archetype profiles |
+| `10_phase12_sensitivity` | 12 | RM count vs binary presence (Test A), mechanism-class ARG burden (Test B) |
+
+---
 
 ## Repository structure
 
 ```
 eskape-defence-ml/
-├── notebooks/          # Jupyter notebooks (01–10, numbered by phase)
+├── notebooks/              # Jupyter notebooks (01-10, numbered by phase)
+├── src/                    # Python modules (features, models, evaluation, viz)
+├── workflow/               # Snakemake pipeline extending the published Acinetobacter pipeline
+├── config/
+│   ├── species.yaml        # NCBI accession lists per species
+│   └── params.yaml         # Pipeline and ML parameters
 ├── data/
-│   ├── raw/            # Downloaded genomes (gitignored  -  download via Snakemake)
-│   ├── interim/        # Tool outputs (DefenseFinder, ResFinder, etc.; gitignored)
-│   └── processed/      # feature_matrix.parquet, cv_groups.parquet (gitignored  -  Zenodo on release)
+│   ├── raw/                # Downloaded genomes (gitignored)
+│   ├── interim/            # Tool outputs: DefenseFinder, PADLOC, ResFinder, Mash (gitignored)
+│   └── processed/          # feature_matrix_3335.parquet, cv_groups_3335.parquet
+│                           # (gitignored; deposited to Zenodo on release)
 ├── results/
-│   ├── figures/        # PNG figures per phase (tracked in git)
-│   ├── models/         # Serialised models (gitignored  -  Zenodo on release)
-│   └── *.parquet       # Model output tables (gitignored  -  Zenodo on release)
+│   ├── figures/            # PNG figures per phase (tracked in git)
+│   └── models/             # Serialised RF/XGB/LGBM models (gitignored; Zenodo on release)
 ├── docs/
-│   ├── pre_analysis_plan.md
-│   └── decisions.md    # All design decisions + audit log
-└── config/             # species.yaml, params.yaml, arg_class_mapping.yaml
+│   ├── pre_analysis_plan.md       # Pre-registered questions and analysis plan
+│   ├── decisions.md               # Design decisions with rationale
+│   └── manuscript/                # Complete manuscript draft
+└── environment.yml
 ```
 
-### External data dependency
+---
 
-`notebooks/08_model_interpretation.ipynb` (Phase 10 holdout validation) requires
-`Supplementary_Data_S1.xlsx` at the project root. This file contains the published
-*Acinetobacter* cohort metadata from Muthuraman et al. (2026) JAM and is available
-as supplementary material from the journal or via the Zenodo release of this project.
-It is not tracked in git (3.5 MB binary).
+## Data availability
+
+Raw genomes are available from NCBI RefSeq under the accessions listed in
+`config/species.yaml`. Processed data (feature matrix, CV groups, serialised models)
+will be deposited to Zenodo on publication and linked here.
+
+---
 
 ## Citation
 
-Muthuraman V et al. (2026) Niche-specific defence system selection in *Acinetobacter* spp.
-*Journal of Applied Microbiology*.
+If you use this repository, please cite:
+
+**This work (in submission):**
+> Muthuraman V et al. (2026) Defence system repertoires encode species identity and
+> antibiotic resistance burden across ESKAPE pathogens: a machine learning analysis.
+> *In submission.*
+
+**Parent study:**
+> Muthuraman V et al. (2026) Niche-specific defence system selection in *Acinetobacter* spp.
+> *Journal of Applied Microbiology.*
+
+**Published pipeline:**
+> [acinetobacter-defence-pipeline](https://github.com/vikos77/acinetobacter-defence-pipeline)
