@@ -31,7 +31,7 @@ research questions were pre-registered before any model training (see
 NCBI genomes (ncbi-datasets-cli)
         |
         v
-Quality control (CheckM2 >= 95% completeness)
+Quality control (CheckM2 >= 95% completeness; MLST species confirmation)
         |
         v
 Defence annotation          ARG detection       MGE / IS detection
