@@ -4,6 +4,12 @@ Fits per-species RF Q2 models and reports:
   1. Gini importance ranking for all features (top 20 per species)
   2. Rank of each RM-related feature within each species Q2 model
   3. Spearman correlation: RM presence vs raw ARG count (direction test)
+
+NOTE (2026-06-16): This script uses feature_matrix_3335.parquet (367 dp_ features,
+pre-named-236 filter). The primary Q2 analysis for the final manuscript uses
+run_q2_named.py with feature_matrix_3335_named.parquet (236 named dp_ features).
+Gini importance and Spearman correlations from run_q2_named.py are authoritative.
+This script is retained for comparison with the 367-feature analysis.
 """
 
 import numpy as np
@@ -45,11 +51,11 @@ def main():
     fm = pd.read_parquet(PROC / "feature_matrix_3335.parquet")
     dp_cols = sorted([c for c in fm.columns if c.startswith("dp_")])
 
-    # Specificity filter identical to Q1 (remove 8 taxonomic markers)
+    # Specificity filter identical to Q1 (remove 8 taxonomic markers on 367-feature matrix)
     sp_prev    = fm.groupby("species")[dp_cols].mean()
     spec_score = sp_prev.std() / 0.5
     markers    = spec_score[spec_score >= 0.70].index.tolist()
-    base_feats = [c for c in dp_cols if c not in markers]  # 352 features
+    base_feats = [c for c in dp_cols if c not in markers]  # 359 features (367 - 8 markers)
 
     print("=" * 70)
     print("Q2 PER-SPECIES RF FEATURE IMPORTANCE")

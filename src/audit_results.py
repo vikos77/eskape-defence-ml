@@ -2,6 +2,13 @@
 Full audit script — verifies every medium/high-risk quantitative claim in
 methods.md and results.md. Run from the project root with full stderr visible.
 
+NOTE (2026-06-16): This script targets the 878-genome baseline cohort
+(feature_matrix.parquet, 274 dp_ features, 265 FEAT_COLS). It predates the
+3,335-genome extension and the named-236 feature filter. The CI values
+(RF [0.852-0.895], LR [0.838-0.921]) are from the 878-genome analysis and
+do not match the final 3,335-genome named-236 results (RF 0.823 [0.758-0.888]).
+Retained for historical audit only.
+
 Usage:
     conda run -n eskape-ml python src/audit_results.py
 """

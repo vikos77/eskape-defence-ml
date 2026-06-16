@@ -1146,3 +1146,115 @@ standard CV) showed: full features (274 dp_*) BA=0.984; filtered (266 dp_*) BA=0
 The 0.048-point drop from full to filtered under standard CV quantifies the taxonomic
 marker contribution. These pilot numbers are from the 150/species dataset, not 3,335,
 and should not be cited as 4× results.
+
+---
+
+## 2026-06-16  -  Q2 feature pool: full dp_cols (367) vs FEAT_COLS (359)
+
+**Issue identified:** The spec_score ≥ 0.70 taxonomic marker filter was applied globally,
+removing 8 features (dp_AbiE, dp_PD-T4-6, dp_VSPR, dp_df_gcu233, dp_padloc_PDC-S04,
+dp_padloc_PDC-S07, dp_padloc_PDC-S12, dp_padloc_SoFic) before Q2 analysis. This is a
+category mismatch: the spec_score filter identifies cross-species taxonomic markers, which
+is a valid concern for Q1 (species classification). For Q2 (within-species ARG burden
+prediction), there is no species-identity confound — each species is modelled independently.
+A "taxonomic marker" within a single species is simply a feature; if it varies between
+high-ARG and low-ARG genomes, it carries legitimate Q2 signal.
+
+**Magnitude check (2026-06-16):** Within each species' Q2 subset, 12 feature-species
+pairs from the 8 removed markers fall in the 5–95% prevalence range and thus pass the
+per-species H1 filter. Key informative pairs:
+- dp_AbiE: 82.5% in *E. faecium*, 17.6% in *P. aeruginosa*
+- dp_padloc_PDC-S04: 74.0% in *E. faecium*, 18.5% in *E. cloacae*, 9.5% in *A. baumannii*
+- dp_padloc_SoFic: 83.3% in *S. aureus*, 45.6% in *K. pneumoniae*, 10.5% in *A. baumannii*
+- dp_padloc_PDC-S07: 79.1% in *S. aureus*
+This is not cosmetic — these features have within-species variance that can predict ARG burden.
+
+**Decision:** Re-run Q2 analyses (RF and LR) using the full dp_cols (367) as the starting
+pool, with the per-species prevalence filter (≥5%) applied within each species' Q2 subset.
+Q1 retains FEAT_COLS (359, markers removed) to prevent species-identity shortcuts. The
+split feature pools (Q1: 359, Q2: 367 starting) are justified by the different analytical
+objectives and must be documented in Methods §3.
+
+**Near-universal markers (passing H1 but near-constant → RF ignores):**
+- dp_PD-T4-6: 93.5% in EC, 99.4% in PA — near-universal, minimal signal
+- dp_VSPR: 99.2% in EC, 98.8% in KP — near-universal
+- dp_padloc_PDC-S12: 98.7% in EC, 99.4% in KP — near-universal
+- dp_df_gcu233: 99.3% in SA — near-universal
+
+**Impact scope:** If Q2 AUROCs change ≥0.005 for any species, manuscript Q2 results
+(Results §2), Discussion Q2 paragraph, and abstract must be updated before submission.
+If all changes < 0.005, add one sentence to Methods §3 noting that Q2 analyses were
+re-run with the extended feature pool and results were equivalent.
+
+---
+
+## 2026-06-16  -  Feature matrix purge: remove computationally uncharacterised annotations (SUPERSEDES 2026-06-16 dp_cols entry)
+
+**Decision:** Remove all defence-system features whose names correspond to computationally
+predicted, sequentially numbered internal identifiers with no established mechanism class
+in the peer-reviewed literature. Retain only systems that are named in primary publications
+as characterised defence systems. This supersedes the 2026-06-16 dp_cols decision (which
+used a larger feature pool including uncharacterised annotations for Q2).
+
+**Systems removed and rationale:**
+
+| Category | Feature pattern | Count | Source paper | Reason for removal |
+|----------|----------------|-------|-------------|-------------------|
+| PDC | `PDC-S*`, `PDC-*` | 81 | PADLOC internal clustering | Sequential internal cluster ID, no mechanism class, no biological name. PADLOC-version-specific numbering may reclassify across tool versions. |
+| DS-N | `dp_df_DS-*` | 30 | DefensePredictor (Katz et al.) | DefensePredictor is an ML prediction model. DS-N systems are computationally predicted candidates; the paper does not characterise their mechanism. DS-N naming is sequential internal numbering identical in structure to PDC-SN. |
+| All_UG | `dp_df_UG*` | 4 | DefenseFinder | DefenseFinder's own label for "All Uncharacterised Groups" — the tool itself declares them uncharacterised. |
+| Catch-alls | `*_other`, `*_unknown`, `*_unsubtyped`, `*_merge` | 16 | PADLOC/DefenseFinder | Explicit "not classifiable" designations in both tools. |
+
+**Total removed:** 131 features. **Total retained:** 236 named, citable defence systems.
+
+**Systems retained after literature verification (List_system_article.md in defense-finder-models):**
+
+All retained systems appear in primary literature with biological characterisation:
+- SDIC1/3/4: "Multi-conflict islands are a widespread trend within Serratia spp."
+- GAPS1/2/4/6: Mahata et al. 2023, "A widespread bacterial mobile genetic element encodes weapons against phages, bacteria, and eukaryotes"
+- 6A_MBL: "Bacterial homologs of innate eukaryotic antiviral defenses with anti-phage activity"
+- HEC-01 to HEC-09: "New antiviral defences are genetically embedded within prokaryotic immune systems"
+- gcu142/167/233/24/76/WGS21: "Mobile Integrons Encode Phage Defense Systems"
+- VP1796/1817/1823/1826/1839/1840/1848/1851/1853: "Integrons are anti-phage defence libraries in Vibrio parahaemolyticus" and Serratia conflict-island paper
+- cbass_IIs: retained as probable CBASS family subtype (user decision)
+
+**Why not restore on BA drop:** This decision is interpretability-first and annotation-completeness-bias-first. If
+Q1 BA declines after purging, the correct response is a sensitivity analysis sentence ("including
+computationally uncharacterised annotations changed Q1 BA by X points"), not a revert.
+Reverting on a BA drop would mean the framing was performance-first all along — and would
+re-introduce features that can only be described as "ML-predicted system DS-N, mechanism
+unknown" or "PADLOC internal cluster PDC-S04, no published characterisation." This is not
+defensible at mBio. The interpretability constraint is prior to and independent of the performance
+outcome.
+
+**Annotation-completeness bias:** A secondary but independent reason for removal. PDC and DS-N
+system prevalence may partly reflect differences in PADLOC/DefensePredictor HMM training data
+coverage across species rather than genuine biological differences. This confound is
+unresolvable without access to the tool's training metadata and would make any species-specific
+enrichment of these features ambiguous at review.
+
+**Methods language (§3 update):** "Defence system features were restricted to systems with
+established names in primary literature. Computationally predicted systems with purely sequential
+internal identifiers — PADLOC-Defined Cluster (PDC) annotations (n=81), DefensePredictor
+DS-numbered predictions (n=30), DefenseFinder All_Uncharacterised_Groups annotations (n=4),
+and catch-all suffixes (_other, _unknown, _unsubtyped, _merge; n=16) — were excluded. This
+filter guards against annotation-completeness bias (tool HMM coverage differences across
+species) and ensures every reported feature is traceable to a characterised system in the
+primary literature. The final feature matrix retained 236 named defence system columns."
+
+**Sensitivity analysis completed (2026-06-16):** Four feature sets compared:
+| Feature set | Features | Q1 BA (95% CI) | Q2 sig species |
+|---|---|---|---|
+| Original (PADLOC + DF, all) | 367 | 0.895 [0.871–0.923] | 4/6 |
+| Named-236 (PDC/DS-N/UG/catch-alls removed) | 236 | 0.823 [0.758–0.888] | 0/6 |
+| DF-only named (PADLOC-specific also removed) | 223 | 0.827 [0.800–0.854] | 0/6 |
+| Full DF no unnamed filter (DS-N/UG retained, no PADLOC) | 271 | 0.815 [0.767–0.863] | 0/6 |
+
+Re-including DS-N/UG features (271 vs 223 features) did not recover Q1 performance (0.815 vs 0.827),
+localising the contribution to PDC. The named-236 matrix is the final analysis matrix. The
+performance gap between 0.895 and 0.823 is attributable to PDC removal; reporting "entirely
+attributable to PDC" would be technically stronger than demonstrated, so the correct framing is:
+"re-including DS-N/UG did not recover performance, localising the contribution to PDC systems."
+
+Decision: Option A confirmed. Report Q2 as directional but non-significant on named-236 matrix.
+Spearman correlations for top named features serve as directional evidence in Results §2.

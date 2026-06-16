@@ -1,14 +1,18 @@
 #!/usr/bin/env python
 """
 Build notebooks/10_phase12_sensitivity.ipynb for the 3335-genome cohort.
-Run from eskape-defence-ml_2 project root:
+Run from eskape-defence-ml project root:
     conda run -n eskape-ml python src/models/build_nb10.py
 
+NOTE (2026-06-16): Tests A and B were dropped from the final manuscript.
+This notebook is retained as a historical record and for potential future work.
+The Q2 baselines in the TITLE cell below are from the 367-feature analysis
+(pre-named-236 filter); the named-236 Q2 result is 0/6 species significant.
+
 Key differences from the 878-genome original:
-- feature_matrix_3335.parquet  (3335 × 791, 352 dp_ FEAT_COLS)
+- feature_matrix_3335.parquet  (3335 × 791, 367 dp_ features before named-236 filter)
 - cv_groups_3460.parquet joined for phylogroup  (309 groups)
 - q2_gb_results_3460.parquet and q2_rf_results_3460.parquet
-- Ab (0.767, p=0.049) and Ef (0.701, p=0.024) are now significant — enter Test A scope
 - Test A baseline uses dp-RF (same function, same model) not XGBoost parquet
 - ResFinder rf_long intersected with fm.index (guard against 31 leaked Ab dirs)
 - SHAP scope expanded to all significant species
@@ -24,6 +28,11 @@ TITLE = """\
 
 **Pre-registered:** 2026-05-27. Full specification locked before touching NB10.
 
+**NOTE (2026-06-16):** Tests A and B were dropped from the final manuscript after the
+feature matrix was restricted to 236 named systems (named-236 filter). On the named-236
+matrix, Q2 produces 0/6 significant species (all p_adj > 0.10), making Test A's
+differential comparison non-applicable. This notebook remains for historical record.
+
 Two tests, both independent of IS element data (ISEScan not required):
 
 **Test A:** Does replacing binary RM presence (dp_RM_*) with copy-count (dc_RM_*) in the
@@ -33,8 +42,9 @@ Q2 feature set improve ARG burden prediction? Tests whether RM restriction is a 
 (β-lactam, aminoglycoside, etc.) rather than total ARG burden? Tests whether RM
 restriction operates selectively on plasmid-borne classes.
 
-Dataset: 3,335 genomes × 352 dp_ features (clean rebuild 2026-06-05).
-Q2 XGBoost baselines: Ab=0.767*(p=0.049), EC=0.762*, Ef=0.701*, KP=0.793*, PA=0.790*, SA=0.630 ns.
+Dataset: 3,335 genomes × 367 dp_ features (original matrix, pre-named-236 filter).
+Q2 XGBoost baselines (367-feature matrix): Ab=0.767*(p=0.049), EC=0.762*,
+Ef=0.701*, KP=0.793*, PA=0.790*, SA=0.630 ns. [Named-236 Q2: 0/6 significant.]
 """
 
 IMPORTS = """\
@@ -63,9 +73,9 @@ warnings.filterwarnings("ignore")
 
 # ── PATH GUARD ────────────────────────────────────────────────────────────────
 ROOT = Path("..").resolve()
-assert ROOT.name == "eskape-defence-ml_2", (
+assert ROOT.name == "eskape-defence-ml", (
     f"Wrong project root: {ROOT}\\n"
-    "Run this notebook from eskape-defence-ml_2/notebooks/"
+    "Run this notebook from eskape-defence-ml/notebooks/"
 )
 PROC = ROOT / "data" / "processed"
 INTER = ROOT / "data" / "interim"
@@ -203,9 +213,11 @@ TESTA_HEADING = """\
 Only *live* RM subtypes (dc≠dp in ≥10% of genomes) are swapped. Moot subtypes stay as
 dp_* to keep feature-count constant and avoid confounding the comparison.
 
-**Scope:** All species where Q2 XGBoost AUROC was BH-significant (q<0.05):
-Ab (0.767, p=0.049), EC (0.762, p=0.007), Ef (0.701, p=0.024), KP (0.793, p=0.015),
-PA (0.790, p=0.008). SA (0.630, p=0.215) remains out of scope.
+**Scope (367-feature analysis, historical):** All species where Q2 XGBoost AUROC was
+BH-significant (q<0.05) on the 367-feature matrix: Ab (0.767, p=0.049), EC (0.762,
+p=0.007), Ef (0.701, p=0.024), KP (0.793, p=0.015), PA (0.790, p=0.008). SA (0.630,
+p=0.215) was out of scope. NOTE: on named-236, 0/6 species reach significance; Test A
+is not applied in the final analysis.
 """
 
 TESTA_FEATCOLS = """\

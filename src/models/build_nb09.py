@@ -21,13 +21,14 @@ TITLE = """# NB09 — Unsupervised Defence-System Archetypes (3,335-genome cohor
 species? If so, how many archetypes exist, and do they map onto known biology?
 
 **Q5b (deferred):** Phage-permissive archetype analysis requiring IS element counts.
-*Status: ISEScan ~44% complete. Section 4 is a placeholder. Rerun when IS features land.*
+*Status: deferred; ISEScan results not incorporated in this analysis.*
 
 Unlike Phases 6–8 (supervised), this notebook receives **no labels**.
 Clusters emerge from similarity in defence feature vectors alone.
 
-Dataset: 3,335 genomes (clean rebuild 2026-06-05) × 352 defence presence features (dp_).
-Baseline comparison: 878-genome study results from `eskape-defence-ml`.
+Dataset: 3,335 genomes × 236 named defence presence features (dp_), 231 FEAT_COLS
+after spec_score >= 0.70 taxonomic marker filter (matching Q1 protocol).
+Feature matrix: feature_matrix_3335_named.parquet (PDC/DS-N/UG/catch-alls removed).
 """
 
 IMPORTS = """\
@@ -47,16 +48,16 @@ from sklearn.metrics import (silhouette_score, calinski_harabasz_score,
                               adjusted_rand_score)
 from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
 
-# ── PATH GUARD: must run from eskape-defence-ml_2/notebooks/ ─────────────────
+# ── PATH GUARD: must run from eskape-defence-ml/notebooks/ ──────────────────
 ROOT = Path("..").resolve()
-assert ROOT.name == "eskape-defence-ml_2", (
+assert ROOT.name == "eskape-defence-ml", (
     f"Wrong project root: {ROOT}\\n"
-    "This notebook must be executed from eskape-defence-ml_2/notebooks/. "
+    "This notebook must be executed from eskape-defence-ml/notebooks/. "
     "If run from project root, change ROOT to Path('.').resolve()."
 )
 DATA    = ROOT / "data" / "processed"
 FIG_DIR = ROOT / "results" / "figures" / "archetypes"
-assert (DATA / "feature_matrix_3335.parquet").exists(), "FM not found"
+assert (DATA / "feature_matrix_3335_named.parquet").exists(), "Named FM not found"
 assert (DATA / "cv_groups_3460.parquet").exists(), "cv_groups not found"
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -68,7 +69,7 @@ print(f"Figures dir  : {FIG_DIR}")
 
 LOAD_FM = """\
 # ── Feature matrix ──────────────────────────────────────────────────────────
-fm = pd.read_parquet(DATA / "feature_matrix_3335.parquet")
+fm = pd.read_parquet(DATA / "feature_matrix_3335_named.parquet")
 print(f"Feature matrix: {fm.shape[0]} genomes x {fm.shape[1]} columns")
 
 # ── FEAT_COLS: mirror training-notebook logic exactly ────────────────────────
@@ -356,7 +357,7 @@ bottom-up without pre-specifying K — we cut it at the same best_k for comparis
 - ARI ≥ 0.70 → stable partition: both methods find the same structure
 - ARI < 0.70 → structure is not robustly recoverable across methods (evidence against real archetypes)
 
-Ward linkage on 3,335 × 352 binary matrix: expect ~3–5 min.
+Ward linkage on 3,335 × 231 named binary matrix: expect ~3–5 min.
 """
 
 WARD_LINKAGE = """\
