@@ -42,7 +42,7 @@ PAIRS = [
     ("abaumannii",   "dp_RM_Type_IV",  ),
     ("saureus",      "dp_RM_Type_I",   ),
 ]
-TARGETS = ["arg_count_total", "ime_count_total"]
+TARGETS = ["arg_count_unique", "ime_count_total"]
 
 # ime_count column name — check what's in the matrix
 print("Columns with 'ime' or 'ice':", [c for c in fm.columns if "ime" in c.lower() or "ice" in c.lower()])

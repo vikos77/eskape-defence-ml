@@ -430,3 +430,23 @@ units at the boundary; we treat this as below the precision floor of a bootstrap
 five CV fold scores and select RF on the basis of the 0.041 BA improvement. This
 constitutes a minor post-hoc deviation from the pre-registered criterion, logged in the
 pre-analysis plan and in decisions.md."
+
+---
+
+### Amendment 2  -  AB IC2 exclusion subanalysis (pre-specified 2026-06-16, before execution)
+
+**Motivation:** The AB Q2 result (AUROC=0.715, ns) is suppressed by IC2 clonal compression: 283/600 AB genomes (47.2%) carry SspBCDE, collapse to a single phylogroup, and are ARG-high / RM-depleted. This leaves insufficient non-IC2 variance for Q2 to detect the RM restriction signal characterised in the published *A. baumannii* analysis.
+
+**Pre-specified test:** Exclude genomes where dp_SspBCDE=1 (IC2 proxy). Rerun Q2 RF on non-IC2 AB subset. Hypothesis: RM_Type_IV will rank first by Gini importance with negative rho; AUROC will exceed 0.715.
+
+**Result (Supplementary Table S7):** AUROC = 0.683 [0.494-0.823], non-significant (CI spans null). RM_Type_IV ranked 4th (rho_ARG = -0.279, p<0.0001). Top 3 predictors were positive (RosmerTA, Mokosh_TypeII, BREX_I). Hypothesis partially confirmed (RM restriction visible) but AUROC was lower than full-AB Q2, and CI covered null. Residual facilitative signals in non-IC2 AB explain the non-significant classifier.
+
+---
+
+### Amendment 3  -  EC E. hormaechei subanalysis (pre-specified 2026-06-16, before execution)
+
+**Motivation:** The EC Q2 analysis pools six cryptic member species with potentially different defence-ARG ecologies. E. hormaechei is the dominant member (241/507 genomes, 47.5%) and the species most associated with clinical MDR phenotypes in published literature.
+
+**Pre-specified test:** Filter EC to E. hormaechei sensu stricto (complex_member == "E. hormaechei"). Rerun Q2 RF. Assess whether the EC facilitative signal (RM_Type_II rho=+0.298) is present within E. hormaechei alone.
+
+**Result (Supplementary Table S8):** AUROC = 0.538 [0.418-0.671], at null. Top features mixed (Mok_Hok_Sok +0.184, RM_Type_II +0.163, CAS_I-F -0.267). Facilitative direction not recoverable within E. hormaechei alone at n=181; power is the primary limiting factor. The EC panel-level signal appears to reflect within-complex heterogeneity rather than being attributable to any single member species.
