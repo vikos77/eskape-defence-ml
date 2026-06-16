@@ -165,17 +165,13 @@ def main() -> None:
         .set_index("padloc_system")["canonical_name"].to_dict()
     )
 
-    # ── FEAT_COLS (identical to training) ─────────────────────────────────────
-    fm         = pd.read_parquet(PROC / "feature_matrix_3335.parquet")
-    dp_cols    = sorted([c for c in fm.columns if c.startswith("dp_")])
-    sp_prev    = fm.groupby("species")[dp_cols].mean()
-    spec_score = sp_prev.std() / 0.5
-    markers    = spec_score[spec_score >= 0.70].index.tolist()
-    FEAT_COLS  = [c for c in dp_cols if c not in markers]
+    # ── FEAT_COLS (identical to named-236 training) ───────────────────────────
+    # Load directly from saved file to guarantee exact match with rf_q1_named.pkl
+    FEAT_COLS = (RES / "q1_named_feat_cols.txt").read_text().strip().splitlines()
     print(f"FEAT_COLS: {len(FEAT_COLS)}")
 
-    # ── Load trained RF model ─────────────────────────────────────────────────
-    rf_q1 = joblib.load(RES / "models" / "rf_q1_best_3460.pkl")
+    # ── Load trained RF model (named-236) ─────────────────────────────────────
+    rf_q1 = joblib.load(RES / "models" / "rf_q1_named.pkl")
     print(f"Model classes: {rf_q1.classes_}\n")
 
     # ── Build S2 feature matrix (33 true Ab) ─────────────────────────────────
@@ -274,9 +270,9 @@ def main() -> None:
         rec  = n_c / len(grp)
         print(f"  {cohort}: {n_c}/{len(grp)}  (recall = {rec:.3f})")
 
-    # Binomial test vs training CV recall (AB per-class recall = 0.692 from GroupedStratifiedKFold)
-    binom = binomtest(int(n_correct), int(len(pred_df)), p=0.692, alternative="greater")
-    print(f"\nBinomial test (p0=0.692, alternative='greater'):")
+    # Binomial test vs training CV recall (AB per-class recall = 0.576, named-236 RF grouped CV)
+    binom = binomtest(int(n_correct), int(len(pred_df)), p=0.576, alternative="greater")
+    print(f"\nBinomial test (p0=0.576, alternative='greater'):")
     print(f"  p-value = {binom.pvalue:.4f}  {'SIGNIFICANT' if binom.pvalue < 0.05 else 'n.s.'}")
 
     # Misclassified genomes
