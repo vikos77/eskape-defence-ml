@@ -58,7 +58,6 @@ def acc_to_fname(acc: str) -> str:
 
 # ── Reference databases (read-only: all in original project) ──────────────────
 BACMET_DB    = f"{ORIG}/data/raw/databases/BacMet2_EXP_database.fasta"
-ICEBERG_DB   = f"{ORIG}/data/raw/databases/ICEberg_IME.fasta"
 RESFINDER_DB = f"{ORIG}/data/raw/databases/db_resfinder"
 
 CHECKM2_DB         = f"{ORIG}/data/raw/databases/checkm2/CheckM2_database/uniref100.KO.1.dmnd"
@@ -98,12 +97,6 @@ rule all:
         ),
         expand(
             "data/interim/{sp}/resfinder/{acc_fn}/ResFinder_results_tab.txt",
-            zip,
-            sp=[s for s, a in SP_ACC],
-            acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
-        ),
-        expand(
-            "data/interim/{sp}/iceberg/{acc_fn}_iceberg.tsv",
             zip,
             sp=[s for s, a in SP_ACC],
             acc_fn=[acc_to_fname(a) for s, a in SP_ACC],
@@ -386,29 +379,6 @@ rule isescan:
         mv -f {params.run_dir}/{wildcards.acc_fn}.fna.sum {output.sum} 2>/dev/null \
             || touch {output.sum}
         rm -rf {params.run_dir}
-        """
-
-
-# ── 7. ICEberg IME tBLASTn ────────────────────────────────────────────────────
-rule iceberg_tblastn:
-    input:
-        fasta  = "data/raw/genomes/{sp}/{acc_fn}.fna",
-        db     = ICEBERG_DB,
-    output:
-        tsv = "data/interim/{sp}/iceberg/{acc_fn}_iceberg.tsv",
-    params:
-        evalue = 1e-5,
-    conda: "envs/blast.yaml"
-    shell:
-        """
-        mkdir -p data/interim/{wildcards.sp}/iceberg
-        tblastn \
-            -query {input.db} \
-            -subject {input.fasta} \
-            -evalue {params.evalue} \
-            -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore" \
-            -out {output.tsv} 2>/dev/null || true
-        [ -f {output.tsv} ] || touch {output.tsv}
         """
 
 

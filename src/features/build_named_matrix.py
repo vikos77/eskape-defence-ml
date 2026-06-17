@@ -25,7 +25,9 @@ Filter ("Feature matrix purge" rationale):
                "not classifiable" designations in PADLOC/DefenseFinder.
 
 Total: 131 dp_ columns + 131 mirrored dc_ columns = 262 columns removed.
-236 named dp_ columns + 236 named dc_ columns retained. 569 total columns.
+236 named dp_ columns + 236 named dc_ columns retained. 566 total columns (since
+2026-06-17; was 569 before ime_count_unique/ime_count_total/ratio_ime_defence were
+removed from the source matrix entirely -- see decisions.md "IME removed entirely").
 
 CHANGELOG (2026-06-17): v1 of this script dropped only dp_ (presence/absence)
 columns, leaving the mirrored dc_ (count) columns for PDC/DS-N/All_UG/catch-all
@@ -100,7 +102,7 @@ def main() -> None:
 
     fm_named = fm.drop(columns=all_dropped)
     print(f"  Named matrix: {fm_named.shape}")
-    assert fm_named.shape[1] == 569, f"Expected 569 columns, got {fm_named.shape[1]}"
+    assert fm_named.shape[1] == 566, f"Expected 566 columns, got {fm_named.shape[1]}"
 
     n_dp_named = sum(1 for c in fm_named.columns if c.startswith("dp_"))
     n_dc_named = sum(1 for c in fm_named.columns if c.startswith("dc_"))

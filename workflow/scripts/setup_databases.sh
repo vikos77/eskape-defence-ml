@@ -24,27 +24,10 @@ RESFINDER_DB="${DB_DIR}/db_resfinder"
 if [ -d "$RESFINDER_DB" ]; then
     echo "[SKIP] ResFinder DB already exists at ${RESFINDER_DB}"
 else
-    echo "[1/3] Cloning ResFinder database..."
+    echo "[1/2] Cloning ResFinder database..."
     git clone --depth 1 \
         https://bitbucket.org/genomicepidemiology/resfinder_db \
         "$RESFINDER_DB"
-    echo "      Done."
-fi
-
-# ── 2. ICEberg IME protein sequences ─────────────────────────────────────────
-# ICEberg2 database: integrative and conjugative elements + IMEs
-# Protein sequences for tBLASTn (same as published Acinetobacter pipeline)
-ICEBERG_FASTA="${DB_DIR}/ICEberg_IME.fasta"
-if [ -f "$ICEBERG_FASTA" ]; then
-    echo "[SKIP] ICEberg IME FASTA already exists"
-else
-    echo "[2/3] Downloading ICEberg IME protein sequences..."
-    # Correct subdomain: bioinfo-mml.sjtu.edu.cn (not db-mml)
-    curl -L --retry 3 --retry-delay 5 \
-        "https://bioinfo-mml.sjtu.edu.cn/ICEberg2/download/IME_aa_all.fas" \
-        -o "$ICEBERG_FASTA"
-    makeblastdb -in "$ICEBERG_FASTA" -dbtype prot \
-        -out "${DB_DIR}/ICEberg_IME" -title "ICEberg2_IME"
     echo "      Done."
 fi
 
@@ -56,7 +39,7 @@ BACMET_FASTA="${DB_DIR}/BacMet2_EXP.fasta"
 if [ -f "$BACMET_FASTA" ] && [ "$(wc -c < "$BACMET_FASTA")" -gt 10000 ]; then
     echo "[SKIP] BacMet2 EXP FASTA already exists"
 else
-    echo "[3/3] Downloading BacMet2 experimental resistance gene sequences..."
+    echo "[2/2] Downloading BacMet2 experimental resistance gene sequences..."
     curl -Lk --retry 3 --retry-delay 5 \
         "https://bacmet.biomedicine.gu.se/downloads/BacMet2_EXP_database.fasta" \
         -o "$BACMET_FASTA"
@@ -77,5 +60,4 @@ echo ""
 echo "================================================"
 echo "All databases ready. Verify paths in Snakefile:"
 echo "  BACMET_DB  = ${BACMET_FASTA}"
-echo "  ICEBERG_DB = ${ICEBERG_FASTA}"
 echo "  ResFinder  = ${RESFINDER_DB}"

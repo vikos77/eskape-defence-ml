@@ -117,22 +117,18 @@ for sp in species_list:
     rf_full.fit(X, y)
     gini_imp = pd.Series(rf_full.feature_importances_, index=sp_feat_dc).sort_values(ascending=False)
 
+    # IME removed entirely 2026-06-17 -- see docs/decisions.md "IME removed entirely"
     sp_arg = sp_df["arg_count_unique"].to_numpy()
-    sp_ime = sp_df["ime_count_unique"].to_numpy()
 
-    spear_arg, spear_ime = {}, {}
+    spear_arg = {}
     for feat in sp_feat_dc:
         x_vec = sp_df[feat].to_numpy()
         rho_a, p_a = spearmanr(x_vec, sp_arg)
-        rho_i, p_i = spearmanr(x_vec, sp_ime)
         spear_arg[feat] = (float(rho_a), float(p_a))
-        spear_ime[feat] = (float(rho_i), float(p_i))
 
     feats_list = list(sp_feat_dc)
     p_arg_raw  = [spear_arg[f][1] for f in feats_list]
-    p_ime_raw  = [spear_ime[f][1] for f in feats_list]
     _, p_arg_adj, _, _ = multipletests(p_arg_raw, method="fdr_bh")
-    _, p_ime_adj, _, _ = multipletests(p_ime_raw, method="fdr_bh")
 
     top10 = gini_imp.head(10)
     print("  Top-10 Gini features:")

@@ -101,36 +101,34 @@ for sp in species_list:
     rf_full.fit(X, y)
     gini_imp = pd.Series(rf_full.feature_importances_, index=sp_feat).sort_values(ascending=False)
 
-    # Spearman: ARG count and IME count (on all species genomes, BH-corrected)
+    # Spearman: ARG count (on all species genomes, BH-corrected)
+    # IME count was previously included here too; removed entirely 2026-06-17
+    # after a deduplication investigation found ICEberg database redundancy
+    # (48/98 element IDs near-duplicate) inflated ime_count_unique ~5.5x in a
+    # genome-dependent way, and the AB-specific IME correlations (the ones
+    # used to claim replication of the published analysis) collapsed to near
+    # zero under deduplication. See docs/decisions.md "IME removed entirely".
     sp_arg = sp_df["arg_count_unique"].to_numpy()
-    sp_ime = sp_df["ime_count_unique"].to_numpy()
 
-    spear_arg, spear_ime = {}, {}
+    spear_arg = {}
     for feat in sp_feat:
         x_vec = sp_df[feat].to_numpy()
         rho_a, p_a = spearmanr(x_vec, sp_arg)
-        rho_i, p_i = spearmanr(x_vec, sp_ime)
         spear_arg[feat] = (float(rho_a), float(p_a))
-        spear_ime[feat] = (float(rho_i), float(p_i))
 
     # BH correction per species
     feats_list = list(sp_feat)
     p_arg_raw  = [spear_arg[f][1] for f in feats_list]
-    p_ime_raw  = [spear_ime[f][1] for f in feats_list]
     _, p_arg_adj, _, _ = multipletests(p_arg_raw, method="fdr_bh")
-    _, p_ime_adj, _, _ = multipletests(p_ime_raw, method="fdr_bh")
 
     # Top 10 features by Gini
     top10 = gini_imp.head(10)
     print("  Top-10 Gini features:")
     for rank, (feat, imp) in enumerate(top10.items(), 1):
         rho_a = spear_arg[feat][0]
-        rho_i = spear_ime[feat][0]
         pa_adj = p_arg_adj[feats_list.index(feat)]
-        pi_adj = p_ime_adj[feats_list.index(feat)]
         sig_a = "*" if pa_adj < 0.05 else "ns"
-        sig_i = "*" if pi_adj < 0.05 else "ns"
-        print(f"    {rank:2d}. {feat:<35} imp={imp:.4f}  rho_ARG={rho_a:+.3f}({sig_a})  rho_IME={rho_i:+.3f}({sig_i})")
+        print(f"    {rank:2d}. {feat:<35} imp={imp:.4f}  rho_ARG={rho_a:+.3f}({sig_a})")
 
     p_raws[sp] = float(p_raw)
     results[sp] = {
@@ -145,8 +143,6 @@ for sp in species_list:
         "p_raw"       : float(p_raw),
         "top10_gini"  : {f: float(v) for f, v in top10.items()},
         "spearman_arg": {f: {"rho": spear_arg[f][0], "p_adj": float(p_arg_adj[feats_list.index(f)])}
-                         for f in sp_feat},
-        "spearman_ime": {f: {"rho": spear_ime[f][0], "p_adj": float(p_ime_adj[feats_list.index(f)])}
                          for f in sp_feat},
     }
 

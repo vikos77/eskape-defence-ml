@@ -22,7 +22,10 @@ Features tested:
   AB  → dp_RM_Type_IV   (published restrictive marker)
   SA  → dp_RM_Type_I    (high prevalence, non-significant Q2)
 
-Targets: arg_count, ime_count (total ICE/IME per genome).
+Targets: arg_count (total ARG per genome). IME removed entirely 2026-06-17 -- see
+docs/decisions.md "IME removed entirely" (ICEberg database redundancy inflated
+ime_count_unique ~5.5x in a genome-dependent way; this script previously also tested
+ime_count_total but no manuscript number was ever drawn from that target).
 
 Output:
   results/supplement_within_phylogroup_spearman.csv  (overwrites old file)
@@ -42,10 +45,8 @@ PAIRS = [
     ("abaumannii",   "dp_RM_Type_IV",  ),
     ("saureus",      "dp_RM_Type_I",   ),
 ]
-TARGETS = ["arg_count_unique", "ime_count_total"]
+TARGETS = ["arg_count_unique"]
 
-# ime_count column name — check what's in the matrix
-print("Columns with 'ime' or 'ice':", [c for c in fm.columns if "ime" in c.lower() or "ice" in c.lower()])
 print("Columns with 'arg':", [c for c in fm.columns if "arg" in c.lower()][:5])
 print()
 

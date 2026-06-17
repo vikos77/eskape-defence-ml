@@ -14,7 +14,6 @@ Column naming conventions:
     Tool agreement:  {canonical_name}_n_tools    (0/1/2)
     Anti-defence:    adf_{subtype}_present / _count
     ARG:             arg_count                   (int, unique gene-level)
-    IME:             ime_hit_count / ime_unique_count
     HMRG:            hmrg_hit_count / hmrg_unique_count
     IS element:      is_{family}_count / is_total_count
     MLST:            mlst_st (str)
@@ -42,7 +41,7 @@ def _acc_fn_to_genome_id(path: Path) -> str:
     """
     stem = path.stem if path.is_file() else path.name
     # Strip known suffixes
-    for suffix in ("_padloc", "_iceberg", "_bacmet", "_isescan", "_isescan.sum"):
+    for suffix in ("_padloc", "_bacmet", "_isescan", "_isescan.sum"):
         if stem.endswith(suffix):
             stem = stem[: -len(suffix)]
     return stem
@@ -229,7 +228,7 @@ def parse_resfinder(interim_dir: Path) -> pd.DataFrame:
     return pd.DataFrame(rows).set_index("genome_id")
 
 
-# ── BLAST tBLASTn parser (shared for ICEberg and BacMet) ─────────────────────
+# ── BLAST tBLASTn parser (used by BacMet) ─────────────────────────────────────
 
 def parse_blast_hits(
     tsv_path: Path,
@@ -277,38 +276,6 @@ def parse_blast_hits(
     hits = hits[hits["query_coverage"] >= coverage_min]
 
     return hits.drop(columns=["qlen"])
-
-
-def parse_iceberg(interim_dir: Path, iceberg_fasta: Path) -> pd.DataFrame:
-    """Parse ICEberg tBLASTn hits for all genomes in interim_dir.
-
-    Returns:
-        genome_id | ime_hit_count | ime_unique_count
-    where ime_unique_count = number of distinct ICE/IME database entries (qseqid)
-    with at least one passing hit (pident>=40, coverage>=80%).
-    """
-    query_lengths = _read_protein_lengths(iceberg_fasta)
-    rows: list[dict] = []
-    iceberg_dir = interim_dir / "iceberg"
-    if not iceberg_dir.exists():
-        logger.warning("ICEberg directory not found: %s", iceberg_dir)
-        return pd.DataFrame()
-
-    for tsv in sorted(iceberg_dir.glob("*_iceberg.tsv")):
-        genome_id = _acc_fn_to_genome_id(tsv)
-        try:
-            hits = parse_blast_hits(tsv, query_lengths)
-        except FileNotFoundError:
-            logger.warning("ICEberg TSV missing (tool not yet run?): %s", tsv)
-            rows.append({"genome_id": genome_id, "ime_hit_count": float("nan"), "ime_unique_count": float("nan")})
-            continue
-        rows.append({
-            "genome_id": genome_id,
-            "ime_hit_count": len(hits),
-            "ime_unique_count": hits["qseqid"].nunique() if not hits.empty else 0,
-        })
-
-    return pd.DataFrame(rows).set_index("genome_id")
 
 
 def parse_bacmet(interim_dir: Path, bacmet_fasta: Path) -> pd.DataFrame:
