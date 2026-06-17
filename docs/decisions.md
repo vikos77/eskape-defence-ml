@@ -1258,3 +1258,44 @@ attributable to PDC" would be technically stronger than demonstrated, so the cor
 
 Decision: Option A confirmed. Report Q2 as directional but non-significant on named-236 matrix.
 Spearman correlations for top named features serve as directional evidence in Results §2.
+
+---
+
+## 2026-06-17  -  Named-236 filter: no reproducible build script existed (audit finding) + dc_ asymmetry fix
+
+**Audit finding:** feature_matrix_3335_named.parquet was read directly by 9+ downstream
+scripts and by NB06/07/08/09/10, but no script in the repo ever generated it. The
+2026-06-16 purge decision above was documented in prose and applied ad hoc; the actual
+column-drop was never committed as code. Closed by `src/features/build_named_matrix.py`,
+which encodes the PDC/DS-N/All_UG/catch-all regex rules and was verified to reproduce the
+existing on-disk file column-for-column, value-for-value before any change was made.
+NB01 Section 10 now calls this same module (no duplicated filter logic) and self-verifies
+on every run.
+
+**Second finding during the same audit:** the original (2026-06-16) purge dropped only
+`dp_` (presence/absence) columns for the 131 removed systems, leaving their `dc_` (count)
+mirrors in place -- e.g. `dc_padloc_PDC-M01` remained even though `dp_padloc_PDC-M01` was
+removed. This meant the matrix still carried 367 `dc_` columns, 131 of them for systems
+with no citable name, contradicting the "236 named, citable defence systems" framing
+above. Verified empirically that no script anywhere in the pipeline reads `dc_` columns
+for any of the 131 removed systems (the only `dc_` usage is `dc_RM_*` in
+`src/models/build_nb10.py`'s RM copy-count sensitivity test, and RM is retained) and that
+FEAT_COLS (the actual ML input list, `dp_`-based) is byte-identical before and after.
+
+**Decision:** Tighten the filter to drop both `dp_` and `dc_` for all 131 removed systems.
+`feature_matrix_3335_named.parquet` updated 2026-06-17: 700 -> 569 total columns (236
+named dp_ + 236 named dc_, down from 367 dc_). No numeric result in the manuscript is
+affected -- Q1/Q2/Q4/S6/C3 all key off `dp_` columns only, confirmed by re-deriving
+FEAT_COLS from the new file and diffing against `results/q1_named_feat_cols.txt`
+(identical, 231 entries).
+
+**Known deferred issue (not fixed):** `feature_matrix_3335.parquet` has two uncoordinated
+writers -- NB01 (full rebuild) and NB04/`rebuild_feature_matrix.py` (additive `phylogroup`
+column). Rerunning NB01 after NB04 has run silently destroyed the `phylogroup` column
+during this audit (caught immediately by a new shape assertion, recovered from
+`cv_groups_3335.parquet`, no data lost). NB01 Section 9 now has a preserve-on-save guard
+that re-attaches `phylogroup` from the existing file if present, but this is a patch, not
+a structural fix -- it does not detect staleness if NB01 is rerun without a subsequent
+NB04 rerun. The structural fix (separate output paths, one writer per file) is deferred
+to post-submission cleanup; too large a refactor to risk this close to the mBio
+submission.
