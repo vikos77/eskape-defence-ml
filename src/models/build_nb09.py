@@ -58,7 +58,7 @@ assert ROOT.name == "eskape-defence-ml", (
 DATA    = ROOT / "data" / "processed"
 FIG_DIR = ROOT / "results" / "figures" / "archetypes"
 assert (DATA / "feature_matrix_3335_named.parquet").exists(), "Named FM not found"
-assert (DATA / "cv_groups_3460.parquet").exists(), "cv_groups not found"
+assert (DATA / "cv_groups_3335.parquet").exists(), "cv_groups not found"
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 
 RANDOM_STATE = 42
@@ -89,7 +89,7 @@ print(f"dp_ total:               {len(all_dp)}")
 print(f"Taxonomic markers (>=0.70): {len(markers)}")
 print(f"FEAT_COLS (Q3 defence):  {len(FEAT_COLS)}")
 print(f"AD_COLS (anti-defence):  {len(AD_COLS)}")
-print(f"IS_COLS (IS elements):   {len(IS_COLS)}  <-- 0 expected; ISEScan pending")
+print(f"IS_COLS (IS elements):   {len(IS_COLS)}  (ISEScan complete; not used in Q3, see Section 4)")
 print()
 print("Species counts:")
 print(fm['species'].value_counts().to_string())
@@ -414,7 +414,7 @@ if max_arg_ari < 0.05:
 """
 
 SEC4_HEADING = """\
-## Section 4 — Q5b: Phage-Permissive Archetypes (DEFERRED)
+## Section 4 — Q5b: Phage-Permissive Archetypes (DEFERRED BY DECISION)
 
 **Pre-registered hypothesis (Q5b):**
 Genomes with high IS burden, low defence complexity, and high anti-defence system load
@@ -422,31 +422,26 @@ represent a phage-permissive profile, reflecting IS-mediated disruption of defen
 combined with anti-defence systems acquired from prior phage encounters.
 
 **Required feature columns:** IS element counts by family (is_ prefix)
-**Current status:** ISEScan ~44% complete (~1,519 / 3,460 genomes processed)
-
-**Action:** Re-execute this section once ISEScan finishes and
-`src/features/rebuild_feature_matrix.py` is rerun to add is_ columns.
-
-**Pre-registration status:** intact. No Q5b result will be reported until all three
-feature types (defence + anti-defence + IS element counts) are available.
+**Current status (2026-06-17 audit):** ISEScan is complete and `is_*` columns (25, one per
+IS family) are present in the feature matrix. This section was originally deferred because
+ISEScan was incomplete; that is no longer true. It remains deferred because ISEScan/IS
+results were separately decided to be dropped from this manuscript entirely (see
+project state notes: "Test A, Test B, ISEScan: dropped permanently. Not reported
+anywhere."). The guard below was updated to reflect the actual reason for skipping --
+project decision, not missing data -- so it no longer crashes now that IS_COLS exist.
 """
 
 Q5B_PLACEHOLDER = """\
 print("=" * 60)
-print("Q5b: DEFERRED")
+print("Q5b: DEFERRED BY DECISION")
 print("=" * 60)
 print()
-print(f"IS columns in current FM: {len(IS_COLS)}")
+print(f"IS columns in current FM: {len(IS_COLS)}  (ISEScan complete)")
+print(f"AD columns in current FM: {len(AD_COLS)}")
 print()
-print("Required for Q5b:")
-print("  IS element count columns (is_ prefix) per IS family")
-print("  AD columns: available now ({} columns)".format(len(AD_COLS)))
-print()
-print("Restart ISEScan (Snakemake isescan rule) for remaining genomes,")
-print("then rerun src/features/rebuild_feature_matrix.py to add is_ features,")
-print("then rerun this notebook.")
-assert len(IS_COLS) == 0, (
-    "IS columns found — remove this assert and run Section 4 properly.")
+print("ISEScan/IS element results were separately decided to be dropped from this")
+print("manuscript entirely and are not reported anywhere (see project state notes).")
+print("Q5b is deferred by that decision, not by data availability.")
 print()
 print("Q5b skipped. Continuing to Section 5.")
 """
@@ -560,8 +555,8 @@ The dereplicated set is larger and more diverse than the baseline, providing a s
 """
 
 DEREPLICATE = """\
-pg     = pd.read_parquet(DATA / "cv_groups_3460.parquet")
-print(f"cv_groups_3460: {pg.shape[0]} rows, columns: {pg.columns.tolist()}")
+pg     = pd.read_parquet(DATA / "cv_groups_3335.parquet")
+print(f"cv_groups_3335: {pg.shape[0]} rows, columns: {pg.columns.tolist()}")
 
 fm_pg = fm.copy()
 if 'phylogroup' in fm_pg.columns:
@@ -695,7 +690,7 @@ else:
     print("WEAK / AMBIGUOUS")
     print("  Borderline structure: report as exploratory, not confirmatory.")
 print()
-print("Q5b answer: DEFERRED (IS features absent, see Section 4)")
+print("Q5b answer: DEFERRED BY DECISION (IS features present but dropped from manuscript, see Section 4)")
 """
 
 
