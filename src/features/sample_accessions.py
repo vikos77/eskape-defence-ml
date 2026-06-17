@@ -12,9 +12,9 @@ Strategy:
   6. Assemble: original 150 accessions + up to 450 new = 600 per species.
   7. Write config/species.yaml and per-species metadata JSONs.
 
-EC complex: same logic per-member (country cap 40/member, targets from decisions.md).
+EC complex: same logic per-member (country cap 40/member).
 
-Taxids (verified 2026-06-01, see decisions.md for audit trail):
+Taxids (verified 2026-06-01):
   hormaechei=158836, cloacae_ss=550, asburiae=61645,
   kobei=208224, ludwigii=299767, roggenkampii=1812935
 
@@ -53,7 +53,7 @@ OUTPUT_CONFIG  = "config/species.yaml"
 OUTPUT_INTERIM = "data/interim"
 
 # Species config: target_n=600, country_cap=80 per species (40 per EC member).
-# Taxids verified 2026-06-01 against live NCBI taxonomy (see decisions.md).
+# Taxids verified 2026-06-01 against live NCBI taxonomy.
 SPECIES_CONFIG = {
     "efaecium": {
         "name": "Enterococcus faecium",
@@ -116,9 +116,9 @@ SPECIES_CONFIG = {
         "gram": "negative",
         "genome_size_mb_approx": 5.0,
         "target_n": 600,
-        "country_cap": 40,   # per-member cap (decisions.md)
+        "country_cap": 40,   # per-member cap
         "note": (
-            "Taxids verified 2026-06-01 (decisions.md). "
+            "Taxids verified 2026-06-01. "
             "Cloacae ss target reduced 200→130 (142 available); "
             "roggenkampii increased 2→70 (1812935 has 75 available). "
             "Hormaechei taxid 158836 preserves original-study taxonomic scope."

@@ -9,13 +9,12 @@ Background: feature_matrix_3335_named.parquet has existed on disk since
 run_q2_named.py, run_q4_shap_named.py, run_mcnemar_named.py,
 run_s6_spearman_named.py, run_subanalysis_named.py, build_nb09.py,
 build_nb10.py, c3_extended_holdout.py) and by NB06/07/08/09/10. No script in
-the repo ever generated it -- the filter decision is documented in prose in
-docs/decisions.md (2026-06-16 entry) but was applied ad hoc and never
+the repo ever generated it -- the filter was applied ad hoc and never
 committed as code. This script closes that gap: it is the single source of
 truth for the 367 -> 236 column drop, and is idempotent against the existing
 on-disk file.
 
-Filter (per docs/decisions.md "Feature matrix purge" entry):
+Filter ("Feature matrix purge" rationale):
   - PDC      : dp_padloc_PDC-S* / dp_padloc_PDC-M*  (81 cols) -- PADLOC internal
                cluster IDs, no published mechanism class.
   - DS-N     : dp_df_DS-*                            (30 cols) -- DefensePredictor
@@ -34,11 +33,11 @@ systems in place (700 total columns) -- e.g. dc_padloc_PDC-M01 stayed in the
 matrix even though dp_padloc_PDC-M01 was removed. Verified harmless (no
 downstream script reads dc_ columns for any of the 131 removed systems --
 the only dc_ usage anywhere in the pipeline is dc_RM_*, and RM is retained),
-but inconsistent with the stated intent in docs/decisions.md ("236 named,
-citable defence systems" retained) since 367 dc_ columns -- including 131 for
-systems with no citable name -- were still present. v2 drops both dp_ and its
-dc_ mirror for every removed system, so the named matrix contains exactly the
-236 retained systems in both representations.
+but inconsistent with the intent of retaining exactly "236 named, citable
+defence systems": 367 dc_ columns -- including 131 for systems with no
+citable name -- were still present. v2 drops both dp_ and its dc_ mirror for
+every removed system, so the named matrix contains exactly the 236 retained
+systems in both representations.
 
 Usage:
     python src/features/build_named_matrix.py
