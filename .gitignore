@@ -212,6 +212,7 @@ docs/audit*.md
 docs/comprehension_review.md
 docs/manuscript/
 docs/peer_review/
+docs/decisions.md
 
 # Tutor-mode reference notebooks — local only, not for publication
 notebooks/tutor_reference/
