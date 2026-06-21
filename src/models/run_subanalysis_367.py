@@ -1,7 +1,9 @@
 """
-run_subanalysis_named.py
+run_subanalysis_367.py
 
-Two pre-registered subanalyses on the named-236 feature matrix (Supplementary
+RF params are read dynamically from results/q1_367_results.json.
+
+Two pre-registered subanalyses on the full-367 feature matrix (Supplementary
 Tables S7 and S8):
 
   S7 — AB IC2 exclusion Q2:
@@ -14,7 +16,7 @@ Tables S7 and S8):
        or enterobacter_oxford; filter by species_annotation field if available,
        otherwise by most common MLST complex). Rerun Q2 on E. hormaechei only.
 
-Both follow the same Q2 logic as run_q2_named.py:
+Both follow the same Q2 logic as run_q2_367.py:
   - Per-subset tertile split of arg_count_unique
   - Per-subset prevalence filter (dp_* >= 5%)
   - GroupedStratifiedKFold-5 RF Q2
@@ -22,8 +24,8 @@ Both follow the same Q2 logic as run_q2_named.py:
   - Spearman rho for top Gini features
 
 Outputs:
-  results/supplement_ab_ic2_q2.csv       — S7
-  results/supplement_ec_complex_q2.csv   — S8
+  results/supplement_ab_ic2_q2_367.csv       — S7
+  results/supplement_ec_complex_q2_367.csv   — S8
 """
 
 import sys
@@ -43,11 +45,15 @@ warnings.filterwarnings("ignore", category=UserWarning)
 RANDOM_STATE = 42
 N_FOLDS      = 5
 PREV_THRESH  = 0.05
-RF_PARAMS    = dict(
-    n_estimators=300, max_depth=None, max_features="sqrt",
-    min_samples_leaf=1, class_weight="balanced",
+
+with open("results/q1_367_results.json") as f:
+    _q1 = json.load(f)
+RF_PARAMS = dict(
+    **_q1["best_params"],
+    class_weight="balanced",
     random_state=RANDOM_STATE, n_jobs=-1,
 )
+print(f"RF params (from Q1-367 GridSearch): {_q1['best_params']}")
 
 
 def fold_bootstrap_ci(fold_scores, n_boot=2000, seed=42):
@@ -152,14 +158,14 @@ def run_q2_subanalysis(subset, label, feat_cols_pool):
 
 # ── Load feature matrix ───────────────────────────────────────────────────
 
-fm = pd.read_parquet("data/processed/feature_matrix_3335_named.parquet")
+fm = pd.read_parquet("data/processed/feature_matrix_3335.parquet")
 dp_cols = [c for c in fm.columns if c.startswith("dp_")]
 
-# Named-236 pool (same derivation as run_q2_named.py)
+# Full-367 pool (same derivation as run_q2_367.py)
 species_list = fm["species"].unique()
 sp_prev = pd.DataFrame({sp: fm[fm.species == sp][dp_cols].mean() for sp in species_list})
 spec_score = sp_prev.std(axis=1) / 0.5
-# Do NOT apply spec_score filter for Q2 — all 236 dp_* are the starting pool
+# Do NOT apply spec_score filter for Q2 — all 367 dp_* are the starting pool
 feat_cols_pool = dp_cols  # prevalence filter applied per-subset below
 
 print(f"Named dp_* pool: {len(feat_cols_pool)} features")
@@ -216,8 +222,8 @@ else:
 # ── Save outputs ──────────────────────────────────────────────────────────
 
 rows = []
-for res, fname in [(res_s7, "results/supplement_ab_ic2_q2.csv"),
-                   (res_s8, "results/supplement_ec_complex_q2.csv")]:
+for res, fname in [(res_s7, "results/supplement_ab_ic2_q2_367.csv"),
+                   (res_s8, "results/supplement_ec_complex_q2_367.csv")]:
     if res is None:
         continue
     out_rows = []

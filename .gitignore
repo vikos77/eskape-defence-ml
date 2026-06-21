@@ -213,6 +213,38 @@ docs/comprehension_review.md
 docs/manuscript/
 docs/peer_review/
 docs/decisions.md
+docs/future_scope.md
+docs/manuscript_cleanup_plan.md
+docs/expected_reviewer_comments/feature_filter_sensitivity.md
+docs/expected_reviewer_comments/q2_antidefence_sensitivity.md
+docs/expected_reviewer_comments/q2_count_vs_presence_sensitivity.md
+
+# Named-236 feature-set apparatus -- local-only, superseded by full-367 primary
+# (367 vs named-236 sensitivity comparison kept locally per docs/decisions.md)
+results/q1_named_oof_preds.npz
+results/q1_named_results.json
+results/q2_named_results.json
+src/features/build_named_matrix.py
+src/features/c3_extended_holdout.py
+src/models/run_mcnemar_named.py
+src/models/run_q1_named.py
+src/models/run_q2_named.py
+src/models/run_q4_shap_named.py
+src/models/run_s6_spearman_named.py
+src/models/run_subanalysis_named.py
+src/models/run_bootstrap_ci.py
+src/models/run_df_only_sensitivity.py
+src/models/run_ime_dedup_check.py
+src/models/run_q1_oof_bootstrap.py
+src/models/run_q2_dc_sensitivity.py
+src/models/run_q2_seed_stability.py
+src/models/run_q3_arg_block.py
+src/models/run_q3_block_exploration_step1.py
+src/models/run_q3_ime_block.py
+src/models/run_q3_jaccard_sensitivity.py
+src/models/run_q3b_multiblock.py
+src/q2_feature_importance.py
+src/audit_results.py
 
 # Tutor-mode reference notebooks — local only, not for publication
 notebooks/tutor_reference/

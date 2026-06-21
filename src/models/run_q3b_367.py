@@ -1,17 +1,12 @@
 """
-Q3b: Multi-block unsupervised species recovery (defence + ARG + HMRG + IS).
-
-Fulfills an already-stated open direction from discussion.md (written before this
-script existed): whether ARG/HMRG/IS content reveals genome-architecture structure
-beyond defence composition. Built after Q1-Q4 were locked, so the specific choices
-below (K selection, prevalence thresholds) were decided during construction rather
-than pre-specified in pre_analysis_plan.md -- see docs/decisions.md 2026-06-17 entry
-for the full framing. Tests whether combining defence system presence with three
-other genomic-content blocks -- ARG
-resistance gene presence, heavy-metal-resistance-gene (HMRG) class presence,
-and insertion-sequence (IS) family presence -- recovers species identity in
-unsupervised clustering, where defence alone does not (Q3 primary result:
-ARI=0.193 at K=6, silhouette=0.035 -- continuum, no discrete archetypes).
+Q3b: Multi-block unsupervised species recovery (defence + ARG + HMRG + IS),
+full 367-feature defence block (DEFENCE_COLS = 359 features from
+q1_367_feat_cols.txt). Tests whether combining defence system presence with
+three other genomic-content blocks -- ARG resistance gene presence,
+heavy-metal-resistance-gene (HMRG) class presence, and insertion-sequence (IS)
+family presence -- recovers species identity in unsupervised clustering,
+where defence alone does not (see q3_367_results.json for the companion
+defence-only Q3 numbers).
 
 IME (ICEberg) is deliberately excluded. It was tested and found to (a) carry
 no independent species signal (ARI=0.195, no better than defence alone) and
@@ -19,23 +14,21 @@ no independent species signal (ARI=0.195, no better than defence alone) and
 five most prevalent ICEberg element IDs are near-identical presence patterns
 across genomes, consistent with multiple reference entries representing the
 same conserved IME backbone region rather than five independent signals.
-Combined with the pre-existing citability concern (ICEberg element IDs are
-internal database identifiers, not published named systems -- the same
-problem that justified excluding PDC/DS-N from the defence matrix), IME adds
-noise and measurably worsens the combined result (ARI 0.712 -> 0.488 if
-included). See run_q3_ime_block.py for the full IME-inclusion test.
+Combined with the citability concern (ICEberg element IDs are internal
+database identifiers, not published named systems), IME adds noise and
+measurably worsens the combined result (ARI 0.712 -> 0.488 if included).
 
 Method:
   - 309 dereplicated representative genomes (1 per Mash-defined phylogroup,
-    closest to phylogroup centroid in DEFENCE Euclidean space) -- identical
-    selection to NB09's primary Q3 robustness check, reused here so every
-    block's result is directly comparable to the locked Q3 anchor.
+    closest to phylogroup centroid in DEFENCE Euclidean space) -- same
+    selection as the primary Q3 robustness check, so every block's result is
+    directly comparable to the Q3 anchor.
   - K-means, Euclidean distance, K FORCED to 6 (the species count) for every
     block and combination. Silhouette-optimal K varies by block (K=3 to K=8)
-    and is NOT a fair basis for cross-block comparison -- an earlier pass of
-    this analysis compared blocks at their own optimal K and concluded
-    combination destroyed signal; forcing K=6 reversed that conclusion
-    entirely (logged in decisions.md as a corrected finding).
+    and is not a fair basis for cross-block comparison: comparing blocks at
+    their own optimal K makes combination look like it destroys signal,
+    purely from the K mismatch, not from the data. Forcing K=6 uniformly
+    removes that artefact.
   - Each block reported ALONE (not just cumulative stacking) because raw
     concatenation under unweighted Euclidean distance lets whichever block
     has the most features dominate -- reporting blocks alone is the only way
@@ -51,8 +44,8 @@ Statistical rigor (matching Q1/Q2 standards -- CI, null comparison, stability):
     ARI >= observed ARI).
 
 Outputs:
-  results/q3b_multiblock_results.json
-  results/supplement_q3b_multiblock.csv
+  results/q3b_367_results.json
+  results/supplement_q3b_367.csv
 """
 
 import json
@@ -111,14 +104,14 @@ arg_df = arg_df[ARG_COLS_KEEP]
 arg_df.columns = [f"argp_{c}" for c in ARG_COLS_KEEP]
 print(f"ARG presence columns (>=1% prevalence): {len(arg_df.columns)} of {len(all_genes)} distinct genes")
 
-# ── Load named-236 matrix, build HMRG/IS binarized blocks ───────────────────
-fm = pd.read_parquet("data/processed/feature_matrix_3335_named.parquet")
+# ── Load full-367 feature matrix, build HMRG/IS binarized blocks ────────────
+fm = pd.read_parquet("data/processed/feature_matrix_3335.parquet")
 fm = fm.join(arg_df)
 assert fm[arg_df.columns].isna().sum().sum() == 0
 
-with open("results/q1_named_feat_cols.txt") as f:
+with open("results/q1_367_feat_cols.txt") as f:
     DEFENCE_COLS = f.read().splitlines()
-assert len(DEFENCE_COLS) == 231
+assert len(DEFENCE_COLS) == 359
 
 HMRG_EXCLUDE = {"hmrg_metal_total", "hmrg_metal_classes"}
 HMRG_COLS_RAW = [c for c in fm.columns if c.startswith("hmrg_") and c not in HMRG_EXCLUDE]
@@ -217,7 +210,7 @@ results = {}
 for key, cols in CONDITIONS.items():
     results[key] = analyze_condition(cols, key)
 
-with open("results/q3b_multiblock_results.json", "w") as f:
+with open("results/q3b_367_results.json", "w") as f:
     json.dump(results, f, indent=2)
 
 pd.DataFrame([
@@ -226,7 +219,7 @@ pd.DataFrame([
      "silhouette": v["silhouette"], "seed_mean": v["ari_seed_mean"],
      "seed_sd": v["ari_seed_sd"], "permutation_p": v["permutation_p"]}
     for k, v in results.items()
-]).to_csv("results/supplement_q3b_multiblock.csv", index=False)
+]).to_csv("results/supplement_q3b_367.csv", index=False)
 
-print("\nSaved: results/q3b_multiblock_results.json")
-print("Saved: results/supplement_q3b_multiblock.csv")
+print("\nSaved: results/q3b_367_results.json")
+print("Saved: results/supplement_q3b_367.csv")

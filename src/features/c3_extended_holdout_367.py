@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 """
-c3_extended_holdout.py
+c3_extended_holdout_367.py
 
-Extended C3 holdout validation: adds 10 IC2 complete genomes (S3) to the
-33 S2 A. baumannii holdout for a 43-genome Ab recall test.
+Extended C3 holdout validation on the full-367 RF model (rf_q1_367.pkl).
+canonical_name -> dp_{canonical} mapping in config/system_name_map.csv
+covers every annotated system category (PADLOC cluster IDs, DefensePredictor
+ML candidates, DefenseFinder uncharacterised groups, catch-alls), so passing
+the 367-feature FEAT_COLS list works without changing how rows are built.
+Binomial null p0 = 0.711 (full-367 AB per-class recall from run_q1_367.py).
+
+Adds 10 IC2 complete genomes (S3) to the 33 S2 A. baumannii holdout for a
+43-genome Ab recall test.
 
 S3 sources:
   - 9 of 10 genomes: chromosome accessions found in S5/S6 (Excel) — same pipeline
@@ -165,13 +172,13 @@ def main() -> None:
         .set_index("padloc_system")["canonical_name"].to_dict()
     )
 
-    # ── FEAT_COLS (identical to named-236 training) ───────────────────────────
-    # Load directly from saved file to guarantee exact match with rf_q1_named.pkl
-    FEAT_COLS = (RES / "q1_named_feat_cols.txt").read_text().strip().splitlines()
+    # ── FEAT_COLS (identical to training) ─────────────────────────────────────
+    # Load directly from saved file to guarantee exact match with rf_q1_367.pkl
+    FEAT_COLS = (RES / "q1_367_feat_cols.txt").read_text().strip().splitlines()
     print(f"FEAT_COLS: {len(FEAT_COLS)}")
 
-    # ── Load trained RF model (named-236) ─────────────────────────────────────
-    rf_q1 = joblib.load(RES / "models" / "rf_q1_named.pkl")
+    # ── Load trained RF model ──────────────────────────────────────────────────
+    rf_q1 = joblib.load(RES / "models" / "rf_q1_367.pkl")
     print(f"Model classes: {rf_q1.classes_}\n")
 
     # ── Build S2 feature matrix (33 true Ab) ─────────────────────────────────
@@ -270,9 +277,9 @@ def main() -> None:
         rec  = n_c / len(grp)
         print(f"  {cohort}: {n_c}/{len(grp)}  (recall = {rec:.3f})")
 
-    # Binomial test vs training CV recall (AB per-class recall = 0.576, named-236 RF grouped CV)
-    binom = binomtest(int(n_correct), int(len(pred_df)), p=0.576, alternative="greater")
-    print(f"\nBinomial test (p0=0.576, alternative='greater'):")
+    # Binomial test vs training CV recall (AB per-class recall = 0.711, full-367 RF grouped CV)
+    binom = binomtest(int(n_correct), int(len(pred_df)), p=0.711, alternative="greater")
+    print(f"\nBinomial test (p0=0.711, alternative='greater'):")
     print(f"  p-value = {binom.pvalue:.4f}  {'SIGNIFICANT' if binom.pvalue < 0.05 else 'n.s.'}")
 
     # Misclassified genomes

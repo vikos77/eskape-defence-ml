@@ -1,14 +1,20 @@
 """
-Q1 re-run on the 236-feature named-only matrix.
+Q1: multi-class species classification (RF), full 367-feature defence-system
+matrix (every DefenseFinder + PADLOC annotated system, no restriction by
+mechanism characterisation).
 
-Removes 131 computationally uncharacterised annotations (PDC, DS-N, All_UG,
-catch-alls) from the original 367-feature matrix, then applies the registered
-spec_score >= 0.70 filter to derive FEAT_COLS.
+GridSearchCV tunes hyperparameters from scratch on the 367-feature pool
+(StratifiedGroupKFold(5, random_state=42), grouped by phylogroup). A
+spec_score>=0.70 taxonomic-marker filter removes features that act as covert
+species labels rather than genuine defence signal.
+
+Writes best_params to q1_367_results.json so every downstream script (Q2,
+McNemar, C3) reads tuned params dynamically instead of hardcoding them.
 
 Outputs:
-  results/models/rf_q1_named.pkl       — best RF model
-  results/q1_named_results.json        — fold-level BAs, CI, per-class recall
-  results/q1_named_feat_cols.txt       — FEAT_COLS list
+  results/models/rf_q1_367.pkl       — best RF model
+  results/q1_367_results.json        — fold-level BAs, CI, per-class recall, best_params
+  results/q1_367_feat_cols.txt       — FEAT_COLS list
 """
 
 import json, pickle, warnings
@@ -25,7 +31,7 @@ RANDOM_STATE = 42
 N_FOLDS      = 5
 
 # --- Load matrix ---
-fm = pd.read_parquet("data/processed/feature_matrix_3335_named.parquet")
+fm = pd.read_parquet("data/processed/feature_matrix_3335.parquet")
 dp_cols = [c for c in fm.columns if c.startswith("dp_")]
 
 # --- Spec_score taxonomic marker filter (threshold = 0.70, registered in PA-2) ---
@@ -35,7 +41,7 @@ spec_score = sp_prev.std(axis=1) / 0.5
 markers    = spec_score[spec_score >= 0.70].index.tolist()
 FEAT_COLS  = [c for c in dp_cols if c not in markers]
 
-print(f"dp_ features:   {len(dp_cols)}")
+print(f"dp_ features (367 pool): {len(dp_cols)}")
 print(f"Markers removed (spec>=0.70): {len(markers)} -> {markers}")
 print(f"Q1 FEAT_COLS:   {len(FEAT_COLS)}")
 
@@ -143,10 +149,10 @@ ci_50       = stats.t.interval(0.95, df=N_FOLDS-1, loc=mean_ba_50,
 print(f"Sensitivity BA = {mean_ba_50:.4f} [{ci_50[0]:.4f}-{ci_50[1]:.4f}]")
 
 # --- Save ---
-with open("results/models/rf_q1_named.pkl", "wb") as f:
+with open("results/models/rf_q1_367.pkl", "wb") as f:
     pickle.dump(rf_best, f)
 
-with open("results/q1_named_feat_cols.txt", "w") as f:
+with open("results/q1_367_feat_cols.txt", "w") as f:
     f.write("\n".join(FEAT_COLS))
 
 results = {
@@ -170,10 +176,10 @@ results = {
     },
 }
 
-with open("results/q1_named_results.json", "w") as f:
+with open("results/q1_367_results.json", "w") as f:
     json.dump(results, f, indent=2)
 
-print("\nSaved: results/models/rf_q1_named.pkl")
-print("Saved: results/q1_named_results.json")
-print("Saved: results/q1_named_feat_cols.txt")
+print("\nSaved: results/models/rf_q1_367.pkl")
+print("Saved: results/q1_367_results.json")
+print("Saved: results/q1_367_feat_cols.txt")
 print("\nDone.")
