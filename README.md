@@ -20,8 +20,8 @@ clinical pathogens was untested.
 
 This repository applies supervised machine learning to 3,335 complete and high-quality
 genomes spanning all six ESKAPE species to test generalisation of that pattern. Four
-research questions were pre-registered before any model training (see
-`docs/pre_analysis_plan.md`).
+research questions (Q1-Q4) were pre-registered before any model training; see the
+manuscript's Methods section for the full analysis plan.
 
 ---
 
@@ -157,9 +157,8 @@ eskape-defence-ml/
 │   ├── figures/            # PNG figures per phase (tracked in git)
 │   └── models/             # Serialised RF/XGB/LGBM models (gitignored; Zenodo on release)
 ├── docs/
-│   ├── pre_analysis_plan.md       # Pre-registered questions and analysis plan
-│   ├── decisions.md               # Design decisions with rationale
-│   └── manuscript/                # Complete manuscript draft
+│   ├── mash_s10000_sensitivity.md # Mash sketch-size sensitivity check
+│   └── expected_reviewer_comments/ # Rebuttal-ready notes on anticipated review points
 └── environment.yml
 ```
 
