@@ -249,6 +249,15 @@ src/audit_results.py
 # Tutor-mode reference notebooks — local only, not for publication
 notebooks/tutor_reference/
 
+# Local-only config — leakage exclusions, ARG-class mapping for dropped Test A/B
+config/arg_class_mapping.yaml
+config/excluded_accessions.yaml
+
+# Test A/B (RM count vs presence; ARG-class burden) — dropped permanently, not reported
+notebooks/10_phase12_sensitivity.ipynb
+src/models/build_nb10.py
+results/figures/phase12/
+
 # Genomics data — large files, never commit raw genomes
 data/raw/
 data/interim/

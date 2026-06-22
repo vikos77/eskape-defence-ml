@@ -107,7 +107,7 @@ pre-commit install
 # 3. Download genomes and run annotation pipeline (requires NCBI datasets CLI)
 snakemake --cores 8 --use-conda
 
-# 4. Run notebooks in order (01 through 10)
+# 4. Run notebooks in order (01 through 09)
 jupyter lab
 ```
 
@@ -134,7 +134,6 @@ journal supplementary material or via Zenodo.
 | `07_gradient_boosting` | 9 | XGBoost and LightGBM Q1 + Q2, early stopping, calibration, McNemar tests |
 | `08_model_interpretation` | 10 | Per-class SHAP summary plots, holdout validation, alignment with published findings |
 | `09_unsupervised_archetypes` | 11 | K-means, hierarchical clustering, silhouette + gap statistic, archetype profiles |
-| `10_phase12_sensitivity` | 12 | RM count vs binary presence (Test A), mechanism-class ARG burden (Test B) |
 
 ---
 
@@ -142,7 +141,7 @@ journal supplementary material or via Zenodo.
 
 ```
 eskape-defence-ml/
-├── notebooks/              # Jupyter notebooks (01-10, numbered by phase)
+├── notebooks/              # Jupyter notebooks (01-09, numbered by phase)
 ├── src/                    # Python modules (features, models, evaluation, viz)
 ├── workflow/               # Snakemake pipeline extending the published Acinetobacter pipeline
 ├── config/
