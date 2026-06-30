@@ -1,0 +1,1802 @@
+[
+  {
+    "accession": "GCF_000746645.1",
+    "species": "abaumannii",
+    "df_detected": 5,
+    "padloc_detected": 6,
+    "union_detected": 8,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001908295.1",
+    "species": "abaumannii",
+    "df_detected": 8,
+    "padloc_detected": 0,
+    "union_detected": 8,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002116925.1",
+    "species": "abaumannii",
+    "df_detected": 9,
+    "padloc_detected": 10,
+    "union_detected": 15,
+    "feat_matched": 13,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003522665.1",
+    "species": "abaumannii",
+    "df_detected": 8,
+    "padloc_detected": 0,
+    "union_detected": 8,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_005518095.1",
+    "species": "abaumannii",
+    "df_detected": 9,
+    "padloc_detected": 6,
+    "union_detected": 10,
+    "feat_matched": 10,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_016865465.1",
+    "species": "abaumannii",
+    "df_detected": 2,
+    "padloc_detected": 2,
+    "union_detected": 4,
+    "feat_matched": 4,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_017723975.1",
+    "species": "abaumannii",
+    "df_detected": 9,
+    "padloc_detected": 1,
+    "union_detected": 10,
+    "feat_matched": 10,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_020271605.1",
+    "species": "abaumannii",
+    "df_detected": 6,
+    "padloc_detected": 3,
+    "union_detected": 9,
+    "feat_matched": 9,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_020912005.1",
+    "species": "abaumannii",
+    "df_detected": 5,
+    "padloc_detected": 1,
+    "union_detected": 6,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_024749425.1",
+    "species": "abaumannii",
+    "df_detected": 9,
+    "padloc_detected": 2,
+    "union_detected": 10,
+    "feat_matched": 10,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_026062515.1",
+    "species": "abaumannii",
+    "df_detected": 7,
+    "padloc_detected": 1,
+    "union_detected": 8,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_038441325.1",
+    "species": "abaumannii",
+    "df_detected": 5,
+    "padloc_detected": 5,
+    "union_detected": 6,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_041154805.1",
+    "species": "abaumannii",
+    "df_detected": 5,
+    "padloc_detected": 1,
+    "union_detected": 6,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_042147245.1",
+    "species": "abaumannii",
+    "df_detected": 3,
+    "padloc_detected": 3,
+    "union_detected": 5,
+    "feat_matched": 5,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_047772435.1",
+    "species": "abaumannii",
+    "df_detected": 5,
+    "padloc_detected": 2,
+    "union_detected": 6,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_000695855.3",
+    "species": "abaumannii",
+    "df_detected": 2,
+    "padloc_detected": 2,
+    "union_detected": 3,
+    "feat_matched": 3,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_000794125.2",
+    "species": "abaumannii",
+    "df_detected": 7,
+    "padloc_detected": 2,
+    "union_detected": 9,
+    "feat_matched": 9,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_000963815.1",
+    "species": "abaumannii",
+    "df_detected": 8,
+    "padloc_detected": 3,
+    "union_detected": 9,
+    "feat_matched": 9,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001573085.1",
+    "species": "abaumannii",
+    "df_detected": 3,
+    "padloc_detected": 1,
+    "union_detected": 4,
+    "feat_matched": 4,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001573105.1",
+    "species": "abaumannii",
+    "df_detected": 4,
+    "padloc_detected": 3,
+    "union_detected": 6,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001896005.1",
+    "species": "abaumannii",
+    "df_detected": 8,
+    "padloc_detected": 1,
+    "union_detected": 9,
+    "feat_matched": 9,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001922225.1",
+    "species": "abaumannii",
+    "df_detected": 3,
+    "padloc_detected": 3,
+    "union_detected": 6,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002999195.2",
+    "species": "abaumannii",
+    "df_detected": 10,
+    "padloc_detected": 0,
+    "union_detected": 10,
+    "feat_matched": 10,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003812485.1",
+    "species": "abaumannii",
+    "df_detected": 6,
+    "padloc_detected": 5,
+    "union_detected": 8,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_006385075.1",
+    "species": "abaumannii",
+    "df_detected": 10,
+    "padloc_detected": 0,
+    "union_detected": 10,
+    "feat_matched": 10,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_009455505.1",
+    "species": "abaumannii",
+    "df_detected": 5,
+    "padloc_detected": 7,
+    "union_detected": 9,
+    "feat_matched": 9,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_016864295.1",
+    "species": "abaumannii",
+    "df_detected": 6,
+    "padloc_detected": 5,
+    "union_detected": 11,
+    "feat_matched": 11,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_018604365.1",
+    "species": "abaumannii",
+    "df_detected": 2,
+    "padloc_detected": 2,
+    "union_detected": 3,
+    "feat_matched": 3,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_020520325.1",
+    "species": "abaumannii",
+    "df_detected": 2,
+    "padloc_detected": 2,
+    "union_detected": 4,
+    "feat_matched": 4,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_020906565.1",
+    "species": "abaumannii",
+    "df_detected": 1,
+    "padloc_detected": 0,
+    "union_detected": 1,
+    "feat_matched": 1,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_008693905.1",
+    "species": "ecloaceae",
+    "df_detected": 4,
+    "padloc_detected": 0,
+    "union_detected": 4,
+    "feat_matched": 4,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_024218835.1",
+    "species": "ecloaceae",
+    "df_detected": 4,
+    "padloc_detected": 12,
+    "union_detected": 14,
+    "feat_matched": 10,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_027886525.1",
+    "species": "ecloaceae",
+    "df_detected": 11,
+    "padloc_detected": 2,
+    "union_detected": 12,
+    "feat_matched": 12,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_028743675.1",
+    "species": "ecloaceae",
+    "df_detected": 5,
+    "padloc_detected": 4,
+    "union_detected": 8,
+    "feat_matched": 7,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_030324195.1",
+    "species": "ecloaceae",
+    "df_detected": 5,
+    "padloc_detected": 0,
+    "union_detected": 5,
+    "feat_matched": 5,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_031165635.1",
+    "species": "ecloaceae",
+    "df_detected": 10,
+    "padloc_detected": 9,
+    "union_detected": 14,
+    "feat_matched": 13,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_036687415.1",
+    "species": "ecloaceae",
+    "df_detected": 11,
+    "padloc_detected": 0,
+    "union_detected": 11,
+    "feat_matched": 11,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_053691565.1",
+    "species": "ecloaceae",
+    "df_detected": 8,
+    "padloc_detected": 7,
+    "union_detected": 12,
+    "feat_matched": 11,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_053747495.1",
+    "species": "ecloaceae",
+    "df_detected": 13,
+    "padloc_detected": 5,
+    "union_detected": 17,
+    "feat_matched": 17,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_058448555.1",
+    "species": "ecloaceae",
+    "df_detected": 7,
+    "padloc_detected": 8,
+    "union_detected": 15,
+    "feat_matched": 14,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_006385655.1",
+    "species": "ecloaceae",
+    "df_detected": 1,
+    "padloc_detected": 0,
+    "union_detected": 1,
+    "feat_matched": 1,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_018323985.1",
+    "species": "ecloaceae",
+    "df_detected": 11,
+    "padloc_detected": 8,
+    "union_detected": 16,
+    "feat_matched": 15,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_031852185.1",
+    "species": "ecloaceae",
+    "df_detected": 5,
+    "padloc_detected": 0,
+    "union_detected": 5,
+    "feat_matched": 5,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_032302155.1",
+    "species": "ecloaceae",
+    "df_detected": 9,
+    "padloc_detected": 10,
+    "union_detected": 16,
+    "feat_matched": 15,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_049959435.1",
+    "species": "ecloaceae",
+    "df_detected": 8,
+    "padloc_detected": 1,
+    "union_detected": 9,
+    "feat_matched": 9,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_051799885.1",
+    "species": "ecloaceae",
+    "df_detected": 6,
+    "padloc_detected": 6,
+    "union_detected": 11,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_056725825.1",
+    "species": "ecloaceae",
+    "df_detected": 4,
+    "padloc_detected": 0,
+    "union_detected": 4,
+    "feat_matched": 4,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_058248035.1",
+    "species": "ecloaceae",
+    "df_detected": 4,
+    "padloc_detected": 11,
+    "union_detected": 13,
+    "feat_matched": 7,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001022015.1",
+    "species": "ecloaceae",
+    "df_detected": 8,
+    "padloc_detected": 7,
+    "union_detected": 13,
+    "feat_matched": 13,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001022075.1",
+    "species": "ecloaceae",
+    "df_detected": 8,
+    "padloc_detected": 8,
+    "union_detected": 13,
+    "feat_matched": 12,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002237465.1",
+    "species": "ecloaceae",
+    "df_detected": 10,
+    "padloc_detected": 3,
+    "union_detected": 13,
+    "feat_matched": 13,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003051945.2",
+    "species": "ecloaceae",
+    "df_detected": 7,
+    "padloc_detected": 3,
+    "union_detected": 8,
+    "feat_matched": 7,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003444755.1",
+    "species": "ecloaceae",
+    "df_detected": 9,
+    "padloc_detected": 1,
+    "union_detected": 9,
+    "feat_matched": 9,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_008931785.1",
+    "species": "ecloaceae",
+    "df_detected": 12,
+    "padloc_detected": 4,
+    "union_detected": 16,
+    "feat_matched": 15,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_012562255.1",
+    "species": "ecloaceae",
+    "df_detected": 10,
+    "padloc_detected": 3,
+    "union_detected": 12,
+    "feat_matched": 12,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_014771415.1",
+    "species": "ecloaceae",
+    "df_detected": 4,
+    "padloc_detected": 4,
+    "union_detected": 8,
+    "feat_matched": 7,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_015137995.1",
+    "species": "ecloaceae",
+    "df_detected": 10,
+    "padloc_detected": 0,
+    "union_detected": 10,
+    "feat_matched": 10,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_015238615.1",
+    "species": "ecloaceae",
+    "df_detected": 6,
+    "padloc_detected": 13,
+    "union_detected": 15,
+    "feat_matched": 10,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_015910205.1",
+    "species": "ecloaceae",
+    "df_detected": 11,
+    "padloc_detected": 0,
+    "union_detected": 11,
+    "feat_matched": 11,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_016864035.1",
+    "species": "ecloaceae",
+    "df_detected": 9,
+    "padloc_detected": 14,
+    "union_detected": 18,
+    "feat_matched": 14,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_006280355.1",
+    "species": "efaecium",
+    "df_detected": 6,
+    "padloc_detected": 0,
+    "union_detected": 6,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_006741355.1",
+    "species": "efaecium",
+    "df_detected": 2,
+    "padloc_detected": 5,
+    "union_detected": 5,
+    "feat_matched": 2,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_033130085.1",
+    "species": "efaecium",
+    "df_detected": 8,
+    "padloc_detected": 0,
+    "union_detected": 8,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_900066025.1",
+    "species": "efaecium",
+    "df_detected": 2,
+    "padloc_detected": 1,
+    "union_detected": 2,
+    "feat_matched": 2,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_900638825.1",
+    "species": "efaecium",
+    "df_detected": 3,
+    "padloc_detected": 1,
+    "union_detected": 4,
+    "feat_matched": 3,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_900639405.1",
+    "species": "efaecium",
+    "df_detected": 9,
+    "padloc_detected": 2,
+    "union_detected": 10,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_900639635.1",
+    "species": "efaecium",
+    "df_detected": 1,
+    "padloc_detected": 1,
+    "union_detected": 2,
+    "feat_matched": 1,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_000444405.1",
+    "species": "efaecium",
+    "df_detected": 3,
+    "padloc_detected": 3,
+    "union_detected": 6,
+    "feat_matched": 4,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001518735.1",
+    "species": "efaecium",
+    "df_detected": 8,
+    "padloc_detected": 2,
+    "union_detected": 10,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001635875.1",
+    "species": "efaecium",
+    "df_detected": 7,
+    "padloc_detected": 5,
+    "union_detected": 10,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002761255.1",
+    "species": "efaecium",
+    "df_detected": 6,
+    "padloc_detected": 1,
+    "union_detected": 7,
+    "feat_matched": 7,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002777275.1",
+    "species": "efaecium",
+    "df_detected": 6,
+    "padloc_detected": 4,
+    "union_detected": 9,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002848685.1",
+    "species": "efaecium",
+    "df_detected": 6,
+    "padloc_detected": 1,
+    "union_detected": 7,
+    "feat_matched": 7,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002848745.1",
+    "species": "efaecium",
+    "df_detected": 6,
+    "padloc_detected": 5,
+    "union_detected": 9,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_005886545.1",
+    "species": "efaecium",
+    "df_detected": 9,
+    "padloc_detected": 1,
+    "union_detected": 10,
+    "feat_matched": 9,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_005886715.1",
+    "species": "efaecium",
+    "df_detected": 10,
+    "padloc_detected": 4,
+    "union_detected": 11,
+    "feat_matched": 10,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_005886735.1",
+    "species": "efaecium",
+    "df_detected": 10,
+    "padloc_detected": 1,
+    "union_detected": 11,
+    "feat_matched": 10,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_016406345.1",
+    "species": "efaecium",
+    "df_detected": 8,
+    "padloc_detected": 7,
+    "union_detected": 11,
+    "feat_matched": 9,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_016406425.1",
+    "species": "efaecium",
+    "df_detected": 8,
+    "padloc_detected": 0,
+    "union_detected": 8,
+    "feat_matched": 7,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_016406465.1",
+    "species": "efaecium",
+    "df_detected": 10,
+    "padloc_detected": 8,
+    "union_detected": 13,
+    "feat_matched": 11,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_016406545.1",
+    "species": "efaecium",
+    "df_detected": 9,
+    "padloc_detected": 1,
+    "union_detected": 10,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_016406605.1",
+    "species": "efaecium",
+    "df_detected": 7,
+    "padloc_detected": 6,
+    "union_detected": 11,
+    "feat_matched": 9,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_016415365.1",
+    "species": "efaecium",
+    "df_detected": 7,
+    "padloc_detected": 1,
+    "union_detected": 8,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_019977575.1",
+    "species": "efaecium",
+    "df_detected": 9,
+    "padloc_detected": 5,
+    "union_detected": 10,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_020162155.1",
+    "species": "efaecium",
+    "df_detected": 7,
+    "padloc_detected": 1,
+    "union_detected": 8,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_021228615.1",
+    "species": "efaecium",
+    "df_detected": 6,
+    "padloc_detected": 5,
+    "union_detected": 9,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_023204975.1",
+    "species": "efaecium",
+    "df_detected": 8,
+    "padloc_detected": 0,
+    "union_detected": 8,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_026073415.1",
+    "species": "efaecium",
+    "df_detected": 3,
+    "padloc_detected": 2,
+    "union_detected": 4,
+    "feat_matched": 3,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_040369085.1",
+    "species": "efaecium",
+    "df_detected": 4,
+    "padloc_detected": 2,
+    "union_detected": 5,
+    "feat_matched": 4,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_050470555.1",
+    "species": "efaecium",
+    "df_detected": 5,
+    "padloc_detected": 3,
+    "union_detected": 6,
+    "feat_matched": 5,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_000968155.1",
+    "species": "kpneumoniae",
+    "df_detected": 9,
+    "padloc_detected": 0,
+    "union_detected": 9,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001548315.1",
+    "species": "kpneumoniae",
+    "df_detected": 7,
+    "padloc_detected": 5,
+    "union_detected": 11,
+    "feat_matched": 10,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_014883955.1",
+    "species": "kpneumoniae",
+    "df_detected": 10,
+    "padloc_detected": 2,
+    "union_detected": 10,
+    "feat_matched": 9,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_017277455.1",
+    "species": "kpneumoniae",
+    "df_detected": 10,
+    "padloc_detected": 8,
+    "union_detected": 17,
+    "feat_matched": 14,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_020911785.1",
+    "species": "kpneumoniae",
+    "df_detected": 12,
+    "padloc_detected": 1,
+    "union_detected": 13,
+    "feat_matched": 12,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_000364385.3",
+    "species": "kpneumoniae",
+    "df_detected": 15,
+    "padloc_detected": 8,
+    "union_detected": 21,
+    "feat_matched": 19,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_000775955.1",
+    "species": "kpneumoniae",
+    "df_detected": 10,
+    "padloc_detected": 2,
+    "union_detected": 12,
+    "feat_matched": 11,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001455995.1",
+    "species": "kpneumoniae",
+    "df_detected": 13,
+    "padloc_detected": 2,
+    "union_detected": 14,
+    "feat_matched": 13,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001701835.2",
+    "species": "kpneumoniae",
+    "df_detected": 14,
+    "padloc_detected": 3,
+    "union_detected": 17,
+    "feat_matched": 16,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001705385.1",
+    "species": "kpneumoniae",
+    "df_detected": 14,
+    "padloc_detected": 5,
+    "union_detected": 18,
+    "feat_matched": 17,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001708225.1",
+    "species": "kpneumoniae",
+    "df_detected": 12,
+    "padloc_detected": 6,
+    "union_detected": 15,
+    "feat_matched": 15,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001718115.2",
+    "species": "kpneumoniae",
+    "df_detected": 14,
+    "padloc_detected": 3,
+    "union_detected": 16,
+    "feat_matched": 15,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001870165.1",
+    "species": "kpneumoniae",
+    "df_detected": 7,
+    "padloc_detected": 2,
+    "union_detected": 9,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001885255.2",
+    "species": "kpneumoniae",
+    "df_detected": 14,
+    "padloc_detected": 2,
+    "union_detected": 15,
+    "feat_matched": 14,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001922465.1",
+    "species": "kpneumoniae",
+    "df_detected": 15,
+    "padloc_detected": 10,
+    "union_detected": 22,
+    "feat_matched": 19,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001952875.1",
+    "species": "kpneumoniae",
+    "df_detected": 11,
+    "padloc_detected": 1,
+    "union_detected": 11,
+    "feat_matched": 10,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002243445.1",
+    "species": "kpneumoniae",
+    "df_detected": 12,
+    "padloc_detected": 8,
+    "union_detected": 18,
+    "feat_matched": 15,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002591075.1",
+    "species": "kpneumoniae",
+    "df_detected": 14,
+    "padloc_detected": 0,
+    "union_detected": 14,
+    "feat_matched": 13,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002741685.1",
+    "species": "kpneumoniae",
+    "df_detected": 12,
+    "padloc_detected": 8,
+    "union_detected": 18,
+    "feat_matched": 15,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002752955.1",
+    "species": "kpneumoniae",
+    "df_detected": 13,
+    "padloc_detected": 0,
+    "union_detected": 13,
+    "feat_matched": 12,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002761315.1",
+    "species": "kpneumoniae",
+    "df_detected": 10,
+    "padloc_detected": 15,
+    "union_detected": 18,
+    "feat_matched": 13,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002813595.1",
+    "species": "kpneumoniae",
+    "df_detected": 12,
+    "padloc_detected": 1,
+    "union_detected": 12,
+    "feat_matched": 12,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002909775.1",
+    "species": "kpneumoniae",
+    "df_detected": 14,
+    "padloc_detected": 5,
+    "union_detected": 17,
+    "feat_matched": 16,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003076555.1",
+    "species": "kpneumoniae",
+    "df_detected": 11,
+    "padloc_detected": 0,
+    "union_detected": 11,
+    "feat_matched": 10,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003203435.1",
+    "species": "kpneumoniae",
+    "df_detected": 22,
+    "padloc_detected": 9,
+    "union_detected": 29,
+    "feat_matched": 28,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003368025.1",
+    "species": "kpneumoniae",
+    "df_detected": 11,
+    "padloc_detected": 1,
+    "union_detected": 12,
+    "feat_matched": 12,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003584585.1",
+    "species": "kpneumoniae",
+    "df_detected": 18,
+    "padloc_detected": 5,
+    "union_detected": 22,
+    "feat_matched": 21,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003597695.1",
+    "species": "kpneumoniae",
+    "df_detected": 13,
+    "padloc_detected": 0,
+    "union_detected": 13,
+    "feat_matched": 12,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003855335.1",
+    "species": "kpneumoniae",
+    "df_detected": 24,
+    "padloc_detected": 9,
+    "union_detected": 27,
+    "feat_matched": 26,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003856595.1",
+    "species": "kpneumoniae",
+    "df_detected": 18,
+    "padloc_detected": 5,
+    "union_detected": 21,
+    "feat_matched": 20,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001516005.1",
+    "species": "paeruginosa",
+    "df_detected": 5,
+    "padloc_detected": 1,
+    "union_detected": 6,
+    "feat_matched": 4,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_016584725.1",
+    "species": "paeruginosa",
+    "df_detected": 10,
+    "padloc_detected": 5,
+    "union_detected": 12,
+    "feat_matched": 11,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_022559545.1",
+    "species": "paeruginosa",
+    "df_detected": 4,
+    "padloc_detected": 1,
+    "union_detected": 5,
+    "feat_matched": 4,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_022569855.1",
+    "species": "paeruginosa",
+    "df_detected": 5,
+    "padloc_detected": 1,
+    "union_detected": 6,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_022569915.1",
+    "species": "paeruginosa",
+    "df_detected": 9,
+    "padloc_detected": 4,
+    "union_detected": 11,
+    "feat_matched": 11,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_022569995.1",
+    "species": "paeruginosa",
+    "df_detected": 9,
+    "padloc_detected": 4,
+    "union_detected": 12,
+    "feat_matched": 12,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_022670795.1",
+    "species": "paeruginosa",
+    "df_detected": 2,
+    "padloc_detected": 3,
+    "union_detected": 4,
+    "feat_matched": 4,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_022699485.1",
+    "species": "paeruginosa",
+    "df_detected": 7,
+    "padloc_detected": 2,
+    "union_detected": 9,
+    "feat_matched": 9,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_022870565.1",
+    "species": "paeruginosa",
+    "df_detected": 5,
+    "padloc_detected": 2,
+    "union_detected": 6,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_023572735.3",
+    "species": "paeruginosa",
+    "df_detected": 10,
+    "padloc_detected": 4,
+    "union_detected": 13,
+    "feat_matched": 13,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_023612335.1",
+    "species": "paeruginosa",
+    "df_detected": 7,
+    "padloc_detected": 5,
+    "union_detected": 11,
+    "feat_matched": 11,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_024507915.1",
+    "species": "paeruginosa",
+    "df_detected": 6,
+    "padloc_detected": 1,
+    "union_detected": 7,
+    "feat_matched": 7,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_026870135.1",
+    "species": "paeruginosa",
+    "df_detected": 17,
+    "padloc_detected": 5,
+    "union_detected": 22,
+    "feat_matched": 21,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_028608885.1",
+    "species": "paeruginosa",
+    "df_detected": 3,
+    "padloc_detected": 2,
+    "union_detected": 4,
+    "feat_matched": 4,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_028608945.1",
+    "species": "paeruginosa",
+    "df_detected": 6,
+    "padloc_detected": 1,
+    "union_detected": 7,
+    "feat_matched": 7,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_028609005.1",
+    "species": "paeruginosa",
+    "df_detected": 7,
+    "padloc_detected": 4,
+    "union_detected": 11,
+    "feat_matched": 10,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_028609225.1",
+    "species": "paeruginosa",
+    "df_detected": 4,
+    "padloc_detected": 2,
+    "union_detected": 5,
+    "feat_matched": 5,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_029958385.1",
+    "species": "paeruginosa",
+    "df_detected": 7,
+    "padloc_detected": 4,
+    "union_detected": 8,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_030369815.1",
+    "species": "paeruginosa",
+    "df_detected": 6,
+    "padloc_detected": 2,
+    "union_detected": 8,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_032696765.1",
+    "species": "paeruginosa",
+    "df_detected": 5,
+    "padloc_detected": 2,
+    "union_detected": 7,
+    "feat_matched": 7,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_033216995.1",
+    "species": "paeruginosa",
+    "df_detected": 5,
+    "padloc_detected": 2,
+    "union_detected": 7,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001077475.1",
+    "species": "paeruginosa",
+    "df_detected": 4,
+    "padloc_detected": 2,
+    "union_detected": 5,
+    "feat_matched": 5,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_022453825.1",
+    "species": "paeruginosa",
+    "df_detected": 6,
+    "padloc_detected": 0,
+    "union_detected": 6,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_025200845.1",
+    "species": "paeruginosa",
+    "df_detected": 7,
+    "padloc_detected": 4,
+    "union_detected": 10,
+    "feat_matched": 10,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_000829255.1",
+    "species": "paeruginosa",
+    "df_detected": 7,
+    "padloc_detected": 1,
+    "union_detected": 8,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_000829885.1",
+    "species": "paeruginosa",
+    "df_detected": 15,
+    "padloc_detected": 5,
+    "union_detected": 16,
+    "feat_matched": 16,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001293085.1",
+    "species": "paeruginosa",
+    "df_detected": 6,
+    "padloc_detected": 1,
+    "union_detected": 6,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001548335.1",
+    "species": "paeruginosa",
+    "df_detected": 16,
+    "padloc_detected": 4,
+    "union_detected": 19,
+    "feat_matched": 17,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001874465.1",
+    "species": "paeruginosa",
+    "df_detected": 6,
+    "padloc_detected": 5,
+    "union_detected": 9,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001879525.1",
+    "species": "paeruginosa",
+    "df_detected": 5,
+    "padloc_detected": 0,
+    "union_detected": 5,
+    "feat_matched": 5,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001641045.1",
+    "species": "saureus",
+    "df_detected": 10,
+    "padloc_detected": 2,
+    "union_detected": 12,
+    "feat_matched": 11,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003609855.1",
+    "species": "saureus",
+    "df_detected": 7,
+    "padloc_detected": 4,
+    "union_detected": 11,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003945405.1",
+    "species": "saureus",
+    "df_detected": 9,
+    "padloc_detected": 0,
+    "union_detected": 9,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_014696255.1",
+    "species": "saureus",
+    "df_detected": 8,
+    "padloc_detected": 0,
+    "union_detected": 8,
+    "feat_matched": 7,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_016065215.1",
+    "species": "saureus",
+    "df_detected": 9,
+    "padloc_detected": 3,
+    "union_detected": 11,
+    "feat_matched": 9,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_020177155.3",
+    "species": "saureus",
+    "df_detected": 2,
+    "padloc_detected": 3,
+    "union_detected": 4,
+    "feat_matched": 4,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_021491715.1",
+    "species": "saureus",
+    "df_detected": 7,
+    "padloc_detected": 4,
+    "union_detected": 10,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003944865.1",
+    "species": "saureus",
+    "df_detected": 7,
+    "padloc_detected": 0,
+    "union_detected": 7,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_000597965.1",
+    "species": "saureus",
+    "df_detected": 6,
+    "padloc_detected": 0,
+    "union_detected": 6,
+    "feat_matched": 5,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_000953255.1",
+    "species": "saureus",
+    "df_detected": 9,
+    "padloc_detected": 3,
+    "union_detected": 11,
+    "feat_matched": 9,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001018685.2",
+    "species": "saureus",
+    "df_detected": 7,
+    "padloc_detected": 3,
+    "union_detected": 10,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001018975.2",
+    "species": "saureus",
+    "df_detected": 9,
+    "padloc_detected": 1,
+    "union_detected": 10,
+    "feat_matched": 9,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001019125.2",
+    "species": "saureus",
+    "df_detected": 6,
+    "padloc_detected": 3,
+    "union_detected": 9,
+    "feat_matched": 7,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001019305.2",
+    "species": "saureus",
+    "df_detected": 7,
+    "padloc_detected": 0,
+    "union_detected": 7,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001019495.2",
+    "species": "saureus",
+    "df_detected": 10,
+    "padloc_detected": 2,
+    "union_detected": 11,
+    "feat_matched": 10,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001027045.1",
+    "species": "saureus",
+    "df_detected": 8,
+    "padloc_detected": 4,
+    "union_detected": 10,
+    "feat_matched": 9,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001027105.1",
+    "species": "saureus",
+    "df_detected": 7,
+    "padloc_detected": 3,
+    "union_detected": 10,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001183705.3",
+    "species": "saureus",
+    "df_detected": 7,
+    "padloc_detected": 3,
+    "union_detected": 10,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001298325.2",
+    "species": "saureus",
+    "df_detected": 7,
+    "padloc_detected": 2,
+    "union_detected": 8,
+    "feat_matched": 7,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001515665.1",
+    "species": "saureus",
+    "df_detected": 10,
+    "padloc_detected": 4,
+    "union_detected": 13,
+    "feat_matched": 11,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_001515745.1",
+    "species": "saureus",
+    "df_detected": 10,
+    "padloc_detected": 3,
+    "union_detected": 12,
+    "feat_matched": 11,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002000585.1",
+    "species": "saureus",
+    "df_detected": 7,
+    "padloc_detected": 4,
+    "union_detected": 10,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002025145.1",
+    "species": "saureus",
+    "df_detected": 8,
+    "padloc_detected": 4,
+    "union_detected": 9,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002355355.1",
+    "species": "saureus",
+    "df_detected": 7,
+    "padloc_detected": 8,
+    "union_detected": 14,
+    "feat_matched": 11,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002356675.1",
+    "species": "saureus",
+    "df_detected": 7,
+    "padloc_detected": 0,
+    "union_detected": 7,
+    "feat_matched": 6,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_002803885.1",
+    "species": "saureus",
+    "df_detected": 5,
+    "padloc_detected": 2,
+    "union_detected": 6,
+    "feat_matched": 5,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003073395.1",
+    "species": "saureus",
+    "df_detected": 7,
+    "padloc_detected": 2,
+    "union_detected": 9,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003111745.1",
+    "species": "saureus",
+    "df_detected": 7,
+    "padloc_detected": 4,
+    "union_detected": 9,
+    "feat_matched": 7,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003184985.1",
+    "species": "saureus",
+    "df_detected": 6,
+    "padloc_detected": 2,
+    "union_detected": 6,
+    "feat_matched": 5,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  },
+  {
+    "accession": "GCF_003354565.1",
+    "species": "saureus",
+    "df_detected": 7,
+    "padloc_detected": 5,
+    "union_detected": 11,
+    "feat_matched": 8,
+    "df_tsv_exists": true,
+    "padloc_csv_exists": true
+  }
+]
