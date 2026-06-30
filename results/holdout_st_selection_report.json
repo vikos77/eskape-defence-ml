@@ -1,0 +1,412 @@
+{
+  "abaumannii": {
+    "n_novel_st": 20,
+    "n_unknown_st": 39,
+    "n_shared_st": 1,
+    "n_selected_novel": 15,
+    "n_selected_unknown": 15,
+    "n_filled_shared": 0,
+    "filled_shared_detail": []
+  },
+  "ecloaceae": {
+    "n_novel_st": 11,
+    "n_unknown_st": 8,
+    "n_shared_st": 41,
+    "n_selected_novel": 10,
+    "n_selected_unknown": 8,
+    "n_filled_shared": 12,
+    "filled_shared_detail": [
+      {
+        "accession": "GCF_001022015.1",
+        "st": 93.0
+      },
+      {
+        "accession": "GCF_001022075.1",
+        "st": 93.0
+      },
+      {
+        "accession": "GCF_002237465.1",
+        "st": 90.0
+      },
+      {
+        "accession": "GCF_003051945.2",
+        "st": 145.0
+      },
+      {
+        "accession": "GCF_003444755.1",
+        "st": 134.0
+      },
+      {
+        "accession": "GCF_008931785.1",
+        "st": 90.0
+      },
+      {
+        "accession": "GCF_012562255.1",
+        "st": 133.0
+      },
+      {
+        "accession": "GCF_014771415.1",
+        "st": 418.0
+      },
+      {
+        "accession": "GCF_015137995.1",
+        "st": 133.0
+      },
+      {
+        "accession": "GCF_015238615.1",
+        "st": 175.0
+      },
+      {
+        "accession": "GCF_015910205.1",
+        "st": 269.0
+      },
+      {
+        "accession": "GCF_016864035.1",
+        "st": 97.0
+      }
+    ]
+  },
+  "efaecium": {
+    "n_novel_st": 7,
+    "n_unknown_st": 0,
+    "n_shared_st": 52,
+    "n_selected_novel": 7,
+    "n_selected_unknown": 0,
+    "n_filled_shared": 23,
+    "filled_shared_detail": [
+      {
+        "accession": "GCF_000444405.1",
+        "st": 203
+      },
+      {
+        "accession": "GCF_001518735.1",
+        "st": 203
+      },
+      {
+        "accession": "GCF_001635875.1",
+        "st": 736
+      },
+      {
+        "accession": "GCF_002761255.1",
+        "st": 736
+      },
+      {
+        "accession": "GCF_002777275.1",
+        "st": 736
+      },
+      {
+        "accession": "GCF_002848685.1",
+        "st": 736
+      },
+      {
+        "accession": "GCF_002848745.1",
+        "st": 736
+      },
+      {
+        "accession": "GCF_005886545.1",
+        "st": 80
+      },
+      {
+        "accession": "GCF_005886715.1",
+        "st": 80
+      },
+      {
+        "accession": "GCF_005886735.1",
+        "st": 80
+      },
+      {
+        "accession": "GCF_016406345.1",
+        "st": 17
+      },
+      {
+        "accession": "GCF_016406425.1",
+        "st": 17
+      },
+      {
+        "accession": "GCF_016406465.1",
+        "st": 612
+      },
+      {
+        "accession": "GCF_016406545.1",
+        "st": 17
+      },
+      {
+        "accession": "GCF_016406605.1",
+        "st": 664
+      },
+      {
+        "accession": "GCF_016415365.1",
+        "st": 18
+      },
+      {
+        "accession": "GCF_019977575.1",
+        "st": 17
+      },
+      {
+        "accession": "GCF_020162155.1",
+        "st": 18
+      },
+      {
+        "accession": "GCF_021228615.1",
+        "st": 584
+      },
+      {
+        "accession": "GCF_023204975.1",
+        "st": 584
+      },
+      {
+        "accession": "GCF_026073415.1",
+        "st": 17
+      },
+      {
+        "accession": "GCF_040369085.1",
+        "st": 80
+      },
+      {
+        "accession": "GCF_050470555.1",
+        "st": 17
+      }
+    ]
+  },
+  "kpneumoniae": {
+    "n_novel_st": 5,
+    "n_unknown_st": 0,
+    "n_shared_st": 55,
+    "n_selected_novel": 5,
+    "n_filled_shared": 25,
+    "filled_shared_detail": [
+      {
+        "accession": "GCF_000364385.3",
+        "st": 11
+      },
+      {
+        "accession": "GCF_000775955.1",
+        "st": 17
+      },
+      {
+        "accession": "GCF_001455995.1",
+        "st": 147
+      },
+      {
+        "accession": "GCF_001701835.2",
+        "st": 11
+      },
+      {
+        "accession": "GCF_001705385.1",
+        "st": 512
+      },
+      {
+        "accession": "GCF_001708225.1",
+        "st": 23
+      },
+      {
+        "accession": "GCF_001718115.2",
+        "st": 340
+      },
+      {
+        "accession": "GCF_001870165.1",
+        "st": 45
+      },
+      {
+        "accession": "GCF_001885255.2",
+        "st": 147
+      },
+      {
+        "accession": "GCF_001922465.1",
+        "st": 11
+      },
+      {
+        "accession": "GCF_001952875.1",
+        "st": 392
+      },
+      {
+        "accession": "GCF_002243445.1",
+        "st": 258
+      },
+      {
+        "accession": "GCF_002591075.1",
+        "st": 147
+      },
+      {
+        "accession": "GCF_002741685.1",
+        "st": 340
+      },
+      {
+        "accession": "GCF_002752955.1",
+        "st": 45
+      },
+      {
+        "accession": "GCF_002761315.1",
+        "st": 23
+      },
+      {
+        "accession": "GCF_002813595.1",
+        "st": 23
+      },
+      {
+        "accession": "GCF_002909775.1",
+        "st": 231
+      },
+      {
+        "accession": "GCF_003076555.1",
+        "st": 307
+      },
+      {
+        "accession": "GCF_003203435.1",
+        "st": 11
+      },
+      {
+        "accession": "GCF_003368025.1",
+        "st": 258
+      },
+      {
+        "accession": "GCF_003584585.1",
+        "st": 11
+      },
+      {
+        "accession": "GCF_003597695.1",
+        "st": 307
+      },
+      {
+        "accession": "GCF_003855335.1",
+        "st": 15
+      },
+      {
+        "accession": "GCF_003856595.1",
+        "st": 147
+      }
+    ]
+  },
+  "paeruginosa": {
+    "n_novel_st": 21,
+    "n_unknown_st": 3,
+    "n_shared_st": 36,
+    "n_selected_novel": 21,
+    "n_selected_unknown": 3,
+    "n_filled_shared": 6,
+    "filled_shared_detail": [
+      {
+        "accession": "GCF_000829255.1",
+        "st": 235.0
+      },
+      {
+        "accession": "GCF_000829885.1",
+        "st": 111.0
+      },
+      {
+        "accession": "GCF_001293085.1",
+        "st": 782.0
+      },
+      {
+        "accession": "GCF_001548335.1",
+        "st": 1047.0
+      },
+      {
+        "accession": "GCF_001874465.1",
+        "st": 308.0
+      },
+      {
+        "accession": "GCF_001879525.1",
+        "st": 260.0
+      }
+    ]
+  },
+  "saureus": {
+    "n_novel_st": 7,
+    "n_unknown_st": 1,
+    "n_shared_st": 52,
+    "n_selected_novel": 7,
+    "n_selected_unknown": 1,
+    "n_filled_shared": 22,
+    "filled_shared_detail": [
+      {
+        "accession": "GCF_000597965.1",
+        "st": 5.0
+      },
+      {
+        "accession": "GCF_000953255.1",
+        "st": 30.0
+      },
+      {
+        "accession": "GCF_001018685.2",
+        "st": 8.0
+      },
+      {
+        "accession": "GCF_001018975.2",
+        "st": 30.0
+      },
+      {
+        "accession": "GCF_001019125.2",
+        "st": 1.0
+      },
+      {
+        "accession": "GCF_001019305.2",
+        "st": 5.0
+      },
+      {
+        "accession": "GCF_001019495.2",
+        "st": 5.0
+      },
+      {
+        "accession": "GCF_001027045.1",
+        "st": 27.0
+      },
+      {
+        "accession": "GCF_001027105.1",
+        "st": 8.0
+      },
+      {
+        "accession": "GCF_001183705.3",
+        "st": 8.0
+      },
+      {
+        "accession": "GCF_001298325.2",
+        "st": 9.0
+      },
+      {
+        "accession": "GCF_001515665.1",
+        "st": 239.0
+      },
+      {
+        "accession": "GCF_001515745.1",
+        "st": 239.0
+      },
+      {
+        "accession": "GCF_002000585.1",
+        "st": 8.0
+      },
+      {
+        "accession": "GCF_002025145.1",
+        "st": 464.0
+      },
+      {
+        "accession": "GCF_002355355.1",
+        "st": 8.0
+      },
+      {
+        "accession": "GCF_002356675.1",
+        "st": 8.0
+      },
+      {
+        "accession": "GCF_002803885.1",
+        "st": 152.0
+      },
+      {
+        "accession": "GCF_003073395.1",
+        "st": 8.0
+      },
+      {
+        "accession": "GCF_003111745.1",
+        "st": 398.0
+      },
+      {
+        "accession": "GCF_003184985.1",
+        "st": 22.0
+      },
+      {
+        "accession": "GCF_003354565.1",
+        "st": 228.0
+      }
+    ]
+  }
+}
