@@ -1,4 +1,4 @@
-"""Regenerate Section 2.4 and Supplement S-A figures using cached SHAP array.
+"""Regenerate Section 2.4, Supplement S-A, and Section 2.5 figures using cached SHAP array.
 
 Uses results/q4_shap_367_array.npy to avoid recomputing SHAP from scratch.
 Run from project root:
@@ -172,6 +172,67 @@ plt.suptitle(
 )
 plt.tight_layout()
 out = FIGS_INTERP / "q1_shap_within_species_distribution.png"
+plt.savefig(out, dpi=150, bbox_inches="tight")
+plt.close()
+print(f"Saved: {out}")
+
+# ── Section 2.5: Top-6 dependence plots (2×3 grid) ───────────────────────────
+global_shap = pd.read_csv(RES / "q4_shap_367_global.csv", index_col="feature")["global_shap"]
+global_shap = global_shap.reindex(FEAT_COLS).dropna()
+top6_features = global_shap.sort_values(ascending=False).head(6).index.tolist()
+KEY_FEATURES  = {f: f.replace("dp_", "").replace("_", " ") for f in top6_features}
+
+print("Top 6 features (dependence plots):")
+for f, label in KEY_FEATURES.items():
+    print(f"  {f:40s}  SHAP = {global_shap[f]:.5f}")
+
+species_labels_arr = fm["species"].to_numpy(dtype=str)
+
+fig, axes = plt.subplots(2, 3, figsize=(13.5, 10))
+axes_flat = axes.flatten()
+
+rng = np.random.default_rng(42)
+for ax, (feat_col, feat_label) in zip(axes_flat, KEY_FEATURES.items()):
+    feat_idx  = FEAT_COLS.index(feat_col)
+    shap_feat = shap_3d[:, feat_idx, :].mean(axis=1)
+    feat_vals = X_full[:, feat_idx]
+
+    plot_df = pd.DataFrame({
+        "species":  species_labels_arr,
+        "shap_val": shap_feat,
+        "feat_val": feat_vals.astype(int),
+    })
+
+    for species in SPECIES_ORDER:
+        sub = plot_df[plot_df["species"] == species]
+        for val, marker, alpha in [(0, "x", 0.4), (1, "o", 0.7)]:
+            pts = sub[sub["feat_val"] == val]
+            ax.scatter(
+                val + rng.uniform(-0.1, 0.1, len(pts)),
+                pts["shap_val"],
+                color=SPECIES_PALETTE[species], alpha=alpha,
+                marker=marker, s=18, linewidths=0.5,
+                label=SPECIES_LABELS[species] if val == 1 else "",
+            )
+
+    ax.axhline(0, color="black", linewidth=0.7, linestyle="--")
+    ax.set_xticks([0, 1])
+    ax.set_xticklabels(["Absent", "Present"])
+    ax.set_title(feat_label, fontsize=10)
+    ax.set_ylabel("Mean SHAP value (over 6 classes)", fontsize=9)
+    ax.set_xlabel("Feature presence", fontsize=9)
+
+handles = [
+    mpatches.Patch(color=SPECIES_PALETTE[s], label=SPECIES_LABELS[s])
+    for s in SPECIES_ORDER
+]
+axes_flat[2].legend(handles=handles, fontsize=8, title="Species",
+                    bbox_to_anchor=(1.02, 1), loc="upper left")
+
+plt.suptitle("SHAP dependence plots  -  top 6 features by global mean |SHAP|\n"
+             "(x: feature presence, y: mean SHAP effect over 6 classes)", fontsize=11)
+plt.tight_layout()
+out = FIGS_INTERP / "q1_shap_top6_dependence.png"
 plt.savefig(out, dpi=150, bbox_inches="tight")
 plt.close()
 print(f"Saved: {out}")
