@@ -70,5 +70,17 @@
     ],
     "permutation_p": 0.001996007984031936,
     "n_bootstrap": 500
+  },
+  "defence_is": {
+    "label": "defence_is",
+    "n_features": 378,
+    "ari_primary": 0.3915436637278789,
+    "silhouette": 0.02970284306860385,
+    "ari_ci95": [
+      0.19231214765831683,
+      0.48399880859680916
+    ],
+    "permutation_p": 0.001996007984031936,
+    "n_bootstrap": 500
   }
 }
