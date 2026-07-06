@@ -34,13 +34,24 @@ which removed 8 of 367 defence features.
 These are gram-negative vs gram-positive metal resistance class splits —
 taxonomic, not mobile-element ecology.
 
-**IS (24 features → 21 retained, 3 markers):**
+**IS (24 features → 19 retained, 5 markers):**
 
 | Feature | spec_score | Pattern |
 |---|---|---|
-| IS1182 | 0.754 | 88% in EF, 98% in SA, <10% elsewhere |
-| IS982 | 0.710 | 96% in EF only |
-| IS1 | 0.708 | 72% in EC+KP, <9% elsewhere |
+| IS1182 | 0.826 | ~0% in AB, EC, KP, PA; ~88% in EF; ~98% in SA — gram-positive enriched |
+| IS982  | 0.777 | ~96% in EF only |
+| IS1    | 0.775 | ~72% in EC, ~75% in KP; <9% elsewhere |
+| ISNCY  | 0.767 | 95% in KP, 60% in EC, 40% in PA, 9% in AB, 1% in EF, 0% in SA |
+| IS5    | 0.765 | 87% in KP, 71% in EC, 69% in PA, 67% in AB, 2% in EF, 0% in SA |
+
+ISNCY and IS5 are both Enterobacteriaceae-enriched. Note IS5 has high prevalence
+in AB (67%) and PA (69%) as well as KP/EC — the species-restricted pattern is
+driven by near-absence in EF and SA (gram-positive gap), not by restriction to one species.
+
+Note: spec_scores computed with `pd.DataFrame.std()` (ddof=1) as in Cell 2 defence filter.
+An earlier run with numpy ddof=0 found only 3 markers (IS1182, IS982, IS1); the
+borderline features ISNCY (0.767) and IS5 (0.765) were below 0.70 with ddof=0
+(values ≈ 0.699). ddof=1 is correct and consistent with Cell 2.
 
 **ARG (143 features → 134 retained, 9 markers):**
 
