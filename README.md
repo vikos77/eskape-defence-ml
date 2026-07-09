@@ -161,9 +161,6 @@ eskape-defence-ml/
 └── environment.yml
 ```
 
-Manuscript source files (`docs/manuscript/`) and the internal decision log
-(`docs/decisions.md`) are gitignored and not part of the public repository tree.
-
 ---
 
 ## Data availability
