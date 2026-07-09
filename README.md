@@ -76,7 +76,7 @@ XGB/LGBM   species     K-means    (09 §5)
 
 | Question | Result |
 |----------|--------|
-| Q1: Species classification from defence profiles | RF balanced accuracy = 0.900 [95% CI: 0.871-0.923] (LR 0.911, XGB 0.904, LGBM 0.909); null baseline = 0.167. McNemar's test found all four classifiers statistically indistinguishable. |
+| Q1: Species classification from defence profiles | RF balanced accuracy = 0.900 [95% CI: 0.871-0.923] under grouped CV (LR 0.911, XGB 0.904, LGBM 0.909); null baseline = 0.167. McNemar's test found all four classifiers statistically indistinguishable. External holdout validation (n=180, 30 ST-diverse assemblies per species, zero training overlap): BA = 0.944 [0.911-0.972]. |
 | Q2: ARG burden prediction within species | BH-significant in 4/6 species (*E. cloacae*, *K. pneumoniae*, *E. faecium*, *P. aeruginosa*; AUROC 0.781-0.824); null in *A. baumannii* and *S. aureus*. Robust drivers are predominantly facilitative, from named and uncharacterised systems at comparable rates. |
 | Q3: Pan-ESKAPE defence archetypes | Continuum, not discrete clusters; silhouette < 0.10 throughout, gap statistic favours K=1; full-dataset ARI vs species (0.362) collapses to 0.102 on dereplicated phylogroup representatives, confirming clonal-inflation artefact. |
 | Q3b: IS element block comparison | IS element family composition (19 families after spec_score filter) adds genuine clustering signal to the defence feature space. Defence-only ARI = 0.219 [0.059-0.320]; IS-only ARI = 0.237 [0.150-0.341]; defence + IS ARI = 0.392 [0.192-0.484] (gain +0.172 over defence alone). All three conditions p < 0.01 (1000-permutation test, 309 dereplicated genomes, K=6 forced). |
@@ -134,7 +134,7 @@ on publication (see Data availability below).
 | `05_baseline_classifier` | Null baseline, Logistic Regression Q1 + Q2, learning curves |
 | `06_random_forest` | RF Q1 + Q2, hyperparameter tuning, Gini + permutation + SHAP importance |
 | `07_gradient_boosting` | XGBoost and LightGBM Q1 + Q2, early stopping, calibration, McNemar tests |
-| `08_model_interpretation` | Per-class SHAP summary plots, external holdout validation |
+| `08_model_interpretation` | Per-class SHAP summary plots, feature dependence plots; external 6-species holdout validation (n=180, BA = 0.944 [0.911-0.972]) |
 | `09_unsupervised_archetypes` | K-means, hierarchical clustering, silhouette + gap statistic, defence archetype profiles (Q3); IS element block comparison (Q3b, §5) |
 
 **Not part of the primary analysis:** `10_phase12_sensitivity.ipynb` records two
