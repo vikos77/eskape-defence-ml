@@ -15,9 +15,8 @@
 Bacterial defence systems are proposed barriers to horizontal antibiotic resistance
 gene (ARG) acquisition, yet some co-occur with ARGs on mobile elements, suggesting
 facilitation rather than restriction. How much defence-system content alone explains
-about species identity and resistance burden, relative to a genome's broader ARG,
-metal-resistance, and mobile-element content, has not been tested across multiple
-pathogens.
+about species identity and ARG burden, relative to a genome's broader ARG and
+mobile-element content, has not been tested across multiple pathogens.
 
 This repository applies supervised and unsupervised machine learning to 3,335
 complete and high-quality genomes spanning all six ESKAPE species. Four research
