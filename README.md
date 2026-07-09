@@ -145,7 +145,7 @@ on publication (see Data availability below).
 eskape-defence-ml/
 ├── notebooks/              # Jupyter notebooks (01-09 primary; 10 supplementary, gitignored)
 ├── src/                    # Python modules (features, models, evaluation, viz)
-├── workflow/                # Snakemake pipeline extending the published Acinetobacter pipeline
+├── workflow/                # Snakemake pipeline for genome download, QC, and annotation
 ├── config/
 │   ├── species.yaml        # NCBI accession lists per species
 │   └── params.yaml         # Pipeline and ML parameters
