@@ -217,9 +217,7 @@ docs/peer_review/
 docs/decisions.md
 docs/future_scope.md
 docs/manuscript_cleanup_plan.md
-docs/expected_reviewer_comments/feature_filter_sensitivity.md
-docs/expected_reviewer_comments/q2_antidefence_sensitivity.md
-docs/expected_reviewer_comments/q2_count_vs_presence_sensitivity.md
+docs/expected_reviewer_comments/
 
 # Named-236 feature-set apparatus -- local-only, superseded by full-367 primary
 # (367 vs named-236 sensitivity comparison kept locally per docs/decisions.md)
@@ -297,8 +295,8 @@ results/models/*.json
 .keras/
 Library/
 
-# Supplementary data — source: Muthuraman et al. (2026) JAM paper; deposited to Zenodo on release
-# S1 is required by notebooks/08_model_interpretation.ipynb (C3 holdout validation)
+# Supplementary data — deposited to Zenodo on release
+# S1 contains the 6-species NCBI holdout cohort (180 genomes) required by 08_model_interpretation.ipynb
 Supplementary_Data_*.xlsx
 
 # Notebook builder scripts — development tools used to generate notebooks programmatically

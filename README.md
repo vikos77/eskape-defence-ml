@@ -64,11 +64,11 @@ DefenseFinder + PADLOC    ResFinder       AMRFinderPlus         ISEScan
      |        |           |           |            |           |
      v        v           v           v            v           v
     Q1       Q2          Q3          Q3b           Q4
- Species   ARG burden  Defence-   Multi-block    SHAP
-classif.   prediction  only       (defence+ARG+   attribution
- LR/RF/    RF per      archetype  HMRG+IS)        (08)
-XGB/LGBM   species     K-means    clustering
- (05-07)   (05-07)     (09)       (09 / src/models/run_q3b_367.py)
+ Species   ARG burden  Defence-   IS element     SHAP
+classif.   prediction  only       block          attribution
+ LR/RF/    RF per      archetype  comparison     (08)
+XGB/LGBM   species     K-means    (09 §5)
+ (05-07)   (05-07)     (09)
 ```
 
 ---
@@ -80,7 +80,7 @@ XGB/LGBM   species     K-means    clustering
 | Q1: Species classification from defence profiles | RF balanced accuracy = 0.900 [95% CI: 0.871-0.923] (LR 0.911, XGB 0.904, LGBM 0.909); null baseline = 0.167. McNemar's test found all four classifiers statistically indistinguishable. |
 | Q2: ARG burden prediction within species | BH-significant in 4/6 species (*E. cloacae*, *K. pneumoniae*, *E. faecium*, *P. aeruginosa*; AUROC 0.781-0.824); null in *A. baumannii* and *S. aureus*. Robust drivers are predominantly facilitative, from named and uncharacterised systems at comparable rates. |
 | Q3: Pan-ESKAPE defence archetypes | Continuum, not discrete clusters; silhouette < 0.10 throughout, gap statistic favours K=1; full-dataset ARI vs species (0.362) collapses to 0.102 on dereplicated phylogroup representatives, confirming clonal-inflation artefact. |
-| Q3b: Multi-block genomic architecture | **Headline result.** Defence alone recovers species identity poorly (ARI = 0.219 [0.059-0.322]). Combining defence with ARG, metal-resistance, and IS-element presence raises this to ARI = 0.691 [0.456-0.793] - defence systems are one component of a larger genomic architecture, not the dominant signal. |
+| Q3b: IS element block comparison | IS element family composition (19 families after spec_score filter) adds modest signal over defence alone. Defence-only ARI = 0.219 [0.059-0.320]; IS-only ARI = 0.237 [0.150-0.341]; defence + IS ARI = 0.392 [0.192-0.484]. All three conditions p < 0.01 (1000-permutation test, 309 dereplicated genomes, K=6 forced). |
 | Q4: SHAP attribution | RM_Type_IV is the top global classification driver; uncharacterised PADLOC candidate clusters are the single strongest per-species driver in 3 of 6 species (EC, KP, PA), reported as statistically real with no mechanistic claim attached. |
 
 All models evaluated under phylogenetically grouped 5-fold cross-validation
@@ -129,9 +129,8 @@ CV groups are released via Zenodo on publication (see Data availability below).
 
 **External data dependency:** `08_model_interpretation.ipynb` requires
 `Supplementary_Data_S1.xlsx` at the project root. This file contains the external
-*Acinetobacter baumannii* holdout cohort (43 published complete assemblies, disjoint
-from training) used to validate the Q1 classifier, sourced from a prior single-genus
-study (Muthuraman et al., 2026, *Journal of Applied Microbiology*).
+6-species NCBI holdout cohort (30 ST-diverse assemblies per species, 180 genomes total,
+zero accession overlap with training set) used to validate the Q1 classifier externally.
 
 ---
 
@@ -147,17 +146,12 @@ study (Muthuraman et al., 2026, *Journal of Applied Microbiology*).
 | `06_random_forest` | RF Q1 + Q2, hyperparameter tuning, Gini + permutation + SHAP importance |
 | `07_gradient_boosting` | XGBoost and LightGBM Q1 + Q2, early stopping, calibration, McNemar tests |
 | `08_model_interpretation` | Per-class SHAP summary plots, external holdout validation |
-| `09_unsupervised_archetypes` | K-means, hierarchical clustering, silhouette + gap statistic, defence archetype profiles (Q3) |
+| `09_unsupervised_archetypes` | K-means, hierarchical clustering, silhouette + gap statistic, defence archetype profiles (Q3); IS element block comparison (Q3b, §5) |
 
 **Not part of the primary analysis:** `10_phase12_sensitivity.ipynb` records two
 pre-registered sensitivity tests (RM dose-effect, mechanism-class-specific ARG burden)
 that did not make the final manuscript and are kept for historical record only; it is
-not re-executed as part of the active pipeline. `LC_01_learning_curve.ipynb` is a
-supplementary learning-curve check, not yet folded into the numbered phase sequence.
-
-Q3b (multi-block genomic architecture, the manuscript's headline unsupervised result)
-is not yet ported into a numbered notebook; its canonical implementation is
-`src/models/run_q3b_367.py`.
+not re-executed as part of the active pipeline.
 
 ---
 
@@ -165,7 +159,7 @@ is not yet ported into a numbered notebook; its canonical implementation is
 
 ```
 eskape-defence-ml/
-├── notebooks/              # Jupyter notebooks (01-09 primary; 10 and LC_01 supplementary)
+├── notebooks/              # Jupyter notebooks (01-09 primary; 10 supplementary, gitignored)
 ├── src/                    # Python modules (features, models, evaluation, viz)
 ├── workflow/                # Snakemake pipeline extending the published Acinetobacter pipeline
 ├── config/
@@ -180,9 +174,6 @@ eskape-defence-ml/
 │   ├── figures/             # PNG figures per phase (tracked in git)
 │   └── models/             # Serialised RF/XGB/LGBM models (gitignored; Zenodo on release)
 ├── docs/
-│   └── expected_reviewer_comments/ # Rebuttal-ready notes on anticipated review points
-│                                    # (Mash sketch-size sensitivity, feature-filter
-│                                    # sensitivity, Q2 split/anti-defence sensitivity)
 └── environment.yml
 ```
 
