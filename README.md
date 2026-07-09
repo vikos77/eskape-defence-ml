@@ -117,13 +117,9 @@ snakemake --cores 8 --use-conda
 jupyter lab
 ```
 
-Raw genomes and interim tool outputs are gitignored. The processed feature matrix and
-CV groups are released via Zenodo on publication (see Data availability below).
-
-**External data dependency:** `08_model_interpretation.ipynb` requires
-`Supplementary_Data_S1.xlsx` at the project root. This file contains the external
-6-species NCBI holdout cohort (30 ST-diverse assemblies per species, 180 genomes total,
-zero accession overlap with training set) used to validate the Q1 classifier externally.
+Raw genomes and interim tool outputs are gitignored. The processed feature matrix,
+CV groups, holdout feature matrix, and serialised models are released via Zenodo
+on publication (see Data availability below).
 
 ---
 

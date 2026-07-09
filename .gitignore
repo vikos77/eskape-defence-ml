@@ -296,7 +296,6 @@ results/models/*.json
 Library/
 
 # Supplementary data — deposited to Zenodo on release
-# S1 contains the 6-species NCBI holdout cohort (180 genomes) required by 08_model_interpretation.ipynb
 Supplementary_Data_*.xlsx
 
 # Notebook builder scripts — development tools used to generate notebooks programmatically
