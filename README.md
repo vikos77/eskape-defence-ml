@@ -137,11 +137,6 @@ on publication (see Data availability below).
 | `08_model_interpretation` | Per-class SHAP summary plots, feature dependence plots; external 6-species holdout validation (n=180, BA = 0.944 [0.911-0.972]) |
 | `09_unsupervised_archetypes` | K-means, hierarchical clustering, silhouette + gap statistic, defence archetype profiles (Q3); IS element block comparison (Q3b, §5) |
 
-**Not part of the primary analysis:** `10_phase12_sensitivity.ipynb` records two
-pre-registered sensitivity tests (RM dose-effect, mechanism-class-specific ARG burden)
-that did not make the final manuscript and are kept for historical record only; it is
-not re-executed as part of the active pipeline.
-
 ---
 
 ## Repository structure
