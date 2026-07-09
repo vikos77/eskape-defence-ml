@@ -175,15 +175,7 @@ matrix, serialised models) will be deposited to Zenodo on publication and linked
 
 If you use this repository, please cite:
 
-**This work (in submission):**
 > Muthuraman V et al. (2026) Machine learning reveals defence systems as one component
 > of a broader genomic architecture underlying species identity and resistance-gene
 > ecology across ESKAPE pathogens.
 > *In submission.*
-
-**Source of the external *A. baumannii* holdout cohort used in Q1 validation:**
-> Muthuraman V et al. (2026) Niche-specific defence system selection in *Acinetobacter* spp.
-> *Journal of Applied Microbiology.*
-
-**Published pipeline:**
-> [acinetobacter-defence-pipeline](https://github.com/vikos77/acinetobacter-defence-pipeline)
