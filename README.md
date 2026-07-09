@@ -21,10 +21,10 @@ pathogens.
 
 This repository applies supervised and unsupervised machine learning to 3,335
 complete and high-quality genomes spanning all six ESKAPE species. Four research
-questions (Q1-Q4) were pre-registered before any model training; a fifth (Q3b,
-multi-block genomic architecture) was raised as an open question during manuscript
-preparation and addressed directly rather than left for future work. See the
-manuscript's Methods section for the full analysis plan.
+questions (Q1–Q4) were pre-registered before any model training. A fifth question
+(Q3b) arose post hoc during analysis: whether IS element family composition adds
+independent clustering signal to the defence feature space, after applying the same
+taxonomic marker filter used in Q1/Q3.
 
 ---
 
