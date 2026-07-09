@@ -98,12 +98,6 @@ All models evaluated under phylogenetically grouped 5-fold cross-validation
 | Phylogroups | 309 (Mash k=21, s=1000; average linkage; per-species thresholds 0.005-0.010) |
 | Cross-validation | GroupedStratifiedKFold(5) on phylogroup labels |
 
-**Note:** ICE/IME annotation (ICEberg tBLASTn) was evaluated and removed entirely from
-the pipeline after a database-redundancy audit; BacMet2 tBLASTn was evaluated for
-metal-resistance gene detection and excluded after producing a cross-species efflux-pump
-artefact, in favour of AMRFinderPlus's `METAL` subtype. Neither appears in any reported
-result.
-
 ---
 
 ## Quick start
