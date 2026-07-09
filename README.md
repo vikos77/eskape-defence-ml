@@ -166,8 +166,8 @@ eskape-defence-ml/
 ## Data availability
 
 Raw genomes are available from NCBI RefSeq under the accessions listed in
-`config/species.yaml`. Processed data (feature matrix, CV groups, serialised models)
-will be deposited to Zenodo on publication and linked here.
+`config/species.yaml`. Processed data (feature matrix, CV groups, holdout feature
+matrix, serialised models) will be deposited to Zenodo on publication and linked here.
 
 ---
 
