@@ -1,0 +1,62 @@
+{
+  "kpneumoniae": {
+    "top_phylogroup": "KP_PG_001",
+    "top_pg_share": 0.1508,
+    "n_excluded": 76,
+    "full_cohort_auroc": 0.7911616186777477,
+    "excluded_cohort_auroc": 0.8420900982936741,
+    "delta_auroc": 0.0509,
+    "excluded_cohort_n": 428,
+    "excluded_cohort_n_q2": 303,
+    "excluded_cohort_n_phylogroups": 36,
+    "excluded_cohort_ci95": [
+      0.7787,
+      0.9054
+    ]
+  },
+  "efaecium": {
+    "top_phylogroup": "EF_PG_001",
+    "top_pg_share": 0.2137,
+    "n_excluded": 112,
+    "full_cohort_auroc": 0.823530397921712,
+    "excluded_cohort_auroc": 0.710779336291927,
+    "delta_auroc": -0.1128,
+    "excluded_cohort_n": 412,
+    "excluded_cohort_n_q2": 344,
+    "excluded_cohort_n_phylogroups": 39,
+    "excluded_cohort_ci95": [
+      0.6583,
+      0.7848
+    ]
+  },
+  "paeruginosa": {
+    "top_phylogroup": "PA_PG_001",
+    "top_pg_share": 0.075,
+    "n_excluded": 45,
+    "full_cohort_auroc": 0.7906913199870426,
+    "excluded_cohort_auroc": 0.8233108441259616,
+    "delta_auroc": 0.0326,
+    "excluded_cohort_n": 555,
+    "excluded_cohort_n_q2": 474,
+    "excluded_cohort_n_phylogroups": 81,
+    "excluded_cohort_ci95": [
+      0.7619,
+      0.8797
+    ]
+  },
+  "saureus": {
+    "top_phylogroup": "SA_PG_001",
+    "top_pg_share": 0.21,
+    "n_excluded": 126,
+    "full_cohort_auroc": 0.724149735739909,
+    "excluded_cohort_auroc": 0.5510441142675087,
+    "delta_auroc": -0.1731,
+    "excluded_cohort_n": 474,
+    "excluded_cohort_n_q2": 400,
+    "excluded_cohort_n_phylogroups": 29,
+    "excluded_cohort_ci95": [
+      0.3968,
+      0.7076
+    ]
+  }
+}

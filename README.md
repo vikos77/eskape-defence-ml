@@ -1,4 +1,4 @@
-# ESKAPE Defence Systems - ML Extension
+# ESKAPE Defence Systems - ML Perspective
 
 > Machine learning reveals defence systems as one component of a broader genomic
 > architecture underlying species identity and resistance-gene ecology across ESKAPE
@@ -59,9 +59,9 @@ DefenseFinder + PADLOC    ResFinder       AMRFinderPlus         ISEScan
                     v
         Grouped 5-fold CV (GroupedStratifiedKFold on phylogroups)
                     |
-     +--------+-----------+-----------+------------+-----------+
-     |        |           |           |            |           |
-     v        v           v           v            v           v
+     +--------+-----------+-----------+------------+
+     |        |           |           |            |           
+     v        v           v           v            v           
     Q1       Q2          Q3          Q3b           Q4
  Species   ARG burden  Defence-   IS element     SHAP
 classif.   prediction  only       block          attribution

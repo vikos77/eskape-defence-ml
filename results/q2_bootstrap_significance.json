@@ -1,0 +1,98 @@
+{
+  "abaumannii": {
+    "n_q2": 419,
+    "n_phylogroups_q2": 34,
+    "mean_ba_oof": 0.5364585231193927,
+    "mean_ba_stored_check": 0.5364585231193927,
+    "ba_delta_vs_stored": 0.0,
+    "ci95_ba_cluster_boot": [
+      0.4592,
+      0.6026
+    ],
+    "p_boot_raw": 0.675,
+    "p_ttest_original": 0.4095938950651495,
+    "p_ttest_adj_original": 0.4095938950651495,
+    "p_boot_adj": 0.768,
+    "significant_bootstrap": false
+  },
+  "ecloaceae": {
+    "n_q2": 372,
+    "n_phylogroups_q2": 79,
+    "mean_ba_oof": 0.6821983255554148,
+    "mean_ba_stored_check": 0.6821983255554148,
+    "ba_delta_vs_stored": 0.0,
+    "ci95_ba_cluster_boot": [
+      0.6268,
+      0.7406
+    ],
+    "p_boot_raw": 0.0,
+    "p_ttest_original": 0.00020121542585478305,
+    "p_ttest_adj_original": 0.0012072925551286984,
+    "p_boot_adj": 0.0,
+    "significant_bootstrap": true
+  },
+  "efaecium": {
+    "n_q2": 365,
+    "n_phylogroups_q2": 40,
+    "mean_ba_oof": 0.7051797659156458,
+    "mean_ba_stored_check": 0.7051797659156458,
+    "ba_delta_vs_stored": 0.0,
+    "ci95_ba_cluster_boot": [
+      0.6199,
+      0.7738
+    ],
+    "p_boot_raw": 0.0,
+    "p_ttest_original": 0.002747342331002556,
+    "p_ttest_adj_original": 0.008242026993007669,
+    "p_boot_adj": 0.0,
+    "significant_bootstrap": true
+  },
+  "kpneumoniae": {
+    "n_q2": 331,
+    "n_phylogroups_q2": 36,
+    "mean_ba_oof": 0.6645843853908369,
+    "mean_ba_stored_check": 0.6645843853908369,
+    "ba_delta_vs_stored": 0.0,
+    "ci95_ba_cluster_boot": [
+      0.6003,
+      0.7568
+    ],
+    "p_boot_raw": 0.0,
+    "p_ttest_original": 0.02447033118126583,
+    "p_ttest_adj_original": 0.0380022235642719,
+    "p_boot_adj": 0.0,
+    "significant_bootstrap": true
+  },
+  "paeruginosa": {
+    "n_q2": 471,
+    "n_phylogroups_q2": 79,
+    "mean_ba_oof": 0.6887385390140495,
+    "mean_ba_stored_check": 0.6887385390140495,
+    "ba_delta_vs_stored": 0.0,
+    "ci95_ba_cluster_boot": [
+      0.587,
+      0.7819
+    ],
+    "p_boot_raw": 0.0,
+    "p_ttest_original": 0.0253348157095146,
+    "p_ttest_adj_original": 0.0380022235642719,
+    "p_boot_adj": 0.0,
+    "significant_bootstrap": true
+  },
+  "saureus": {
+    "n_q2": 449,
+    "n_phylogroups_q2": 29,
+    "mean_ba_oof": 0.5223648947951274,
+    "mean_ba_stored_check": 0.5223648947951274,
+    "ba_delta_vs_stored": 0.0,
+    "ci95_ba_cluster_boot": [
+      0.4117,
+      0.6658
+    ],
+    "p_boot_raw": 0.768,
+    "p_ttest_original": 0.10824393871262342,
+    "p_ttest_adj_original": 0.1298927264551481,
+    "p_boot_adj": 0.768,
+    "significant_bootstrap": false
+  }
+}

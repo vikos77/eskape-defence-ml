@@ -1,0 +1,102 @@
+{
+  "RF_vs_LR": {
+    "b": 82,
+    "c": 105,
+    "chi2": 2.588235294117647,
+    "p": 0.10766022677548437,
+    "n_discordant": 187,
+    "n_total": 3335
+  },
+  "RF_vs_XGB": {
+    "b": 56,
+    "c": 69,
+    "chi2": 1.152,
+    "p": 0.28313087066234666,
+    "n_discordant": 125,
+    "n_total": 3335
+  },
+  "RF_vs_LGBM": {
+    "b": 65,
+    "c": 88,
+    "chi2": 3.1633986928104574,
+    "p": 0.0753062527519599,
+    "n_discordant": 153,
+    "n_total": 3335
+  },
+  "metadata": {
+    "n_genomes": 3335,
+    "n_feat_cols": 359,
+    "n_markers_rm": 8,
+    "cv": "StratifiedGroupKFold_5_seed42",
+    "rf_params": {
+      "max_depth": null,
+      "max_features": "sqrt",
+      "min_samples_leaf": 1,
+      "n_estimators": 300,
+      "class_weight": "balanced",
+      "random_state": 42,
+      "n_jobs": -1
+    },
+    "lr_params": {
+      "C": 1.0,
+      "solver": "saga",
+      "max_iter": 2000,
+      "class_weight": "balanced",
+      "random_state": 42
+    },
+    "xgb_params": {
+      "n_estimators": 200,
+      "learning_rate": 0.1,
+      "max_depth": 4,
+      "subsample": 0.8,
+      "colsample_bytree": 0.8,
+      "eval_metric": "mlogloss",
+      "verbosity": 0,
+      "random_state": 42,
+      "n_jobs": -1
+    },
+    "lgbm_params": {
+      "n_estimators": 200,
+      "learning_rate": 0.1,
+      "max_depth": 4,
+      "num_leaves": 63,
+      "subsample": 0.8,
+      "subsample_freq": 1,
+      "colsample_bytree": 0.8,
+      "class_weight": "balanced",
+      "random_state": 42,
+      "n_jobs": -1,
+      "verbose": -1
+    },
+    "fold_bas": {
+      "RF": [
+        0.9005,
+        0.9177,
+        0.939,
+        0.8297,
+        0.9121
+      ],
+      "LR": [
+        0.9029,
+        0.9384,
+        0.9574,
+        0.8333,
+        0.9233
+      ],
+      "XGB": [
+        0.902,
+        0.9256,
+        0.9426,
+        0.8517,
+        0.898
+      ],
+      "LGBM": [
+        0.895,
+        0.9408,
+        0.9388,
+        0.8599,
+        0.9122
+      ]
+    }
+  }
+}

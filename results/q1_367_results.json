@@ -1,0 +1,71 @@
+{
+  "n_features": 359,
+  "n_markers_removed": 8,
+  "markers": [
+    "dp_AbiE",
+    "dp_PD-T4-6",
+    "dp_VSPR",
+    "dp_df_gcu233",
+    "dp_padloc_PDC-S04",
+    "dp_padloc_PDC-S07",
+    "dp_padloc_PDC-S12",
+    "dp_padloc_SoFic"
+  ],
+  "best_params": {
+    "max_depth": null,
+    "max_features": "sqrt",
+    "min_samples_leaf": 1,
+    "n_estimators": 300
+  },
+  "fold_bas": [
+    0.9005477894901891,
+    0.9177488545950133,
+    0.9389919349812398,
+    0.8297377002737868,
+    0.91210407239819
+  ],
+  "mean_ba": 0.8998260703476838,
+  "ci95_ba": [
+    0.871,
+    0.923
+  ],
+  "mean_f1": 0.8960521906598418,
+  "ci95_f1": [
+    0.84282132729898,
+    0.9492830540207036
+  ],
+  "per_class_recall": {
+    "paeruginosa": 0.893427900085654,
+    "saureus": 1.0,
+    "abaumannii": 0.7109803471984698,
+    "ecloaceae": 0.9013395457192779,
+    "efaecium": 0.9849341192787794,
+    "kpneumoniae": 0.9082745098039215
+  },
+  "sensitivity_50": {
+    "n_markers": 15,
+    "n_features": 352,
+    "markers": [
+      "dp_AbiE",
+      "dp_Mokosh_TypeII",
+      "dp_PD-T4-6",
+      "dp_RM_Type_IV",
+      "dp_VSPR",
+      "dp_df_Abi2",
+      "dp_df_FS_Sma",
+      "dp_df_Mok_Hok_Sok",
+      "dp_df_gcu233",
+      "dp_padloc_PDC-M24",
+      "dp_padloc_PDC-S04",
+      "dp_padloc_PDC-S07",
+      "dp_padloc_PDC-S12",
+      "dp_padloc_PDC-S13",
+      "dp_padloc_SoFic"
+    ],
+    "mean_ba": 0.8127596061374376,
+    "ci95_ba": [
+      0.7457204622846861,
+      0.879798749990189
+    ]
+  }
+}
