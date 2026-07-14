@@ -33,6 +33,7 @@ with open("results/q3b_367_results.json") as f:
 
 # Unfiltered reference values for ghost annotation
 UNFILT = {
+    "is_filt":   unfilt["is_only"]["ari_primary"],     # 0.304
     "arg_filt":  unfilt["arg_only"]["ari_primary"],    # 0.557
     "hmrg_filt": unfilt["hmrg_only"]["ari_primary"],   # 0.380
 }
@@ -40,7 +41,7 @@ UNFILT = {
 # ── Conditions — ordered left to right ───────────────────────────────────────
 CONDITIONS = [
     ("defence_only", "Defence\n(359 feat)",        "#2171B5", False),
-    ("is_filt",      "IS elements\n(19 feat)",      "#2CA25F", False),
+    ("is_filt",      "IS elements†\n(19 feat)",      "#2CA25F", False),
     ("hmrg_filt",    "HMRG†\n(9 feat)",             "#F16913", False),
     ("arg_filt",     "ARG†\n(134 feat)",             "#CB181D", False),
     ("defence_is",   "Defence + IS\n(378 feat)",    "#1A7B38", True),
@@ -81,6 +82,7 @@ ax.axhline(DEFENCE_ARI, color="#2171B5", linewidth=1.2,
 # ── Ghost bars for ARG and HMRG (unfiltered heights) ────────────────────────
 # Visualise the pre-filter values to show taxonomic marker inflation
 ghost_info = {
+    "is_filt":   (x[1], UNFILT["is_filt"],   "#2CA25F"),
     "hmrg_filt": (x[2], UNFILT["hmrg_filt"], "#F16913"),
     "arg_filt":  (x[3], UNFILT["arg_filt"],  "#CB181D"),
 }
@@ -135,8 +137,8 @@ ax.legend(handles=[baseline_line, ghost_patch], fontsize=7.5,
 
 # ── Footnote ─────────────────────────────────────────────────────────────────
 ax.text(0.5, -0.14,
-        "† Near-exclusive species markers (spec_score ≥ 0.70) removed from ARG and HMRG blocks before clustering.\n"
-        "  Ghost bars show pre-filter ARI (ARG: 0.557; HMRG: 0.380). "
+        "† Near-exclusive species markers (spec_score ≥ 0.70) removed from IS, ARG, and HMRG blocks before clustering.\n"
+        "  Ghost bars show pre-filter ARI (IS: 0.304; HMRG: 0.380; ARG: 0.557). "
         "All conditions: permutation p = 0.002 (500 permutations, K = 6).",
         transform=ax.transAxes, fontsize=7, color="#555555",
         ha="center", va="top")
