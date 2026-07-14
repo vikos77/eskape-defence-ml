@@ -1,0 +1,6 @@
+Column group,N columns,Description
+Binary defence presence (dp_*),367,"Binary (0/1): defence system type detected in genome by DefenseFinder v2.0.1 or PADLOC v2.0.0 (union, canonical name harmonised). Includes 359 post-marker-filter features (FEAT_COLS) and 8 excluded near-exclusive species markers."
+Defence copy number (dc_*),367,Integer: count of instances of each defence system type detected per genome.
+Anti-defence count (ad_*),41,Integer: count of anti-defence system instances detected by AntiDefenseFinder (--antidefensefinder flag).
+Annotation and metadata,53,"Genome accession, species, ARG count (unique genes), IS element count (families), HMRG count, ARG burden tertile label, sequence type (MLST), phylogroup assignment, country, year, complex member (EC only), and derived ratio features."
+TOTAL,828,"3,335 genomes × 828 columns."

@@ -1,0 +1,4 @@
+Analysis,N markers removed,N features used,Mean BA,BA 95% CI,Markers removed
+Primary (spec_score ≥ 0.70),8,359,0.8998,[0.871–0.923],dp_AbiE; dp_PD-T4-6; dp_VSPR; dp_df_gcu233; dp_padloc_PDC-S04; dp_padloc_PDC-S07; dp_padloc_PDC-S12; dp_padloc_SoFic
+Sensitivity (spec_score ≥ 0.50),15,352,0.8128,[0.746–0.880],dp_AbiE; dp_Mokosh_TypeII; dp_PD-T4-6; dp_RM_Type_IV; dp_VSPR; dp_df_Abi2; dp_df_FS_Sma; dp_df_Mok_Hok_Sok; dp_df_gcu233; dp_padloc_PDC-M24; dp_padloc_PDC-S04; dp_padloc_PDC-S07; dp_padloc_PDC-S12; dp_padloc_PDC-S13; dp_padloc_SoFic
+"DF+PADLOC union, DF-only named filter",4,267,0.815,[0.767–0.863],dp_AbiE; dp_PD-T4-6; dp_VSPR; dp_df_gcu233

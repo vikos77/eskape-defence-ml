@@ -1,0 +1,4 @@
+Comparison,χ² (or statistic),p-value,Significant (α=0.05),Notes
+RF vs LR,2.5882,0.1077,No,
+RF vs XGB,1.152,0.2831,No,
+RF vs LGBM,3.1634,0.0753,No,
