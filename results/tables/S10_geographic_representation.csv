@@ -1,0 +1,7 @@
+Species,N genomes,N countries represented,N not_reported,Top 3 countries,Max single-country share (%)
+A. baumannii,600,49,79,USA (n=80); China (n=80); South Korea (n=46),13.3
+E. cloacae complex,507,42,88,China (n=102); USA (n=76); United Kingdom (n=41),20.1
+E. faecium,524,30,81,USA (n=80); Taiwan (n=80); China (n=70),15.3
+K. pneumoniae,504,50,96,China (n=62); South Korea (n=48); USA (n=32),12.3
+P. aeruginosa,600,47,103,USA (n=80); China (n=80); Belgium (n=36),13.3
+S. aureus,600,51,139,USA (n=76); Germany (n=44); China (n=44),12.7

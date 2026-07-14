@@ -1,0 +1,5 @@
+Species,Dominant phylogroup,Share of cohort (%),N genomes excluded,N genomes retained,N Q2 genomes (retained),N phylogroups (retained),Full cohort AUROC,Post-exclusion AUROC,Post-exclusion 95% CI,ΔAUROC
+K. pneumoniae,KP_PG_001,15.1,76,428,303,36,0.7912,0.8421,[0.779–0.905],0.0509
+E. faecium,EF_PG_001,21.4,112,412,344,39,0.8235,0.7108,[0.658–0.785],-0.1128
+P. aeruginosa,PA_PG_001,7.5,45,555,474,81,0.7907,0.8233,[0.762–0.880],0.0326
+S. aureus,SA_PG_001,21.0,126,474,400,29,0.7241,0.551,[0.397–0.708],-0.1731

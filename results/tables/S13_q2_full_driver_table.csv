@@ -1,0 +1,167 @@
+Species,Feature,Category,ρ (within-phylogroup),p (within-phylogroup),Survives robustness gate,Direction
+A. baumannii,CAS_I-F,named,-0.0266,5.1514e-01,No,Restrictive
+A. baumannii,CBASS_II,named,0.0678,9.6909e-02,No,Facilitative
+A. baumannii,Gao_Qat,named,0.0487,2.3391e-01,No,Facilitative
+A. baumannii,Lamassu,named,-0.0392,3.3718e-01,No,Restrictive
+A. baumannii,Mokosh_TypeII,named,-0.0865,3.4161e-02,Yes,Restrictive
+A. baumannii,PARIS_I,named,0.0427,2.9611e-01,No,Facilitative
+A. baumannii,PD-T4-5,named,0.2897,4.5946e-13,Yes,Facilitative
+A. baumannii,RM_Type_I,named,0.0981,1.6208e-02,Yes,Facilitative
+A. baumannii,RM_Type_II,named,-0.0233,5.6927e-01,No,Restrictive
+A. baumannii,RM_Type_IV,named,-0.0946,2.0533e-02,Yes,Restrictive
+A. baumannii,Retron_III-A,named,-0.0217,5.9646e-01,No,Restrictive
+A. baumannii,RosmerTA,named,0.1066,8.9735e-03,Yes,Facilitative
+A. baumannii,Septu,named,0.0252,5.3756e-01,No,Facilitative
+A. baumannii,Shedu,named,-0.0707,8.3371e-02,No,Restrictive
+A. baumannii,SspBCDE,named,0.0357,3.8205e-01,No,Facilitative
+A. baumannii,df_AbiH,named,0.0134,7.4328e-01,No,Facilitative
+A. baumannii,df_CapRel,named,0.0499,2.2243e-01,No,Facilitative
+A. baumannii,df_PD-T7-5,named,0.201,6.8625e-07,Yes,Facilitative
+A. baumannii,df_Prometheus,named,0.0332,4.1753e-01,No,Facilitative
+A. baumannii,padloc_PD-T7-1or5,named,0.1779,1.1689e-05,Yes,Facilitative
+A. baumannii,padloc_PDC-S01,PDC,0.155,1.3847e-04,Yes,Facilitative
+A. baumannii,padloc_PDC-S04,PDC,0.0769,5.9700e-02,No,Facilitative
+A. baumannii,padloc_PDC-S14,PDC,0.0271,5.0687e-01,No,Facilitative
+A. baumannii,padloc_PDC-S15,PDC,0.1714,2.4349e-05,Yes,Facilitative
+A. baumannii,padloc_PDC-S20,PDC,0.0555,1.7424e-01,No,Facilitative
+A. baumannii,padloc_PDC-S26,PDC,-0.0573,1.6102e-01,No,Restrictive
+A. baumannii,padloc_PDC-S33,PDC,0.0514,2.0854e-01,No,Facilitative
+A. baumannii,padloc_ietAS,named,-0.0279,4.9452e-01,No,Restrictive
+E. cloacae complex,BREX_I,named,0.0646,1.4651e-01,No,Facilitative
+E. cloacae complex,CAS_I-F,named,0.0551,2.1540e-01,No,Facilitative
+E. cloacae complex,Gabija,named,-0.0137,7.5765e-01,No,Restrictive
+E. cloacae complex,Gao_Mza,named,-0.0145,7.4536e-01,No,Restrictive
+E. cloacae complex,Gao_Ppl,named,0.0884,4.6692e-02,Yes,Facilitative
+E. cloacae complex,HEC-01,named,0.0898,4.3360e-02,Yes,Facilitative
+E. cloacae complex,PARIS_I,named,0.0751,9.1158e-02,No,Facilitative
+E. cloacae complex,PD-Lambda-1,named,-0.0777,8.0599e-02,No,Restrictive
+E. cloacae complex,PD-Lambda-3,named,0.036,4.1863e-01,No,Facilitative
+E. cloacae complex,PD-T4-6,named,0.0278,5.3180e-01,No,Facilitative
+E. cloacae complex,RM_Type_II,named,0.2811,1.1621e-10,Yes,Facilitative
+E. cloacae complex,RM_Type_IV,named,0.1085,1.4472e-02,Yes,Facilitative
+E. cloacae complex,df_DS-9,DS-N,0.0505,2.5593e-01,No,Facilitative
+E. cloacae complex,df_MazEF,named,0.0424,3.4127e-01,No,Facilitative
+E. cloacae complex,df_Mok_Hok_Sok,named,0.1455,1.0216e-03,Yes,Facilitative
+E. cloacae complex,df_SDIC4,named,0.0097,8.2669e-01,No,Facilitative
+E. cloacae complex,padloc_PDC-S02,PDC,0.0816,6.6272e-02,No,Facilitative
+E. cloacae complex,padloc_PDC-S04,PDC,0.0027,9.5192e-01,No,Facilitative
+E. cloacae complex,padloc_PDC-S05,PDC,-0.0359,4.2040e-01,No,Restrictive
+E. cloacae complex,padloc_PDC-S09,PDC,0.1029,2.0482e-02,Yes,Facilitative
+E. cloacae complex,padloc_PDC-S36,PDC,0.2721,4.6802e-10,Yes,Facilitative
+E. cloacae complex,padloc_PDC-S67,PDC,0.087,5.0321e-02,No,Facilitative
+E. cloacae complex,padloc_Uzume,named,0.068,1.2645e-01,No,Facilitative
+E. faecium,AbiE,named,0.1979,4.9976e-06,Yes,Facilitative
+E. faecium,AbiQ,named,0.058,1.8509e-01,No,Facilitative
+E. faecium,BREX_I,named,-0.0571,1.9168e-01,No,Restrictive
+E. faecium,CBASS_I,named,0.0385,3.7965e-01,No,Facilitative
+E. faecium,DRT_2,named,0.1573,3.0105e-04,Yes,Facilitative
+E. faecium,Gabija,named,0.2826,4.4651e-11,Yes,Facilitative
+E. faecium,RM_Type_I,named,0.0895,4.0581e-02,Yes,Facilitative
+E. faecium,RM_Type_IIG,named,0.0549,2.0935e-01,No,Facilitative
+E. faecium,SEFIR,named,0.0459,2.9384e-01,No,Facilitative
+E. faecium,df_AbiH,named,0.1103,1.1555e-02,Yes,Facilitative
+E. faecium,df_AbiJ,named,0.1914,1.0215e-05,Yes,Facilitative
+E. faecium,df_AbiP2,named,0.1679,1.1241e-04,Yes,Facilitative
+E. faecium,df_MazEF,named,-0.2205,3.4226e-07,Yes,Restrictive
+E. faecium,df_VP1840,named,-0.0142,7.4548e-01,No,Restrictive
+E. faecium,padloc_PDC-S04,PDC,0.2363,4.4108e-08,Yes,Facilitative
+E. faecium,padloc_PDC-S16,PDC,-0.0876,4.5073e-02,Yes,Restrictive
+K. pneumoniae,AbiE,named,0.0117,7.9398e-01,No,Facilitative
+K. pneumoniae,AbiU,named,-0.031,4.8805e-01,No,Restrictive
+K. pneumoniae,CAS_I-E,named,0.0485,2.7718e-01,No,Facilitative
+K. pneumoniae,CAS_IV-A,named,0.1809,4.4079e-05,Yes,Facilitative
+K. pneumoniae,DRT_2,named,-0.0338,4.4879e-01,No,Restrictive
+K. pneumoniae,DRT_3,named,-0.0993,2.5759e-02,Yes,Restrictive
+K. pneumoniae,Druantia_III,named,0.0007,9.8742e-01,No,Facilitative
+K. pneumoniae,Gao_Hhe,named,0.0811,6.9002e-02,No,Facilitative
+K. pneumoniae,Gao_Tmn,named,0.0581,1.9285e-01,No,Facilitative
+K. pneumoniae,Lamassu,named,-0.0561,2.0826e-01,No,Restrictive
+K. pneumoniae,Mokosh_TypeII,named,0.0964,3.0561e-02,Yes,Facilitative
+K. pneumoniae,Mokosh_TypeI_A,named,-0.013,7.7162e-01,No,Restrictive
+K. pneumoniae,PD-T4-3,named,0.0154,7.2960e-01,No,Facilitative
+K. pneumoniae,PD-T4-5,named,0.0551,2.1706e-01,No,Facilitative
+K. pneumoniae,PD-T4-6,named,-0.0042,9.2471e-01,No,Restrictive
+K. pneumoniae,PD-T7-4,named,-0.0085,8.4885e-01,No,Restrictive
+K. pneumoniae,PrrC,named,0.0951,3.2766e-02,Yes,Facilitative
+K. pneumoniae,RM_Type_I,named,0.0622,1.6329e-01,No,Facilitative
+K. pneumoniae,RM_Type_II,named,0.3883,1.3931e-19,Yes,Facilitative
+K. pneumoniae,Retron_I-B,named,0.019,6.7120e-01,No,Facilitative
+K. pneumoniae,Rst_3HP,named,0.0218,6.2593e-01,No,Facilitative
+K. pneumoniae,Shango,named,0.1057,1.7609e-02,Yes,Facilitative
+K. pneumoniae,Zorya_I,named,0.0034,9.3926e-01,No,Facilitative
+K. pneumoniae,cas_type_other,catch-all,0.1609,2.8592e-04,Yes,Facilitative
+K. pneumoniae,cbass_other,catch-all,0.0852,5.5990e-02,No,Facilitative
+K. pneumoniae,df_DS-32,DS-N,-0.0625,1.6091e-01,No,Restrictive
+K. pneumoniae,df_FS_HP,named,0.1125,1.1507e-02,Yes,Facilitative
+K. pneumoniae,df_GAPS1,named,0.0323,4.6927e-01,No,Facilitative
+K. pneumoniae,df_Lamassu-Lipase,named,-0.0394,3.7711e-01,No,Restrictive
+K. pneumoniae,df_Lamassu-Mrr,named,0.0356,4.2493e-01,No,Facilitative
+K. pneumoniae,df_MazEF,named,0.1638,2.2076e-04,Yes,Facilitative
+K. pneumoniae,df_Mok_Hok_Sok,named,0.2413,4.1488e-08,Yes,Facilitative
+K. pneumoniae,df_NLR_like_bNACHT01,named,0.0292,5.1258e-01,No,Facilitative
+K. pneumoniae,df_PD-T7-1,named,-0.0061,8.9118e-01,No,Restrictive
+K. pneumoniae,df_TgvAB,named,0.304,3.0927e-12,Yes,Facilitative
+K. pneumoniae,df_VP1851,named,0.0911,4.0988e-02,Yes,Facilitative
+K. pneumoniae,padloc_PD-T7-1or5,named,-0.0061,8.9118e-01,No,Restrictive
+K. pneumoniae,padloc_PDC-M38,PDC,0.0367,4.1061e-01,No,Facilitative
+K. pneumoniae,padloc_PDC-S11,PDC,0.0854,5.5333e-02,No,Facilitative
+K. pneumoniae,padloc_PDC-S15,PDC,0.087,5.0915e-02,No,Facilitative
+K. pneumoniae,padloc_PDC-S21,PDC,0.0271,5.4367e-01,No,Facilitative
+K. pneumoniae,padloc_PDC-S29,PDC,0.0911,4.0988e-02,Yes,Facilitative
+K. pneumoniae,padloc_PDC-S31,PDC,0.213,1.3989e-06,Yes,Facilitative
+K. pneumoniae,padloc_PDC-S36,PDC,0.123,5.6840e-03,Yes,Facilitative
+K. pneumoniae,padloc_PDC-S67,PDC,0.193,1.2782e-05,Yes,Facilitative
+P. aeruginosa,AbiD,named,0.0023,9.5564e-01,No,Facilitative
+P. aeruginosa,CBASS_II,named,0.1513,1.9970e-04,Yes,Facilitative
+P. aeruginosa,Druantia_II,named,0.0501,2.2084e-01,No,Facilitative
+P. aeruginosa,Druantia_III,named,0.0737,7.1163e-02,No,Facilitative
+P. aeruginosa,Gao_Qat,named,0.0709,8.2512e-02,No,Facilitative
+P. aeruginosa,HEC-05,named,0.164,5.4373e-05,Yes,Facilitative
+P. aeruginosa,Hachiman,named,0.0998,1.4493e-02,Yes,Facilitative
+P. aeruginosa,Mokosh_TypeII,named,0.0406,3.2090e-01,No,Facilitative
+P. aeruginosa,Mokosh_TypeI_A,named,0.1679,3.5904e-05,Yes,Facilitative
+P. aeruginosa,PrrC,named,0.0093,8.2085e-01,No,Facilitative
+P. aeruginosa,PsyrTA,named,0.1233,2.4842e-03,Yes,Facilitative
+P. aeruginosa,RM_Type_I,named,0.0789,5.3527e-02,No,Facilitative
+P. aeruginosa,RM_Type_II,named,0.0355,3.8602e-01,No,Facilitative
+P. aeruginosa,RM_Type_IIG,named,0.03,4.6386e-01,No,Facilitative
+P. aeruginosa,RM_Type_III,named,0.082,4.4734e-02,Yes,Facilitative
+P. aeruginosa,RosmerTA,named,0.0094,8.1840e-01,No,Facilitative
+P. aeruginosa,Rst_Helicase,named,0.0172,6.7361e-01,No,Facilitative
+P. aeruginosa,Shango,named,0.0335,4.1213e-01,No,Facilitative
+P. aeruginosa,Wadjet_I,named,-0.1043,1.0609e-02,Yes,Restrictive
+P. aeruginosa,Zorya_I,named,0.0271,5.0698e-01,No,Facilitative
+P. aeruginosa,cbass_other,catch-all,0.1572,1.0997e-04,Yes,Facilitative
+P. aeruginosa,df_Nantosuelta,named,0.048,2.4054e-01,No,Facilitative
+P. aeruginosa,df_Prithvi,named,-0.0562,1.6936e-01,No,Restrictive
+P. aeruginosa,df_RM_Type_IIG_2,named,0.0761,6.2492e-02,No,Facilitative
+P. aeruginosa,df_RM_Type_IV_1,named,0.0771,5.9174e-02,No,Facilitative
+P. aeruginosa,df_RloC,named,0.115,4.7798e-03,Yes,Facilitative
+P. aeruginosa,df_RnlAB,named,0.081,4.7453e-02,Yes,Facilitative
+P. aeruginosa,pAgo_I,named,0.0389,3.4115e-01,No,Facilitative
+P. aeruginosa,padloc_PDC-M30,PDC,0.0802,4.9639e-02,Yes,Facilitative
+P. aeruginosa,padloc_PDC-S02,PDC,0.0947,2.0367e-02,Yes,Facilitative
+P. aeruginosa,padloc_PDC-S05,PDC,0.1456,3.4588e-04,Yes,Facilitative
+P. aeruginosa,padloc_PDC-S06,PDC,0.1077,8.2763e-03,Yes,Facilitative
+P. aeruginosa,padloc_PDC-S09,PDC,0.0004,9.9227e-01,No,Facilitative
+P. aeruginosa,padloc_PDC-S11,PDC,0.0927,2.3179e-02,Yes,Facilitative
+P. aeruginosa,padloc_PDC-S21,PDC,0.0497,2.2449e-01,No,Facilitative
+P. aeruginosa,padloc_PDC-S24,PDC,0.3226,5.3397e-16,Yes,Facilitative
+P. aeruginosa,padloc_ietAS,named,0.0765,6.0985e-02,No,Facilitative
+S. aureus,AVAST_II,named,-0.0272,5.0532e-01,No,Restrictive
+S. aureus,AbiD,named,0.1602,8.0692e-05,Yes,Facilitative
+S. aureus,Dodola,named,-0.0059,8.8464e-01,No,Restrictive
+S. aureus,Gabija,named,0.0146,7.2074e-01,No,Facilitative
+S. aureus,Lamassu,named,-0.0001,9.9817e-01,No,Restrictive
+S. aureus,PD-Lambda-1,named,0.0215,5.9863e-01,No,Facilitative
+S. aureus,RM_Type_IIG,named,-0.0218,5.9406e-01,No,Restrictive
+S. aureus,RM_Type_IV,named,-0.0161,6.9416e-01,No,Restrictive
+S. aureus,Retron_III-A,named,0.0169,6.7909e-01,No,Facilitative
+S. aureus,Stk2,named,0.268,2.4800e-11,Yes,Facilitative
+S. aureus,Thoeris_I,named,0.0435,2.8736e-01,No,Facilitative
+S. aureus,df_Abi2,named,-0.0366,3.7120e-01,No,Restrictive
+S. aureus,df_AbiJ,named,0.0265,5.1759e-01,No,Facilitative
+S. aureus,df_Avs_II,named,-0.0379,3.5351e-01,No,Restrictive
+S. aureus,padloc_PDC-M24,PDC,-0.0128,7.5451e-01,No,Restrictive
+S. aureus,padloc_PDC-S07,PDC,-0.022,5.9037e-01,No,Restrictive
+S. aureus,padloc_SoFic,named,0.0101,8.0503e-01,No,Facilitative

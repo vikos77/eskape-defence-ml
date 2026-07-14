@@ -1,0 +1,6 @@
+Feature block,N features,"ARI (K=6, dereplicated)",ARI 95% CI,Permutation p,Significant (p<0.05)
+Defence only,359,0.2194,[0.059–0.320],0.002,Yes
+IS elements (marker-filtered),19,0.2371,[0.150–0.341],0.002,Yes
+HMRG (marker-filtered),9,0.1012,[0.048–0.144],0.002,Yes
+ARG (marker-filtered),134,0.0689,[0.011–0.129],0.002,Yes
+Defence + IS (combined),378,0.3915,[0.192–0.484],0.002,Yes

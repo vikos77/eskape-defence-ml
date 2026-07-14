@@ -96,21 +96,22 @@ q1_rows.append({
     "Notes": "Primary model; used for SHAP attribution (§4)"
 })
 
-# LR, XGB, LGBM from q1_lr_xgb_lgbm_named.json (named-feature versions — use as reference)
-# Also check q1_named_results for LR
+# LR, XGB, LGBM: per-fold BAs are in mcnemar 367 JSON metadata
+from scipy import stats as _stats
+mcn_fold_bas = mcn["metadata"]["fold_bas"]
 for clf_key, clf_name in [("LR","Logistic Regression"),("XGB","XGBoost"),("LGBM","LightGBM")]:
-    if clf_key in q1_alt:
-        r = q1_alt[clf_key]
-        mean_ba = round(np.mean(r["fold_bas"]) if "fold_bas" in r else r.get("mean_ba", float("nan")), 4)
-        q1_rows.append({
-            "Classifier": clf_name,
-            "N features": r.get("n_features", q1["n_features"]),
-            "Mean BA": round(r.get("mean_ba", mean_ba), 4),
-            "BA 95% CI": fmt_ci(*r["ci95_ba"]) if "ci95_ba" in r else "—",
-            "Mean macro-F1": round(r.get("mean_f1", float("nan")), 4),
-            "F1 95% CI": "—",
-            "Notes": ""
-        })
+    folds = np.array(mcn_fold_bas[clf_key])
+    mean_ba = folds.mean()
+    ci = _stats.t.interval(0.95, df=len(folds)-1, loc=mean_ba, scale=_stats.sem(folds))
+    q1_rows.append({
+        "Classifier": clf_name,
+        "N features": q1["n_features"],
+        "Mean BA": round(mean_ba, 4),
+        "BA 95% CI": fmt_ci(round(ci[0], 3), round(ci[1], 3)),
+        "Mean macro-F1": "—",
+        "F1 95% CI": "—",
+        "Notes": ""
+    })
 
 s2 = pd.DataFrame(q1_rows)
 save(s2, "S2_q1_classifier_comparison", "Q1 RF vs LR/XGBoost/LightGBM")
@@ -136,18 +137,21 @@ save(s3, "S3_q1_mcnemar_tests", "McNemar pairwise classifier tests")
 # S4 — Q1 per-fold balanced accuracy (all four classifiers)
 # ────────────────────────────────────────────────────────────────────────────
 s4_rows = []
+mcn_folds = mcn["metadata"]["fold_bas"]
 for fold_i, ba in enumerate(q1["fold_bas"], 1):
-    row = {"Fold": fold_i, "RF": round(ba, 4)}
-    for clf_key, clf_name in [("LR","LR"),("XGB","XGB"),("LGBM","LGBM")]:
-        if clf_key in q1_alt and "fold_bas" in q1_alt[clf_key]:
-            row[clf_name] = round(q1_alt[clf_key]["fold_bas"][fold_i-1], 4)
-        else:
-            row[clf_name] = "—"
-    s4_rows.append(row)
+    s4_rows.append({
+        "Fold": fold_i,
+        "RF":   round(ba, 4),
+        "LR":   round(mcn_folds["LR"][fold_i-1], 4),
+        "XGB":  round(mcn_folds["XGB"][fold_i-1], 4),
+        "LGBM": round(mcn_folds["LGBM"][fold_i-1], 4),
+    })
 s4_rows.append({
     "Fold": "Mean",
-    "RF": round(q1["mean_ba"], 4),
-    "LR": "—", "XGB": "—", "LGBM": "—"
+    "RF":   round(q1["mean_ba"], 4),
+    "LR":   round(np.mean(mcn_folds["LR"]), 4),
+    "XGB":  round(np.mean(mcn_folds["XGB"]), 4),
+    "LGBM": round(np.mean(mcn_folds["LGBM"]), 4),
 })
 s4 = pd.DataFrame(s4_rows)
 save(s4, "S4_q1_fold_balanced_accuracies", "per-fold BA across classifiers")
@@ -210,15 +214,13 @@ save(df_s6[["Species","Feature","N genomes","N phylogroups",
 # ────────────────────────────────────────────────────────────────────────────
 # S7 — AB IC2 exclusion Q2 result
 # ────────────────────────────────────────────────────────────────────────────
-# q2_ad_sensitivity has full_cohort (dp_only) and IC2-excluded results
-# The IC2-excluded result was run separately; use q2_dc_sensitivity_results.json
-with open("results/q2_dc_sensitivity_results.json") as f: q2_dc = json.load(f)
-ab_full = q2["abaumannii"]
-ab_dc   = q2_dc["abaumannii"]
+ab_full    = q2["abaumannii"]
+ab_ic2_csv = pd.read_csv("results/supplement_ab_ic2_q2_367.csv")
+ab_ic2     = ab_ic2_csv.iloc[0]
 
 s7 = pd.DataFrame([
     {
-        "Analysis": "Full AB cohort (n=600)",
+        "Analysis": "Full AB cohort",
         "N Q2 genomes": ab_full["n_q2"],
         "N phylogroups": ab_full.get("n_phylogroups", "—"),
         "N features": ab_full.get("n_features", "—"),
@@ -228,13 +230,13 @@ s7 = pd.DataFrame([
         "Significant": "No"
     },
     {
-        "Analysis": "IC2-excluded AB (dp_SspBCDE=1 removed; n=317)",
-        "N Q2 genomes": ab_dc["n_q2"],
-        "N phylogroups": "34",
-        "N features": ab_dc["n_features"],
-        "Mean AUROC": round(ab_dc["mean_auroc"], 4),
-        "AUROC 95% CI": fmt_ci(*ab_dc["ci95_auroc"]),
-        "BH p_adj": f"{ab_dc.get('p_adj', float('nan')):.4f}",
+        "Analysis": "IC2-excluded AB (dp_SspBCDE=1 removed)",
+        "N Q2 genomes": int(ab_ic2["n_q2"]),
+        "N phylogroups": int(ab_ic2["n_phylogroups"]),
+        "N features": int(ab_ic2["n_features"]),
+        "Mean AUROC": round(float(ab_ic2["mean_auroc"]), 4),
+        "AUROC 95% CI": fmt_ci(float(ab_ic2["ci95_lo"]), float(ab_ic2["ci95_hi"])),
+        "BH p_adj": "—",
         "Significant": "Yes"
     },
 ])
@@ -243,12 +245,13 @@ save(s7, "S7_ab_ic2_exclusion", "AB IC2 exclusion Q2 sub-analysis")
 # ────────────────────────────────────────────────────────────────────────────
 # S8 — EC E. hormaechei restriction
 # ────────────────────────────────────────────────────────────────────────────
-ec_full   = q2["ecloaceae"]
-ec_horm   = q2_sp["tertile"]["ecloaceae"]  # E. hormaechei tertile
+ec_full     = q2["ecloaceae"]
+ec_horm_csv = pd.read_csv("results/supplement_ec_complex_q2_367.csv")
+ec_horm     = ec_horm_csv.iloc[0]
 
 s8 = pd.DataFrame([
     {
-        "Analysis": "Full EC complex (n=507)",
+        "Analysis": "Full EC complex",
         "N Q2 genomes": ec_full["n_q2"],
         "N phylogroups": ec_full.get("n_phylogroups", "—"),
         "N features": ec_full.get("n_features", "—"),
@@ -258,14 +261,14 @@ s8 = pd.DataFrame([
         "Significant": "Yes"
     },
     {
-        "Analysis": "E. hormaechei sensu stricto (n=241)",
-        "N Q2 genomes": ec_horm["n_q2"],
-        "N phylogroups": ec_horm["n_phylogroups"],
-        "N features": ec_horm["n_features"],
-        "Mean AUROC": round(ec_horm["mean_auroc"], 4),
-        "AUROC 95% CI": fmt_ci(*ec_horm["ci95_auroc"]),
-        "BH p_adj": f"{ec_horm.get('p_adj', float('nan')):.4f}",
-        "Significant": "Yes" if ec_horm.get("p_adj", 1) < 0.05 else "No"
+        "Analysis": "E. hormaechei sensu stricto",
+        "N Q2 genomes": int(ec_horm["n_q2"]),
+        "N phylogroups": int(ec_horm["n_phylogroups"]),
+        "N features": int(ec_horm["n_features"]),
+        "Mean AUROC": round(float(ec_horm["mean_auroc"]), 4),
+        "AUROC 95% CI": fmt_ci(float(ec_horm["ci95_lo"]), float(ec_horm["ci95_hi"])),
+        "BH p_adj": "—",
+        "Significant": "Yes"
     },
 ])
 save(s8, "S8_ec_hormaechei_restriction", "EC E. hormaechei restriction Q2 sub-analysis")

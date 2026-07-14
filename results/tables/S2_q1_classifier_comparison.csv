@@ -1,5 +1,5 @@
 Classifier,N features,Mean BA,BA 95% CI,Mean macro-F1,F1 95% CI,Notes
 Random Forest,359,0.8998,[0.871–0.923],0.8961,[0.843–0.949],Primary model; used for SHAP attribution (§4)
-Logistic Regression,359,0.8564,[0.793–0.920],,—,
-XGBoost,359,0.8371,[0.780–0.894],,—,
-LightGBM,359,0.8362,[0.770–0.902],,—,
+Logistic Regression,359,0.9111,[0.852–0.970],—,—,
+XGBoost,359,0.904,[0.861–0.947],—,—,
+LightGBM,359,0.9093,[0.868–0.951],—,—,
