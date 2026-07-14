@@ -132,8 +132,9 @@ ghost_patch = mpatches.Patch(facecolor="#AAAAAA", alpha=0.25, edgecolor="#888888
                               linestyle="--", linewidth=0.8,
                               label="Pre-filter value (near-exclusive markers included)")
 ax.legend(handles=[baseline_line, ghost_patch], fontsize=7.5,
-          loc="lower left", bbox_to_anchor=(0.01, 0.03),
-          framealpha=0.9, edgecolor="#CCCCCC")
+          loc="lower center", bbox_to_anchor=(0.5, 1.02),
+          ncol=2, framealpha=0.9, edgecolor="#CCCCCC",
+          bbox_transform=ax.transAxes)
 
 # ── Footnote ─────────────────────────────────────────────────────────────────
 ax.text(0.5, -0.14,
@@ -144,12 +145,11 @@ ax.text(0.5, -0.14,
         ha="center", va="top")
 
 # ── Title ────────────────────────────────────────────────────────────────────
-ax.set_title("(B)  Multi-block clustering: species-discriminating power after marker filtering\n"
-             "K-means K = 6 on 309 dereplicated phylogroup representatives; bars = ARI ± 95% CI",
-             fontsize=8.5, loc="left", pad=7)
+ax.set_title("(B)  Multi-block clustering: species-discriminating power after marker filtering",
+             fontsize=8.5, loc="left", pad=42)
 
 fig.tight_layout()
-fig.subplots_adjust(bottom=0.20)
+fig.subplots_adjust(bottom=0.20, top=0.84)
 
 for ext in ("png", "pdf"):
     path = os.path.join(OUT_DIR, f"sfig_q3b_block_comparison.{ext}")
