@@ -4,6 +4,7 @@
 > architecture underlying species identity and resistance-gene ecology across ESKAPE
 > pathogens.
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21464750.svg)](https://doi.org/10.5281/zenodo.21464750)
 ![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
 ![conda](https://img.shields.io/badge/env-eskape--ml-green)
 ![license](https://img.shields.io/badge/license-MIT-lightgrey)
@@ -165,6 +166,8 @@ eskape-defence-ml/
 
 ## Data availability
 
+Code archived at: **https://doi.org/10.5281/zenodo.21464750**
+
 Raw genomes are available from NCBI RefSeq under the accessions listed in
 `config/species.yaml`. Processed data (feature matrix, CV groups, holdout feature
 matrix, serialised models) will be deposited to Zenodo on publication and linked here.
@@ -175,7 +178,7 @@ matrix, serialised models) will be deposited to Zenodo on publication and linked
 
 If you use this repository, please cite:
 
-> Muthuraman V et al. (2026) Machine learning reveals defence systems as one component
+> Muthuraman V (2026) Machine learning reveals defence systems as one component
 > of a broader genomic architecture underlying species identity and resistance-gene
 > ecology across ESKAPE pathogens.
-> *In submission.*
+> *In submission.* https://doi.org/10.5281/zenodo.21464750
