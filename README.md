@@ -119,8 +119,8 @@ jupyter lab
 ```
 
 Raw genomes and interim tool outputs are gitignored. The processed feature matrix,
-CV groups, holdout feature matrix, and serialised models are released via Zenodo
-on publication (see Data availability below).
+CV groups, holdout feature matrix, and serialised models are deposited to Zenodo
+(see Data availability below).
 
 ---
 
@@ -170,7 +170,7 @@ Code archived at: **https://doi.org/10.5281/zenodo.21464750**
 
 Raw genomes are available from NCBI RefSeq under the accessions listed in
 `config/species.yaml`. Processed data (feature matrix, CV groups, holdout feature
-matrix, serialised models) will be deposited to Zenodo on publication and linked here.
+matrix, serialised models) are deposited at: **https://doi.org/10.5281/zenodo.21464750**
 
 ---
 
