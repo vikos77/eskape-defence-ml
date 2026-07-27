@@ -1,13 +1,13 @@
-K,"Silhouette (full, n=3335)",Note
-2,0.0302,
-3,0.0523,
-4,0.0599,Best K
-5,0.047,
-6,0.0567,
-7,0.0349,
-8,0.0413,
-9,0.0461,
-10,0.0566,
-11,0.0388,
-12,0.0428,
-2,—,"Dereplicated (n=309): best K=2, sil=0.1006; ARI vs species=0.1018 (delta from full=0.2606)"
+Dataset,K,Silhouette (Euclidean),Silhouette (Jaccard),Note
+Full (n=3335),2,0.0302,0.0807,
+Full (n=3335),3,0.0523,0.0710,
+Full (n=3335),4,0.0599,0.0984,Best K by silhouette
+Full (n=3335),5,0.0470,0.0939,
+Full (n=3335),6,0.0567,0.0843,
+Full (n=3335),7,0.0349,0.0749,
+Full (n=3335),8,0.0413,0.0691,
+Full (n=3335),9,0.0461,—,
+Full (n=3335),10,0.0566,—,
+Full (n=3335),11,0.0388,—,
+Full (n=3335),12,0.0428,—,
+Dereplicated (n=309),2,0.1006,—,Best K; ARI vs species=0.102; delta vs full ARI=0.261 (SENSITIVE)

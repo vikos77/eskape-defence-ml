@@ -1,3 +1,3 @@
 Analysis,Best K (silhouette),Best K silhouette,Silhouette at K=6,Gap statistic optimal K,ARI vs species (best K),ARI vs species (K=6),ARI vs ARG tertile (K=6),ARI kmeans vs Ward (K=6)
 "Full dataset (n=3,335)",4,0.0599,0.0567,1,0.3624,0.4166,0.0278,0.6467
-Dereplicated (n=309 phylogroup reps),2,0.1006,,—,0.1018,—,0.0766,0.6082
+Dereplicated (n=309 phylogroup reps),2,0.1006,0.0130,1,0.1018,0.2194,0.0766,0.6082

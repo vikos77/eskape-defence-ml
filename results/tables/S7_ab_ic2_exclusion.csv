@@ -1,3 +1,3 @@
 Analysis,N Q2 genomes,N phylogroups,N features,Mean AUROC,AUROC 95% CI,BH p_adj,Significant
-Full AB cohort,419,—,38,0.7566,[0.659–0.854],0.4096,No
+Full AB cohort,419,35,38,0.7566,[0.659–0.854],0.4096,No
 IC2-excluded AB (dp_SspBCDE=1 removed),243,34,59,0.8442,[0.786–0.911],—,Yes
