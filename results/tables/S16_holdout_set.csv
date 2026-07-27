@@ -1,0 +1,181 @@
+accession,species,sequence_type,selection_basis
+GCF_000746645.1,Acinetobacter baumannii,758,novel-ST
+GCF_001908295.1,Acinetobacter baumannii,447,novel-ST
+GCF_002116925.1,Acinetobacter baumannii,931,novel-ST
+GCF_003522665.1,Acinetobacter baumannii,934,novel-ST
+GCF_005518095.1,Acinetobacter baumannii,1388,novel-ST
+GCF_016865465.1,Acinetobacter baumannii,2279,novel-ST
+GCF_017723975.1,Acinetobacter baumannii,865,novel-ST
+GCF_020271605.1,Acinetobacter baumannii,2764,novel-ST
+GCF_020912005.1,Acinetobacter baumannii,112,novel-ST
+GCF_024749425.1,Acinetobacter baumannii,552,novel-ST
+GCF_026062515.1,Acinetobacter baumannii,1134,novel-ST
+GCF_038441325.1,Acinetobacter baumannii,823,novel-ST
+GCF_041154805.1,Acinetobacter baumannii,236,novel-ST
+GCF_042147245.1,Acinetobacter baumannii,1567,novel-ST
+GCF_047772435.1,Acinetobacter baumannii,1115,novel-ST
+GCF_000695855.3,Acinetobacter baumannii,unknown,unknown-ST
+GCF_000794125.2,Acinetobacter baumannii,unknown,unknown-ST
+GCF_000963815.1,Acinetobacter baumannii,unknown,unknown-ST
+GCF_001573085.1,Acinetobacter baumannii,unknown,unknown-ST
+GCF_001573105.1,Acinetobacter baumannii,unknown,unknown-ST
+GCF_001896005.1,Acinetobacter baumannii,unknown,unknown-ST
+GCF_001922225.1,Acinetobacter baumannii,unknown,unknown-ST
+GCF_002999195.2,Acinetobacter baumannii,unknown,unknown-ST
+GCF_003812485.1,Acinetobacter baumannii,unknown,unknown-ST
+GCF_006385075.1,Acinetobacter baumannii,unknown,unknown-ST
+GCF_009455505.1,Acinetobacter baumannii,unknown,unknown-ST
+GCF_016864295.1,Acinetobacter baumannii,unknown,unknown-ST
+GCF_018604365.1,Acinetobacter baumannii,unknown,unknown-ST
+GCF_020520325.1,Acinetobacter baumannii,unknown,unknown-ST
+GCF_020906565.1,Acinetobacter baumannii,unknown,unknown-ST
+GCF_008693905.1,Enterobacter cloacae complex,535,novel-ST
+GCF_024218835.1,Enterobacter cloacae complex,2488,novel-ST
+GCF_027886525.1,Enterobacter cloacae complex,536,novel-ST
+GCF_028743675.1,Enterobacter cloacae complex,79,novel-ST
+GCF_030324195.1,Enterobacter cloacae complex,136,novel-ST
+GCF_031165635.1,Enterobacter cloacae complex,419,novel-ST
+GCF_036687415.1,Enterobacter cloacae complex,135,novel-ST
+GCF_053691565.1,Enterobacter cloacae complex,204,novel-ST
+GCF_053747495.1,Enterobacter cloacae complex,2880,novel-ST
+GCF_058448555.1,Enterobacter cloacae complex,1064,novel-ST
+GCF_006385655.1,Enterobacter cloacae complex,unknown,unknown-ST
+GCF_018323985.1,Enterobacter cloacae complex,unknown,unknown-ST
+GCF_031852185.1,Enterobacter cloacae complex,unknown,unknown-ST
+GCF_032302155.1,Enterobacter cloacae complex,unknown,unknown-ST
+GCF_049959435.1,Enterobacter cloacae complex,unknown,unknown-ST
+GCF_051799885.1,Enterobacter cloacae complex,unknown,unknown-ST
+GCF_056725825.1,Enterobacter cloacae complex,unknown,unknown-ST
+GCF_058248035.1,Enterobacter cloacae complex,unknown,unknown-ST
+GCF_001022015.1,Enterobacter cloacae complex,93,shared-ST-fill
+GCF_001022075.1,Enterobacter cloacae complex,93,shared-ST-fill
+GCF_002237465.1,Enterobacter cloacae complex,90,shared-ST-fill
+GCF_003051945.2,Enterobacter cloacae complex,145,shared-ST-fill
+GCF_003444755.1,Enterobacter cloacae complex,134,shared-ST-fill
+GCF_008931785.1,Enterobacter cloacae complex,90,shared-ST-fill
+GCF_012562255.1,Enterobacter cloacae complex,133,shared-ST-fill
+GCF_014771415.1,Enterobacter cloacae complex,418,shared-ST-fill
+GCF_015137995.1,Enterobacter cloacae complex,133,shared-ST-fill
+GCF_015238615.1,Enterobacter cloacae complex,175,shared-ST-fill
+GCF_015910205.1,Enterobacter cloacae complex,269,shared-ST-fill
+GCF_016864035.1,Enterobacter cloacae complex,97,shared-ST-fill
+GCF_006280355.1,Enterococcus faecium,2250,novel-ST
+GCF_006741355.1,Enterococcus faecium,2256,novel-ST
+GCF_033130085.1,Enterococcus faecium,1834,novel-ST
+GCF_900066025.1,Enterococcus faecium,54,novel-ST
+GCF_900638825.1,Enterococcus faecium,398,novel-ST
+GCF_900639405.1,Enterococcus faecium,456,novel-ST
+GCF_900639635.1,Enterococcus faecium,598,novel-ST
+GCF_000444405.1,Enterococcus faecium,203,shared-ST-fill
+GCF_001518735.1,Enterococcus faecium,203,shared-ST-fill
+GCF_001635875.1,Enterococcus faecium,736,shared-ST-fill
+GCF_002761255.1,Enterococcus faecium,736,shared-ST-fill
+GCF_002777275.1,Enterococcus faecium,736,shared-ST-fill
+GCF_002848685.1,Enterococcus faecium,736,shared-ST-fill
+GCF_002848745.1,Enterococcus faecium,736,shared-ST-fill
+GCF_005886545.1,Enterococcus faecium,80,shared-ST-fill
+GCF_005886715.1,Enterococcus faecium,80,shared-ST-fill
+GCF_005886735.1,Enterococcus faecium,80,shared-ST-fill
+GCF_016406345.1,Enterococcus faecium,17,shared-ST-fill
+GCF_016406425.1,Enterococcus faecium,17,shared-ST-fill
+GCF_016406465.1,Enterococcus faecium,612,shared-ST-fill
+GCF_016406545.1,Enterococcus faecium,17,shared-ST-fill
+GCF_016406605.1,Enterococcus faecium,664,shared-ST-fill
+GCF_016415365.1,Enterococcus faecium,18,shared-ST-fill
+GCF_019977575.1,Enterococcus faecium,17,shared-ST-fill
+GCF_020162155.1,Enterococcus faecium,18,shared-ST-fill
+GCF_021228615.1,Enterococcus faecium,584,shared-ST-fill
+GCF_023204975.1,Enterococcus faecium,584,shared-ST-fill
+GCF_026073415.1,Enterococcus faecium,17,shared-ST-fill
+GCF_040369085.1,Enterococcus faecium,80,shared-ST-fill
+GCF_050470555.1,Enterococcus faecium,17,shared-ST-fill
+GCF_000968155.1,Klebsiella pneumoniae,66,novel-ST
+GCF_001548315.1,Klebsiella pneumoniae,3851,novel-ST
+GCF_014883955.1,Klebsiella pneumoniae,504,novel-ST
+GCF_017277455.1,Klebsiella pneumoniae,1731,novel-ST
+GCF_020911785.1,Klebsiella pneumoniae,2643,novel-ST
+GCF_000364385.3,Klebsiella pneumoniae,11,shared-ST-fill
+GCF_000775955.1,Klebsiella pneumoniae,17,shared-ST-fill
+GCF_001455995.1,Klebsiella pneumoniae,147,shared-ST-fill
+GCF_001701835.2,Klebsiella pneumoniae,11,shared-ST-fill
+GCF_001705385.1,Klebsiella pneumoniae,512,shared-ST-fill
+GCF_001708225.1,Klebsiella pneumoniae,23,shared-ST-fill
+GCF_001718115.2,Klebsiella pneumoniae,340,shared-ST-fill
+GCF_001870165.1,Klebsiella pneumoniae,45,shared-ST-fill
+GCF_001885255.2,Klebsiella pneumoniae,147,shared-ST-fill
+GCF_001922465.1,Klebsiella pneumoniae,11,shared-ST-fill
+GCF_001952875.1,Klebsiella pneumoniae,392,shared-ST-fill
+GCF_002243445.1,Klebsiella pneumoniae,258,shared-ST-fill
+GCF_002591075.1,Klebsiella pneumoniae,147,shared-ST-fill
+GCF_002741685.1,Klebsiella pneumoniae,340,shared-ST-fill
+GCF_002752955.1,Klebsiella pneumoniae,45,shared-ST-fill
+GCF_002761315.1,Klebsiella pneumoniae,23,shared-ST-fill
+GCF_002813595.1,Klebsiella pneumoniae,23,shared-ST-fill
+GCF_002909775.1,Klebsiella pneumoniae,231,shared-ST-fill
+GCF_003076555.1,Klebsiella pneumoniae,307,shared-ST-fill
+GCF_003203435.1,Klebsiella pneumoniae,11,shared-ST-fill
+GCF_003368025.1,Klebsiella pneumoniae,258,shared-ST-fill
+GCF_003584585.1,Klebsiella pneumoniae,11,shared-ST-fill
+GCF_003597695.1,Klebsiella pneumoniae,307,shared-ST-fill
+GCF_003855335.1,Klebsiella pneumoniae,15,shared-ST-fill
+GCF_003856595.1,Klebsiella pneumoniae,147,shared-ST-fill
+GCF_001516005.1,Pseudomonas aeruginosa,3804,novel-ST
+GCF_016584725.1,Pseudomonas aeruginosa,1445,novel-ST
+GCF_022559545.1,Pseudomonas aeruginosa,192,novel-ST
+GCF_022569855.1,Pseudomonas aeruginosa,1394,novel-ST
+GCF_022569915.1,Pseudomonas aeruginosa,2329,novel-ST
+GCF_022569995.1,Pseudomonas aeruginosa,1328,novel-ST
+GCF_022670795.1,Pseudomonas aeruginosa,3754,novel-ST
+GCF_022699485.1,Pseudomonas aeruginosa,969,novel-ST
+GCF_022870565.1,Pseudomonas aeruginosa,1919,novel-ST
+GCF_023572735.3,Pseudomonas aeruginosa,2407,novel-ST
+GCF_023612335.1,Pseudomonas aeruginosa,412,novel-ST
+GCF_024507915.1,Pseudomonas aeruginosa,3971,novel-ST
+GCF_026870135.1,Pseudomonas aeruginosa,688,novel-ST
+GCF_028608885.1,Pseudomonas aeruginosa,4646,novel-ST
+GCF_028608945.1,Pseudomonas aeruginosa,3764,novel-ST
+GCF_028609005.1,Pseudomonas aeruginosa,4844,novel-ST
+GCF_028609225.1,Pseudomonas aeruginosa,2042,novel-ST
+GCF_029958385.1,Pseudomonas aeruginosa,2037,novel-ST
+GCF_030369815.1,Pseudomonas aeruginosa,3965,novel-ST
+GCF_032696765.1,Pseudomonas aeruginosa,238,novel-ST
+GCF_033216995.1,Pseudomonas aeruginosa,644,novel-ST
+GCF_001077475.1,Pseudomonas aeruginosa,unknown,unknown-ST
+GCF_022453825.1,Pseudomonas aeruginosa,unknown,unknown-ST
+GCF_025200845.1,Pseudomonas aeruginosa,unknown,unknown-ST
+GCF_000829255.1,Pseudomonas aeruginosa,235,shared-ST-fill
+GCF_000829885.1,Pseudomonas aeruginosa,111,shared-ST-fill
+GCF_001293085.1,Pseudomonas aeruginosa,782,shared-ST-fill
+GCF_001548335.1,Pseudomonas aeruginosa,1047,shared-ST-fill
+GCF_001874465.1,Pseudomonas aeruginosa,308,shared-ST-fill
+GCF_001879525.1,Pseudomonas aeruginosa,260,shared-ST-fill
+GCF_001641045.1,Staphylococcus aureus,5355,novel-ST
+GCF_003609855.1,Staphylococcus aureus,6272,novel-ST
+GCF_003945405.1,Staphylococcus aureus,2389,novel-ST
+GCF_014696255.1,Staphylococcus aureus,789,novel-ST
+GCF_016065215.1,Staphylococcus aureus,1153,novel-ST
+GCF_020177155.3,Staphylococcus aureus,573,novel-ST
+GCF_021491715.1,Staphylococcus aureus,7358,novel-ST
+GCF_003944865.1,Staphylococcus aureus,unknown,unknown-ST
+GCF_000597965.1,Staphylococcus aureus,5,shared-ST-fill
+GCF_000953255.1,Staphylococcus aureus,30,shared-ST-fill
+GCF_001018685.2,Staphylococcus aureus,8,shared-ST-fill
+GCF_001018975.2,Staphylococcus aureus,30,shared-ST-fill
+GCF_001019125.2,Staphylococcus aureus,1,shared-ST-fill
+GCF_001019305.2,Staphylococcus aureus,5,shared-ST-fill
+GCF_001019495.2,Staphylococcus aureus,5,shared-ST-fill
+GCF_001027045.1,Staphylococcus aureus,27,shared-ST-fill
+GCF_001027105.1,Staphylococcus aureus,8,shared-ST-fill
+GCF_001183705.3,Staphylococcus aureus,8,shared-ST-fill
+GCF_001298325.2,Staphylococcus aureus,9,shared-ST-fill
+GCF_001515665.1,Staphylococcus aureus,239,shared-ST-fill
+GCF_001515745.1,Staphylococcus aureus,239,shared-ST-fill
+GCF_002000585.1,Staphylococcus aureus,8,shared-ST-fill
+GCF_002025145.1,Staphylococcus aureus,464,shared-ST-fill
+GCF_002355355.1,Staphylococcus aureus,8,shared-ST-fill
+GCF_002356675.1,Staphylococcus aureus,8,shared-ST-fill
+GCF_002803885.1,Staphylococcus aureus,152,shared-ST-fill
+GCF_003073395.1,Staphylococcus aureus,8,shared-ST-fill
+GCF_003111745.1,Staphylococcus aureus,398,shared-ST-fill
+GCF_003184985.1,Staphylococcus aureus,22,shared-ST-fill
+GCF_003354565.1,Staphylococcus aureus,228,shared-ST-fill
