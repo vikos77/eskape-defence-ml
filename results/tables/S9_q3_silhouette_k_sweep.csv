@@ -10,4 +10,4 @@ Full (n=3335),9,0.0461,—,
 Full (n=3335),10,0.0566,—,
 Full (n=3335),11,0.0388,—,
 Full (n=3335),12,0.0428,—,
-Dereplicated (n=309),2,0.1006,—,Best K; ARI vs species=0.102; delta vs full ARI=0.261 (SENSITIVE)
+Dereplicated (n=309),2,0.1006,—,"Best K by silhouette; ARI vs species labels (K=2) = 0.102; delta versus full-dataset best-K ARI = 0.261 (exceeds 0.10 robustness threshold; clonal inflation confirmed)"
