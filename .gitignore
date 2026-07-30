@@ -1,5 +1,8 @@
 notebooks/LC_*.ipynb
 
+# Manuscript figures — kept local only, not for pre-publication public repo
+results/figures/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
