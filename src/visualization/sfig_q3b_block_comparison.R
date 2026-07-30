@@ -57,6 +57,7 @@ p <- ggplot(df, aes(x = block, y = ari, fill = block)) +
             aes(x = block, y = ari_unfilt + 0.012,
                 label = sprintf("%.3f*", ari_unfilt)),
             size = 2.4, color = "grey55", inherit.aes = FALSE) +
+  scale_x_discrete(limits = LABELS) +
   scale_fill_manual(values = setNames(COLORS, LABELS)) +
   scale_y_continuous(limits = c(0, 0.65), expand = c(0, 0),
                      breaks = seq(0, 0.6, 0.1)) +
