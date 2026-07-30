@@ -7,8 +7,8 @@ features that survived the within-phylogroup robustness check (p_within_pg
 coloured by mechanism category (named vs uncharacterised candidate).
 
 Data source: results/q2_367_results.json (top_drivers per species)
-Output:      results/figures/q2/fig3b_q2_driver_dotplot.png  (300 dpi)
-             results/figures/q2/fig3b_q2_driver_dotplot.pdf
+Output:      results/figures/q2/fig2b_q2_driver_dotplot.png  (300 dpi)
+             results/figures/q2/fig2b_q2_driver_dotplot.pdf
 """
 
 import json, os
@@ -26,14 +26,14 @@ with open("results/q2_367_results.json") as f:
 
 # ── Species to show — ordered by AUROC descending (matches forest plot order)
 PANELS = [
-    ("efaecium",    r"$\it{E.\ faecium}$",   "#2CA25F"),
-    ("kpneumoniae", r"$\it{K.\ pneumoniae}$", "#457B9D"),
-    ("paeruginosa", r"$\it{P.\ aeruginosa}$", "#8338EC"),
-    ("ecloaceae",   r"$\it{E.\ cloacae}$ cx", "#F4A261"),
+    ("efaecium",    r"$\it{E.\ faecium}$",   "#CC79A7"),  # Okabe-Ito reddish purple
+    ("kpneumoniae", r"$\it{K.\ pneumoniae}$", "#0072B2"),  # Okabe-Ito blue
+    ("paeruginosa", r"$\it{P.\ aeruginosa}$", "#E69F00"),  # Okabe-Ito orange
+    ("ecloaceae",   r"$\it{E.\ cloacae}$ complex", "#009E73"),  # Okabe-Ito bluish green
 ]
 
-COL_NAMED = "#2171B5"    # blue — named systems
-COL_UNC   = "#E07B54"    # terracotta — uncharacterised candidates
+COL_NAMED = "#0072B2"    # Okabe-Ito blue         — named systems
+COL_UNC   = "#E69F00"    # Okabe-Ito orange       — uncharacterised candidates
 
 MAX_FEATS = 8   # cap per panel for readability
 
@@ -44,6 +44,8 @@ def is_named(cat):
 
 def short_name(feat):
     name = feat.removeprefix("dp_")
+    name = name.removeprefix("df_")
+    name = name.removeprefix("padloc_")
     # tidy catch-all labels for display
     if name == "cbass_other":
         name = "CBASS_other"
@@ -98,10 +100,10 @@ for ax_i, (sp, sp_label, sp_color) in enumerate(PANELS):
                 fontsize=7.0, color=colors[i])
 
     ax.set_yticks(y_pos)
-    ax.set_yticklabels(labels, fontsize=7.5)
+    ax.set_yticklabels(labels, fontsize=8)
     ax.axvline(0, color="#AAAAAA", linewidth=0.8, linestyle="--", zorder=1)
     ax.set_xlim(-0.35, 0.55)
-    ax.set_xlabel("Within-phylogroup Spearman ρ", fontsize=8)
+    ax.set_xlabel("Within-phylogroup Spearman ρ", fontsize=9)
     n_shown = len(robust)
     shown_str = f"showing top {n_shown}" if n_survive > n_shown else f"n = {n_shown}"
     ax.set_title(f"{sp_label}\nAUROC = {q2[sp]['mean_auroc']:.3f}  "
@@ -110,7 +112,7 @@ for ax_i, (sp, sp_label, sp_color) in enumerate(PANELS):
     ax.grid(axis="x", color="#E8E8E8", linewidth=0.5)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.tick_params(axis="x", labelsize=7.5)
+    ax.tick_params(axis="x", labelsize=8)
 
 # ── Legend ───────────────────────────────────────────────────────────────────
 named_patch = mpatches.Patch(color=COL_NAMED, label="Named system")
@@ -119,14 +121,14 @@ fig.legend(handles=[named_patch, unc_patch], fontsize=8,
            loc="lower center", ncol=2, framealpha=0.9,
            edgecolor="#CCCCCC", bbox_to_anchor=(0.5, 0.01))
 
-fig.suptitle("(B)  Top within-phylogroup-robust ARG-burden drivers, Q2-significant species\n"
-             "Spearman ρ corrected for phylogroup structure; p_within_pg < 0.05",
-             fontsize=9, y=0.99)
-fig.tight_layout(rect=[0, 0.05, 1, 0.98])
+fig.text(0.01, 0.995, "(B)", fontsize=10, fontweight="bold", va="top")
+fig.tight_layout(rect=[0, 0.05, 1, 1.0])
 
+FINAL_DIR = "/Users/Vicky/Acinetobacter_ML_2/eskape-defence-ml/results/figures/final"
 for ext in ("png", "pdf"):
-    path = os.path.join(OUT_DIR, f"fig3b_q2_driver_dotplot.{ext}")
-    fig.savefig(path, dpi=300, bbox_inches="tight")
-    print(f"Saved: {path}")
+    for d in (OUT_DIR, FINAL_DIR):
+        path = os.path.join(d, f"fig2b_q2_driver_dotplot.{ext}")
+        fig.savefig(path, dpi=300, bbox_inches="tight")
+        print(f"Saved: {path}")
 
 plt.close(fig)

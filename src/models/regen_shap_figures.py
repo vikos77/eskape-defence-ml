@@ -27,24 +27,24 @@ plt.rcParams.update({
 SPECIES_ORDER  = ["abaumannii", "ecloaceae", "efaecium", "kpneumoniae", "paeruginosa", "saureus"]
 SPECIES_LABELS = {
     "abaumannii":  "A. baumannii",
-    "ecloaceae":   "E. cloacae",
+    "ecloaceae":   "E. cloacae complex",
     "efaecium":    "E. faecium",
     "kpneumoniae": "K. pneumoniae",
     "paeruginosa": "P. aeruginosa",
     "saureus":     "S. aureus",
 }
 SPECIES_PALETTE = {
-    "abaumannii":  "#E63946",
-    "ecloaceae":   "#F4A261",
-    "efaecium":    "#2A9D8F",
-    "kpneumoniae": "#457B9D",
-    "paeruginosa": "#8338EC",
-    "saureus":     "#FB5607",
+    "abaumannii":  "#D55E00",  # Okabe-Ito vermilion
+    "ecloaceae":   "#009E73",  # Okabe-Ito bluish green
+    "efaecium":    "#CC79A7",  # Okabe-Ito reddish purple
+    "kpneumoniae": "#0072B2",  # Okabe-Ito blue
+    "paeruginosa": "#E69F00",  # Okabe-Ito orange
+    "saureus":     "#56B4E9",  # Okabe-Ito sky blue
 }
 
 # ── Uniform colors (same in every panel) ─────────────────────────────────────
-POS_COLOR = "#2171B5"   # positive-direction / feature-present
-NEG_COLOR = "#AAAAAA"   # negative-direction / feature-absent
+POS_COLOR = "#0072B2"   # Okabe-Ito blue    — positive-direction / feature-present
+NEG_COLOR = "#AAAAAA"   # grey              — negative-direction / feature-absent
 
 # ── Load data ─────────────────────────────────────────────────────────────────
 fm = pd.read_parquet("data/processed/feature_matrix_3335.parquet")
@@ -74,7 +74,7 @@ for cls_idx, (species, ax) in enumerate(zip(SPECIES_ORDER, axes_flat)):
         ]
     ]
     ax.barh(
-        y=[f.replace("dp_", "") for f in top15.index[::-1]],
+        y=[f.replace("dp_", "").replace("df_", "").replace("padloc_", "") for f in top15.index[::-1]],
         width=top15.values[::-1],
         color=colors_bar[::-1],
         edgecolor="white", linewidth=0.4,
@@ -119,7 +119,7 @@ for cls_idx, (species, ax) in enumerate(zip(SPECIES_ORDER, axes_flat)):
         fi        = FEAT_COLS.index(feat_col)
         shap_vals = shap_3d[species_mask, fi, cls_idx]
         feat_vals = X_full[species_mask, fi].astype(int)
-        label     = feat_col.replace("dp_", "")
+        label     = feat_col.replace("dp_", "").replace("df_", "").replace("padloc_", "")
         for sv, fv in zip(shap_vals, feat_vals):
             rows.append({"Feature": label, "SHAP": sv,
                          "Presence": "Present" if fv == 1 else "Absent"})
@@ -128,13 +128,13 @@ for cls_idx, (species, ax) in enumerate(zip(SPECIES_ORDER, axes_flat)):
 
     valid_feats = []
     for feat_col in top_feats:
-        label = feat_col.replace("dp_", "")
+        label = feat_col.replace("dp_", "").replace("df_", "").replace("padloc_", "")
         sub   = df_plot[df_plot["Feature"] == label]
         if (sub["Presence"] == "Present").sum() >= 5 and (sub["Presence"] == "Absent").sum() >= 5:
             valid_feats.append(label)
 
     df_valid = df_plot[df_plot["Feature"].isin(valid_feats)]
-    order    = [f.replace("dp_", "") for f in top_feats if f.replace("dp_", "") in valid_feats]
+    order    = [f.replace("dp_", "").replace("df_", "").replace("padloc_", "") for f in top_feats if f.replace("dp_", "").replace("df_", "").replace("padloc_", "") in valid_feats]
 
     n_excluded = len(top_feats) - len(valid_feats)
     if df_valid.empty:
@@ -156,7 +156,7 @@ for cls_idx, (species, ax) in enumerate(zip(SPECIES_ORDER, axes_flat)):
     title_str = f"{SPECIES_LABELS[species]}  (n={n_sp} genomes)"
     if n_excluded > 0:
         title_str += (f"\n{n_excluded} of top {N_TOP} features absent in this species"
-                      " (shown in bar plot as grey)")
+                      " (shown in grey)")
     ax.set_title(title_str, fontsize=9, color=SPECIES_PALETTE[species])
     ax.set_xlabel(f"SHAP value for {SPECIES_LABELS[species]} class", fontsize=8)
     ax.set_ylabel("")
@@ -171,16 +171,17 @@ plt.suptitle(
     fontsize=9, y=1.02,
 )
 plt.tight_layout()
-out = FIGS_INTERP / "q1_shap_within_species_distribution.png"
-plt.savefig(out, dpi=150, bbox_inches="tight")
+for ext in ("png", "pdf"):
+    out = FIGS_INTERP / f"sfig_sa_shap_within_species.{ext}"
+    plt.savefig(out, dpi=300, bbox_inches="tight")
+    print(f"Saved: {out}")
 plt.close()
-print(f"Saved: {out}")
 
 # ── Section 2.5: Top-6 dependence plots (2×3 grid) ───────────────────────────
 global_shap = pd.read_csv(RES / "q4_shap_367_global.csv", index_col="feature")["global_shap"]
 global_shap = global_shap.reindex(FEAT_COLS).dropna()
 top6_features = global_shap.sort_values(ascending=False).head(6).index.tolist()
-KEY_FEATURES  = {f: f.replace("dp_", "").replace("_", " ") for f in top6_features}
+KEY_FEATURES  = {f: f.replace("dp_", "").replace("df_", "").replace("padloc_", "").replace("_", " ") for f in top6_features}
 
 print("Top 6 features (dependence plots):")
 for f, label in KEY_FEATURES.items():

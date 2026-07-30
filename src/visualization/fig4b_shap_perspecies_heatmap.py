@@ -63,8 +63,8 @@ for row_i, feat_i in enumerate(top20_idx):
 
 # ── Feature labels ───────────────────────────────────────────────────────────
 def clean_label(feat, category):
-    """Strip dp_ prefix; mark uncharacterised with dagger."""
-    name = feat.removeprefix("dp_")
+    """Strip dp_/df_/padloc_ prefixes; mark uncharacterised with dagger."""
+    name = feat.removeprefix("dp_").removeprefix("df_").removeprefix("padloc_")
     if category != "named":
         name = name + "†"
     return name
@@ -81,7 +81,10 @@ fig, ax = plt.subplots(figsize=(6.5, 7.0))
 abs_max = np.abs(heatmap).max()
 vmax    = abs_max * 1.05
 
-im = ax.imshow(heatmap, cmap="RdBu_r", vmin=-vmax, vmax=vmax,
+CB_DIV = mcolors.LinearSegmentedColormap.from_list(
+    "cb_div", ["#0072B2", "#FFFFFF", "#D55E00"]  # Okabe-Ito blue → white → vermilion
+)
+im = ax.imshow(heatmap, cmap=CB_DIV, vmin=-vmax, vmax=vmax,
                aspect="auto", interpolation="nearest")
 
 # cell text (values)
@@ -94,9 +97,9 @@ for i in range(N_FEATS):
 
 # axes
 ax.set_xticks(range(len(CLASSES)))
-ax.set_xticklabels(COL_LABELS, fontsize=10, fontweight="bold")
+ax.set_xticklabels(COL_LABELS, fontsize=9)
 ax.set_yticks(range(N_FEATS))
-ax.set_yticklabels(row_labels, fontsize=8.5, fontfamily="monospace")
+ax.set_yticklabels(row_labels, fontsize=8)
 ax.set_xlabel("Species", fontsize=9, labelpad=6)
 ax.set_ylabel("Feature (global SHAP rank, top 20)", fontsize=9, labelpad=6)
 
@@ -111,8 +114,8 @@ ax2.tick_params(right=False)
 # colour bar on its own axes to avoid overlap with twinx
 cbar_ax = fig.add_axes([0.93, 0.12, 0.025, 0.75])
 cb = fig.colorbar(im, cax=cbar_ax)
-cb.set_label("Mean SHAP (present genomes)\nred = toward species, blue = away",
-             fontsize=7.5, labelpad=6)
+cb.set_label("Mean SHAP (present genomes)\norange = toward species, blue = away",
+             fontsize=8, labelpad=6)
 cb.ax.tick_params(labelsize=7)
 
 # title

@@ -55,18 +55,18 @@ SPECIES_ORDER = ["kpneumoniae", "ecloaceae", "abaumannii",
                  "efaecium", "paeruginosa", "saureus"]
 
 SP_COLORS = {
-    "kpneumoniae": "#4878CF",
-    "ecloaceae":   "#6ACC65",
-    "abaumannii":  "#D65F5F",
-    "efaecium":    "#B47CC7",
-    "paeruginosa": "#C4AD66",
-    "saureus":     "#77BEDB",
+    "kpneumoniae": "#0072B2",  # Okabe-Ito blue
+    "ecloaceae":   "#009E73",  # Okabe-Ito bluish green
+    "abaumannii":  "#D55E00",  # Okabe-Ito vermilion
+    "efaecium":    "#CC79A7",  # Okabe-Ito reddish purple
+    "paeruginosa": "#E69F00",  # Okabe-Ito orange
+    "saureus":     "#56B4E9",  # Okabe-Ito sky blue
 }
 
 # Italic centroid labels (LaTeX math-italic for species names)
 SP_LABELS = {
     "kpneumoniae": r"$\it{K.\ pneumoniae}$",
-    "ecloaceae":   r"$\it{E.\ cloacae}$ cx",
+    "ecloaceae":   r"$\it{E.\ cloacae}$ complex",
     "abaumannii":  r"$\it{A.\ baumannii}$",
     "efaecium":    r"$\it{E.\ faecium}$",
     "paeruginosa": r"$\it{P.\ aeruginosa}$",
@@ -74,9 +74,9 @@ SP_LABELS = {
 }
 
 ARG_COLORS = {
-    "low_ARG":  "#4878CF",
-    "high_ARG": "#D65F5F",
-    "mid_ARG":  "#BBBBBB",
+    "low_ARG":  "#0072B2",  # Okabe-Ito blue
+    "high_ARG": "#D55E00",  # Okabe-Ito vermilion
+    "mid_ARG":  "#BBBBBB",  # grey (excluded from Q2)
 }
 
 GRAM_NEG = {"kpneumoniae", "ecloaceae", "abaumannii", "paeruginosa"}
@@ -87,21 +87,28 @@ fig, axes = plt.subplots(1, 2, figsize=(12, 5.2))
 # ── Panel A: by species ───────────────────────────────────────────────────────
 ax = axes[0]
 
+sp_handles = []
 for sp in SPECIES_ORDER:
     mask = y_species == sp
-    ax.scatter(X_umap[mask, 0], X_umap[mask, 1],
-               c=SP_COLORS[sp], alpha=0.60, s=18,
-               edgecolors="none", rasterized=True)
+    sc = ax.scatter(X_umap[mask, 0], X_umap[mask, 1],
+                    c=SP_COLORS[sp], alpha=0.60, s=18,
+                    edgecolors="none", rasterized=True,
+                    label=SP_LABELS[sp])
+    sp_handles.append(sc)
 
-# Centroid italic labels
+# Centroid labels — direct annotation on each cloud
 for sp in SPECIES_ORDER:
     mask = y_species == sp
     cx = np.median(X_umap[mask, 0])
     cy = np.median(X_umap[mask, 1])
     ax.text(cx, cy, SP_LABELS[sp],
-            fontsize=8.5, ha="center", va="center",
+            fontsize=8.0, ha="center", va="center",
             bbox=dict(boxstyle="round,pad=0.25", fc="white",
                       alpha=0.75, ec="none"))
+
+ax.legend(handles=sp_handles, fontsize=8,
+          loc="lower left", framealpha=0.9, edgecolor="#CCCCCC",
+          handletextpad=0.4, borderpad=0.6)
 
 ax.set_xlabel("UMAP 1", fontsize=9, labelpad=4)
 ax.set_ylabel("UMAP 2", fontsize=9, labelpad=4)
@@ -139,7 +146,7 @@ legend_handles = [
     mlines.Line2D([], [], marker="^", color="#555555", lw=0,
                   markersize=6, label="Gram-positive"),
 ]
-ax2.legend(handles=legend_handles, fontsize=7.5,
+ax2.legend(handles=legend_handles, fontsize=8,
            loc="lower left", framealpha=0.9, edgecolor="#CCCCCC")
 
 ax2.set_xlabel("UMAP 1", fontsize=9, labelpad=4)

@@ -2,8 +2,8 @@
 Fig 3A — Q2 per-species AUROC forest plot.
 
 Data source: results/q2_367_results.json (authoritative).
-Output:      results/figures/q2/fig3a_q2_auroc_forest.png  (300 dpi)
-             results/figures/q2/fig3a_q2_auroc_forest.pdf
+Output:      results/figures/q2/fig2a_q2_auroc_forest.png  (300 dpi)
+             results/figures/q2/fig2a_q2_auroc_forest.pdf
 
 Design:
 - Horizontal forest plot, species ordered by AUROC descending.
@@ -50,12 +50,12 @@ labels  = [lab                      for _, lab in rows]
 sig     = [p < 0.05                 for p in p_adj]
 
 # ── colours ─────────────────────────────────────────────────────────────────
-COL_SIG = "#2171B5"   # steel blue  — significant
-COL_NS  = "#969696"   # mid-grey    — not significant
+COL_SIG = "#0072B2"   # Okabe-Ito blue — significant
+COL_NS  = "#969696"   # mid-grey       — not significant
 colors  = [COL_SIG if s else COL_NS for s in sig]
 
 # ── figure ──────────────────────────────────────────────────────────────────
-fig, ax = plt.subplots(figsize=(7.0, 4.0))
+fig, ax = plt.subplots(figsize=(9.5, 4.5))
 
 y_pos = np.arange(len(rows))[::-1]   # top = highest AUROC
 
@@ -99,7 +99,7 @@ ITALIC_LABELS = [
     r"$\it{S.\ aureus}$",
 ]
 ax.set_yticks(y_pos)
-ax.set_yticklabels(ITALIC_LABELS, fontsize=9)
+ax.set_yticklabels(ITALIC_LABELS, fontsize=8)
 
 # ── x-axis ──────────────────────────────────────────────────────────────────
 ax.set_xlim(0.40, 1.02)
@@ -111,7 +111,7 @@ ax.tick_params(axis="x", labelsize=8)
 # ── legend ───────────────────────────────────────────────────────────────────
 sig_patch = mpatches.Patch(color=COL_SIG, label="Significant (BH q < 0.05)")
 ns_patch  = mpatches.Patch(color=COL_NS,  label="Not significant")
-ax.legend(handles=[sig_patch, ns_patch], fontsize=7.5,
+ax.legend(handles=[sig_patch, ns_patch], fontsize=8,
           loc="upper left", framealpha=0.9, edgecolor="#CCCCCC")
 
 # ── grid + spines ────────────────────────────────────────────────────────────
@@ -120,13 +120,15 @@ ax.set_axisbelow(True)
 ax.spines["top"].set_visible(False)
 ax.spines["right"].set_visible(False)
 
-ax.set_title("(A)", fontsize=10, loc="left", pad=6, fontweight="bold")
+fig.text(0.01, 0.995, "(A)", fontsize=10, fontweight="bold", va="top")
 
 fig.tight_layout()
 
+FINAL_DIR = "/Users/Vicky/Acinetobacter_ML_2/eskape-defence-ml/results/figures/final"
 for ext in ("png", "pdf"):
-    path = os.path.join(OUT_DIR, f"fig3a_q2_auroc_forest.{ext}")
-    fig.savefig(path, dpi=300, bbox_inches="tight")
-    print(f"Saved: {path}")
+    for d in (OUT_DIR, FINAL_DIR):
+        path = os.path.join(d, f"fig2a_q2_auroc_forest.{ext}")
+        fig.savefig(path, dpi=300, bbox_inches="tight")
+        print(f"Saved: {path}")
 
 plt.close(fig)

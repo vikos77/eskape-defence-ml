@@ -40,11 +40,11 @@ UNFILT = {
 
 # ── Conditions — ordered left to right ───────────────────────────────────────
 CONDITIONS = [
-    ("defence_only", "Defence\n(359 feat)",        "#2171B5", False),
-    ("is_filt",      "IS elements†\n(19 feat)",      "#2CA25F", False),
-    ("hmrg_filt",    "HMRG†\n(9 feat)",             "#F16913", False),
-    ("arg_filt",     "ARG†\n(134 feat)",             "#CB181D", False),
-    ("defence_is",   "Defence + IS\n(378 feat)",    "#1A7B38", True),
+    ("defence_only", "Defence\n(359 feat)",        "#0072B2", False),  # Okabe-Ito blue
+    ("is_filt",      "IS elements†\n(19 feat)",      "#009E73", False),  # Okabe-Ito bluish green
+    ("hmrg_filt",    "HMRG†\n(9 feat)",             "#E69F00", False),  # Okabe-Ito orange
+    ("arg_filt",     "ARG†\n(134 feat)",             "#D55E00", False),  # Okabe-Ito vermilion
+    ("defence_is",   "Defence + IS\n(378 feat)",    "#CC79A7", True),   # Okabe-Ito reddish purple
 ]
 
 keys     = [c[0] for c in CONDITIONS]
@@ -73,18 +73,18 @@ ax.axvspan(3.90,  5.00, color="#E8F5E9", alpha=0.55, zorder=0)
 ax.text(1.5, 0.625, "Single blocks (marker-filtered)", ha="center", va="bottom",
         fontsize=8, color="#555555", style="italic")
 ax.text(4.4, 0.625, "Combined", ha="center", va="bottom",
-        fontsize=8, color="#1A7B38", style="italic", fontweight="semibold")
+        fontsize=8, color="#CC79A7", style="italic", fontweight="semibold")
 
 # defence baseline reference line
-ax.axhline(DEFENCE_ARI, color="#2171B5", linewidth=1.2,
+ax.axhline(DEFENCE_ARI, color="#0072B2", linewidth=1.2,
            linestyle="--", alpha=0.75, zorder=1)
 
 # ── Ghost bars for ARG and HMRG (unfiltered heights) ────────────────────────
 # Visualise the pre-filter values to show taxonomic marker inflation
 ghost_info = {
-    "is_filt":   (x[1], UNFILT["is_filt"],   "#2CA25F"),
-    "hmrg_filt": (x[2], UNFILT["hmrg_filt"], "#F16913"),
-    "arg_filt":  (x[3], UNFILT["arg_filt"],  "#CB181D"),
+    "is_filt":   (x[1], UNFILT["is_filt"],   "#009E73"),
+    "hmrg_filt": (x[2], UNFILT["hmrg_filt"], "#E69F00"),
+    "arg_filt":  (x[3], UNFILT["arg_filt"],  "#D55E00"),
 }
 for key, (xi, uari, col) in ghost_info.items():
     ax.bar(xi, uari, width=0.72, color=col, alpha=0.12,
@@ -111,7 +111,7 @@ for i, (xi, ai, hi) in enumerate(zip(x, ari, ci_hi)):
 
 # ── Axes ─────────────────────────────────────────────────────────────────────
 ax.set_xticks(x)
-ax.set_xticklabels(labels, fontsize=8.5)
+ax.set_xticklabels(labels, fontsize=8)
 ax.set_xlim(-0.55, 5.00)
 ax.set_ylim(0, 0.66)
 ax.set_ylabel("ARI vs species identity (K = 6, dereplicated genomes)", fontsize=9)
@@ -125,7 +125,7 @@ ax.spines["top"].set_visible(False)
 ax.spines["right"].set_visible(False)
 
 # ── Legend ───────────────────────────────────────────────────────────────────
-baseline_line = Line2D([0], [0], color="#2171B5", linewidth=1.4,
+baseline_line = Line2D([0], [0], color="#0072B2", linewidth=1.4,
                        linestyle="--", alpha=0.8,
                        label=f"Defence baseline (ARI = {DEFENCE_ARI:.3f})")
 ghost_patch = mpatches.Patch(facecolor="#AAAAAA", alpha=0.25, edgecolor="#888888",
@@ -145,15 +145,17 @@ ax.text(0.5, -0.14,
         ha="center", va="top")
 
 # ── Title ────────────────────────────────────────────────────────────────────
-ax.set_title("(B)  Multi-block clustering: species-discriminating power after marker filtering",
+ax.set_title("Multi-block clustering: species-discriminating power after marker filtering",
              fontsize=8.5, loc="left", pad=42)
 
 fig.tight_layout()
 fig.subplots_adjust(bottom=0.20, top=0.84)
 
+FINAL_DIR = "/Users/Vicky/Acinetobacter_ML_2/eskape-defence-ml/results/figures/final"
 for ext in ("png", "pdf"):
-    path = os.path.join(OUT_DIR, f"sfig_q3b_block_comparison.{ext}")
-    fig.savefig(path, dpi=300, bbox_inches="tight")
-    print(f"Saved: {path}")
+    for d in (OUT_DIR, FINAL_DIR):
+        path = os.path.join(d, f"fig3_q3b_block_comparison.{ext}")
+        fig.savefig(path, dpi=300, bbox_inches="tight")
+        print(f"Saved: {path}")
 
 plt.close(fig)

@@ -1,5 +1,5 @@
 """
-Fig 1B — C3 external holdout validation.
+Fig 1B/C — C3 external holdout validation.
 
 Data sources:
   data/processed/holdout_feature_matrix.parquet  — 180-genome holdout
@@ -8,8 +8,10 @@ Data sources:
   results/q1_367_results.json                    — CV BA and cluster bootstrap CI
 
 Output:
-  results/figures/rf/fig1b_holdout_validation.png  (300 dpi)
+  results/figures/rf/fig1b_holdout_validation.png  (300 dpi)  — combined B+C
   results/figures/rf/fig1b_holdout_validation.pdf
+  results/figures/rf/fig1b_recall.png/.pdf          — panel B standalone
+  results/figures/rf/fig1c_ba_comparison.png/.pdf   — panel C standalone
 """
 
 import json, os, pickle, warnings
@@ -62,19 +64,19 @@ SPECIES_ORDER = [
 ]
 SPECIES_LABELS = {
     "abaumannii":  "A. baumannii",
-    "ecloaceae":   "E. cloacae",
+    "ecloaceae":   "E. cloacae complex",
     "efaecium":    "E. faecium",
     "kpneumoniae": "K. pneumoniae",
     "paeruginosa": "P. aeruginosa",
     "saureus":     "S. aureus",
 }
 SPECIES_COLORS = {
-    "abaumannii":  "#E63946",
-    "ecloaceae":   "#F4A261",
-    "efaecium":    "#2A9D8F",
-    "kpneumoniae": "#457B9D",
-    "paeruginosa": "#8338EC",
-    "saureus":     "#FB5607",
+    "abaumannii":  "#D55E00",  # Okabe-Ito vermilion
+    "ecloaceae":   "#009E73",  # Okabe-Ito bluish green
+    "efaecium":    "#CC79A7",  # Okabe-Ito reddish purple
+    "kpneumoniae": "#0072B2",  # Okabe-Ito blue
+    "paeruginosa": "#E69F00",  # Okabe-Ito orange
+    "saureus":     "#56B4E9",  # Okabe-Ito sky blue
 }
 
 recalls = []
@@ -103,7 +105,7 @@ ax.set_ylabel("Recall (per species, n=30)", fontsize=9)
 ax.set_title("(B)  C3 holdout: per-species recall\n"
              "(30 novel-ST-prioritised genomes per species)",
              fontsize=8.5, loc="left")
-ax.tick_params(axis="x", rotation=35, labelsize=8.5)
+ax.tick_params(axis="x", rotation=35, labelsize=8)
 ax.spines["top"].set_visible(False)
 ax.spines["right"].set_visible(False)
 ax.set_yticks([0, 0.2, 0.4, 0.6, 0.8, 1.0])
@@ -117,19 +119,19 @@ row_labels = ["CV (GroupedKFold)", "Holdout (C3, n=180)"]
 ax2.barh(y_pos[0], cv_hi - cv_lo, left=cv_lo, height=0.35,
          color="#AAAAAA", alpha=0.65, label="CV CI [2.5–97.5%]")
 ax2.barh(y_pos[1], ci_hi - ci_lo, left=ci_lo, height=0.35,
-         color="#457B9D", alpha=0.65, label="Holdout CI [2.5–97.5%]")
+         color="#0072B2", alpha=0.65, label="Holdout CI [2.5–97.5%]")
 
 # Point estimates
 ax2.plot(cv_ba,      y_pos[0], "o", color="#333333", markersize=8,
          label=f"CV BA = {cv_ba:.3f}")
-ax2.plot(ba_holdout, y_pos[1], "o", color="#457B9D", markersize=8,
+ax2.plot(ba_holdout, y_pos[1], "o", color="#0072B2", markersize=8,
          label=f"Holdout BA = {ba_holdout:.3f}")
 
 # Value annotations
 ax2.text(cv_ba + 0.003,      y_pos[0] + 0.22, f"{cv_ba:.3f}  [{cv_lo:.3f}–{cv_hi:.3f}]",
          fontsize=8, va="bottom", color="#333333")
 ax2.text(ba_holdout + 0.003, y_pos[1] + 0.22, f"{ba_holdout:.3f}  [{ci_lo:.3f}–{ci_hi:.3f}]",
-         fontsize=8, va="bottom", color="#457B9D")
+         fontsize=8, va="bottom", color="#0072B2")
 
 ax2.set_yticks(y_pos)
 ax2.set_yticklabels(row_labels, fontsize=9)
@@ -141,10 +143,10 @@ ax2.legend(fontsize=8, loc="upper left", framealpha=0.9, edgecolor="#CCCCCC")
 ax2.spines["top"].set_visible(False)
 ax2.spines["right"].set_visible(False)
 ax2.tick_params(axis="x", labelsize=8)
-ax2.set_title("Holdout BA vs CV estimate\n"
+ax2.set_title("(C)  Holdout BA vs CV estimate\n"
               f"Consistent: holdout {ba_holdout:.3f} [{ci_lo:.3f}–{ci_hi:.3f}], "
               f"CV {cv_ba:.3f} [{cv_lo:.3f}–{cv_hi:.3f}]",
-              fontsize=8.5)
+              fontsize=8.5, loc="left")
 
 fig.tight_layout(pad=1.5)
 
@@ -154,3 +156,70 @@ for ext in ("png", "pdf"):
     print(f"Saved: {path}")
 
 plt.close(fig)
+
+# ── Standalone panel B — per-species recall ──────────────────────────────────
+fig_b, ax_b = plt.subplots(figsize=(5.5, 4.5))
+bars_b = ax_b.bar(
+    [SPECIES_LABELS[sp] for sp in SPECIES_ORDER],
+    recalls,
+    color=[SPECIES_COLORS[sp] for sp in SPECIES_ORDER],
+    edgecolor="white", linewidth=0.5, width=0.65,
+)
+ax_b.axhline(1.0, color="#AAAAAA", linestyle="--", linewidth=0.8, alpha=0.7)
+for bar, val in zip(bars_b, recalls):
+    ax_b.text(bar.get_x() + bar.get_width() / 2, val + 0.012,
+              f"{val:.2f}", ha="center", va="bottom", fontsize=8.5)
+ax_b.set_ylim(0, 1.14)
+ax_b.set_ylabel("Recall (per species, n=30)", fontsize=9)
+ax_b.set_title("(B)  C3 holdout: per-species recall\n"
+               "(30 novel-ST-prioritised genomes per species)",
+               fontsize=8.5, loc="left")
+ax_b.tick_params(axis="x", rotation=35, labelsize=8.5)
+ax_b.spines["top"].set_visible(False)
+ax_b.spines["right"].set_visible(False)
+ax_b.set_yticks([0, 0.2, 0.4, 0.6, 0.8, 1.0])
+fig_b.tight_layout(pad=1.2)
+for ext in ("png", "pdf"):
+    path = os.path.join(OUT_DIR, f"fig1b_recall.{ext}")
+    fig_b.savefig(path, dpi=300, bbox_inches="tight")
+    print(f"Saved: {path}")
+plt.close(fig_b)
+
+# ── Standalone panel C — holdout BA vs CV ────────────────────────────────────
+fig_c, ax_c = plt.subplots(figsize=(5.5, 4.5))
+y_pos_c = [1, 0]
+row_labels_c = ["CV (GroupedKFold)", "Holdout (C3, n=180)"]
+ax_c.barh(y_pos_c[0], cv_hi - cv_lo, left=cv_lo, height=0.35,
+          color="#AAAAAA", alpha=0.65, label="CV CI [2.5–97.5%]")
+ax_c.barh(y_pos_c[1], ci_hi - ci_lo, left=ci_lo, height=0.35,
+          color="#0072B2", alpha=0.65, label="Holdout CI [2.5–97.5%]")
+ax_c.plot(cv_ba,      y_pos_c[0], "o", color="#333333", markersize=8,
+          label=f"CV BA = {cv_ba:.3f}")
+ax_c.plot(ba_holdout, y_pos_c[1], "o", color="#0072B2", markersize=8,
+          label=f"Holdout BA = {ba_holdout:.3f}")
+ax_c.text(cv_ba + 0.003,      y_pos_c[0] + 0.22,
+          f"{cv_ba:.3f}  [{cv_lo:.3f}–{cv_hi:.3f}]",
+          fontsize=8, va="bottom", color="#333333")
+ax_c.text(ba_holdout + 0.003, y_pos_c[1] + 0.22,
+          f"{ba_holdout:.3f}  [{ci_lo:.3f}–{ci_hi:.3f}]",
+          fontsize=8, va="bottom", color="#0072B2")
+ax_c.set_yticks(y_pos_c)
+ax_c.set_yticklabels(row_labels_c, fontsize=9)
+ax_c.set_xlim(0.79, 1.04)
+ax_c.set_ylim(-0.5, 1.75)
+ax_c.set_xlabel("Balanced accuracy", fontsize=9)
+ax_c.axvline(0.5, color="grey", linestyle=":", linewidth=0.7, alpha=0.5)
+ax_c.legend(fontsize=8, loc="upper left", framealpha=0.9, edgecolor="#CCCCCC", ncol=2)
+ax_c.spines["top"].set_visible(False)
+ax_c.spines["right"].set_visible(False)
+ax_c.tick_params(axis="x", labelsize=8)
+ax_c.set_title("(C)  Holdout BA vs CV estimate\n"
+               f"Consistent: holdout {ba_holdout:.3f} [{ci_lo:.3f}–{ci_hi:.3f}], "
+               f"CV {cv_ba:.3f} [{cv_lo:.3f}–{cv_hi:.3f}]",
+               fontsize=8.5, loc="left")
+fig_c.tight_layout(pad=1.2)
+for ext in ("png", "pdf"):
+    path = os.path.join(OUT_DIR, f"fig1c_ba_comparison.{ext}")
+    fig_c.savefig(path, dpi=300, bbox_inches="tight")
+    print(f"Saved: {path}")
+plt.close(fig_c)

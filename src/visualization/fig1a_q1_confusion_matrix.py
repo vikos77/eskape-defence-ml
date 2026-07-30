@@ -63,8 +63,8 @@ for i in range(n_classes):
 # axes
 ax.set_xticks(range(n_classes))
 ax.set_yticks(range(n_classes))
-ax.set_xticklabels(CLASS_NAMES, fontsize=9)
-ax.set_yticklabels(CLASS_NAMES, fontsize=9)
+ax.set_xticklabels(CLASS_NAMES, fontsize=8)
+ax.set_yticklabels(CLASS_NAMES, fontsize=8)
 ax.set_xlabel("Predicted species", fontsize=9, labelpad=6)
 ax.set_ylabel("True species", fontsize=9, labelpad=6)
 
