@@ -66,9 +66,9 @@ def save(img, stem):
     print(f"  Saved: {stem}.png  ({img.width}x{img.height} px)")
 
 
-# ── Fig 1: Q1 classification — generated natively by fig1_q1_classification.R ─
-# Run: Rscript src/visualization/fig1_q1_classification.R
-print("Fig 1: skipping PIL compose (native R output already in final/).")
+# ── Fig 1: generated entirely by src/visualization/figure1.R (R/patchwork) ────
+# Run: Rscript src/visualization/figure1.R
+print("Fig 1: skipping PIL compose (generated natively by figure1.R).")
 
 # ── Fig 2: Q2 ARG prediction (2A AUROC forest / 2B driver dotplot) ───────────
 print("Building Fig 2...")
