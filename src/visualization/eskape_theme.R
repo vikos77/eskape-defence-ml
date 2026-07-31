@@ -46,8 +46,9 @@ theme_eskape <- function(base_size = 9) {
 }
 
 save_fig <- function(plot, path_noext, width, height, dpi = 300) {
+  # ragg::agg_png handles Unicode (en-dashes, etc.) correctly on all platforms
   ggsave(paste0(path_noext, ".png"), plot = plot, width = width, height = height,
-         units = "in", dpi = dpi)
+         units = "in", dpi = dpi, device = ragg::agg_png)
   ggsave(paste0(path_noext, ".pdf"), plot = plot, width = width, height = height,
          units = "in", device = "pdf")
   message("Saved: ", path_noext, ".png/.pdf")

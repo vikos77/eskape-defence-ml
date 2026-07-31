@@ -27,7 +27,7 @@ cm_long <- cm_raw %>%
     dark    = prop > 0.50
   )
 
-ba_label <- sprintf("BA = %.3f [%.3f-%.3f]",
+ba_label <- sprintf("BA = %.3f [%.3f–%.3f]",
                     stats$mean_ba, stats$ci_lo, stats$ci_hi)
 
 p <- ggplot(cm_long, aes(x = pred_sp, y = true_sp, fill = prop)) +
@@ -51,7 +51,7 @@ p <- ggplot(cm_long, aes(x = pred_sp, y = true_sp, fill = prop)) +
     axis.text.x     = element_text(angle = 0, hjust = 0.5, face = "bold"),
     axis.text.y     = element_text(face = "bold"),
     panel.grid      = element_blank(),
-    panel.border    = element_blank(),
+    panel.border    = element_rect(color = "grey30", fill = NA, linewidth = 0.5),
     plot.caption    = element_text(size = 8, hjust = 0.5),
     legend.position = "right"
   )

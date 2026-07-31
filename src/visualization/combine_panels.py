@@ -66,12 +66,9 @@ def save(img, stem):
     print(f"  Saved: {stem}.png  ({img.width}x{img.height} px)")
 
 
-# ── Fig 1: Q1 classification (1A confusion matrix / 1B holdout) ──────────────
-print("Building Fig 1...")
-fig1a = load("results/figures/rf/fig1a_q1_confusion_matrix.png")
-fig1b = load("results/figures/rf/fig1b_holdout_validation.png")
-# 1A: 1500x1350, 1B: 2400x1050 — stack 1A on top of 1B
-save(stack_vertical([fig1a, fig1b]), "fig1_q1_classification")
+# ── Fig 1: Q1 classification — generated natively by fig1_q1_classification.R ─
+# Run: Rscript src/visualization/fig1_q1_classification.R
+print("Fig 1: skipping PIL compose (native R output already in final/).")
 
 # ── Fig 2: Q2 ARG prediction (2A AUROC forest / 2B driver dotplot) ───────────
 print("Building Fig 2...")

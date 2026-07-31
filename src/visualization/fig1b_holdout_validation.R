@@ -44,7 +44,6 @@ ba_df <- data.frame(
   mutate(estimate = factor(estimate, levels = c("Holdout", "Cross-validation")))
 
 p_ba <- ggplot(ba_df, aes(x = ba, y = estimate)) +
-  geom_vline(xintercept = 0.167, linetype = "dotted", color = "grey60", linewidth = 0.5) +
   geom_errorbar(aes(xmin = lo, xmax = hi), width = 0.15, linewidth = 0.8, color = "#0072B2") +
   geom_point(size = 3.5, color = "#0072B2", fill = "white", shape = 21, stroke = 1.5) +
   geom_text(aes(label = sprintf("%.3f\n[%.3f–%.3f]", ba, lo, hi)),
@@ -55,7 +54,7 @@ p_ba <- ggplot(ba_df, aes(x = ba, y = estimate)) +
   theme(panel.grid.major.y = element_blank())
 
 fig <- p_recall + p_ba +
-  plot_layout(widths = c(1.6, 1)) +
+  plot_layout(widths = c(1, 1)) +
   plot_annotation(theme = theme(plot.margin = margin(4, 4, 4, 4)))
 
 dir.create("results/figures/rf", recursive = TRUE, showWarnings = FALSE)
