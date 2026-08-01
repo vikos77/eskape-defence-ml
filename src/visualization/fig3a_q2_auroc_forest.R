@@ -32,7 +32,7 @@ df <- data.frame(
 
 p <- ggplot(df, aes(x = auroc, y = full, color = sig, shape = sig)) +
   geom_vline(xintercept = 0.5, linetype = "dashed", color = "grey50", linewidth = 0.5) +
-  geom_errorbarh(aes(xmin = ci_lo, xmax = ci_hi), height = 0.18, linewidth = 0.7) +
+  geom_errorbar(aes(xmin = ci_lo, xmax = ci_hi), orientation = "y", width = 0.18, linewidth = 0.7) +
   geom_point(size = 3, fill = "white", stroke = 1.5) +
   geom_text(aes(label = sprintf("%.3f", auroc)), nudge_y = 0.35, size = 2.5,
             color = "grey30") +
@@ -44,13 +44,12 @@ p <- ggplot(df, aes(x = auroc, y = full, color = sig, shape = sig)) +
                      name   = NULL) +
   scale_x_continuous(limits = c(0.4, 1.0), breaks = seq(0.4, 1.0, 0.1)) +
   scale_y_discrete(labels = function(x) parse(text = paste0("italic('", x, "')"))) +
-  labs(x = "AUROC (95% CI)", y = NULL, tag = "A") +
+  labs(x = "AUROC (95% CI)", y = "Species", tag = "A") +
   theme_eskape(base_size = 9) +
   theme(
     panel.grid.major.y = element_blank(),
-    legend.position    = c(0.78, 0.15),
-    legend.background  = element_rect(fill = "white", color = NA)
+    legend.position    = "right"
   )
 
 dir.create("results/figures/q2", recursive = TRUE, showWarnings = FALSE)
-save_fig(p, "results/figures/q2/fig2a_q2_auroc_forest", width = 6.5, height = 3.8)
+save_fig(p, "results/figures/q2/fig2a_q2_auroc_forest", width = 8.5, height = 3.8)

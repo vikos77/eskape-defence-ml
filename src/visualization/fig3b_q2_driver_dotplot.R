@@ -54,18 +54,14 @@ p <- ggplot(plot_df, aes(x = rho, y = key, color = category)) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey50", linewidth = 0.5) +
   geom_segment(aes(x = 0, xend = rho, y = key, yend = key),
                linewidth = 0.7, alpha = 0.55) +
-  geom_point(aes(shape = survives), size = 3, stroke = 1.3) +
+  geom_point(size = 3, shape = 19, stroke = 1.3) +
   facet_wrap(~ sp_full, scales = "free_y", ncol = 2) +
   scale_color_manual(values = DRIVER_COLORS,
                      labels = c(named = "Named system", uncharacterised = "Uncharacterised"),
                      name   = "System type") +
-  scale_shape_manual(values = c("TRUE" = 19, "FALSE" = 2),
-                     labels = c("TRUE" = "Survives phylo. correction",
-                                "FALSE" = "Attenuated"),
-                     name   = "Robustness") +
   scale_y_discrete(labels = function(x) label_map[x]) +
   scale_x_continuous(breaks = c(-0.3, -0.15, 0, 0.15, 0.3, 0.45)) +
-  labs(x = expression(rho ~ "(within phylogroup)"), y = NULL, tag = "B") +
+  labs(x = expression(rho ~ "(within phylogroup)"), y = "Defence system", tag = "B") +
   theme_eskape(base_size = 8.5) +
   theme(
     strip.text          = element_text(face = "italic", size = 8),

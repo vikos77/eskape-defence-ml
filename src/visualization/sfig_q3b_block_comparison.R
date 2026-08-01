@@ -13,7 +13,7 @@ unfilt <- fromJSON("results/q3b_367_results.json")
 
 # Blocks in display order (left to right)
 BLOCKS <- c("defence_only", "is_filt", "hmrg_filt", "arg_filt", "defence_is")
-LABELS <- c("Defence", "IS elements", "HMRG", "ARGs", "Defence + IS")
+LABELS <- c("Defence", "IS elements", "HMRG", "ARGs", "Defence\n+ IS")
 COLORS <- c("#0072B2", "#009E73", "#E69F00", "#D55E00", "#CC79A7")
 
 df <- data.frame(
@@ -31,7 +31,7 @@ df <- data.frame(
   stringsAsFactors = FALSE
 )
 
-# Ghost bars: unfiltered ARI for IS, HMRG, ARG blocks only
+# Ghost bars: unfiltered ARI for IS, HMRG, ARG single blocks only
 ghost_df <- data.frame(
   block      = factor(c("IS elements", "HMRG", "ARGs"), levels = LABELS),
   ari_unfilt = c(unfilt$is_only$ari_primary,
@@ -61,6 +61,11 @@ p <- ggplot(df, aes(x = block, y = ari, fill = block)) +
   scale_fill_manual(values = setNames(COLORS, LABELS)) +
   scale_y_continuous(limits = c(0, 0.65), expand = c(0, 0),
                      breaks = seq(0, 0.6, 0.1)) +
+  # defence baseline reference line
+  geom_hline(yintercept = filt$defence_only$ari_primary,
+             linetype = "dashed", color = "#0072B2", linewidth = 0.6, alpha = 0.7) +
+  annotate("text", x = 0.55, y = filt$defence_only$ari_primary + 0.018,
+           label = "Defence baseline", hjust = 0, size = 2.3, color = "#0072B2") +
   labs(
     x       = "Feature block (marker-filtered)",
     y       = "ARI vs species label (K = 6)",

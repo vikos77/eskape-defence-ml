@@ -141,7 +141,7 @@ panel_c <- ggplot(model_df, aes(x = ba, y = model)) +
            label    = "All McNemar vs RF: p > 0.05",
            size     = 2.5, hjust = 0,
            color    = "grey55", fontface = "italic") +
-  labs(x = "Balanced accuracy (5-fold CV)", y = NULL, tag = "C") +
+  labs(x = "Balanced accuracy (5-fold CV)", y = "ML classifier", tag = "C") +
   theme_eskape(base_size = 10) +
   theme(
     plot.tag.position  = c(0.28, 0.98),
@@ -154,8 +154,13 @@ panel_c <- ggplot(model_df, aes(x = ba, y = model)) +
 # Section 4: Multipanel composition and export
 # =============================================================================
 
-figure1 <- panel_a / (panel_b + panel_c + plot_layout(widths = c(1, 1))) +
-  plot_layout(heights = c(1.45, 1)) +
+figure1 <- panel_a + panel_b + panel_c + guide_area() +
+  plot_layout(
+    design  = "AAAAG\nBBCCG",
+    heights = c(1.45, 1),
+    widths  = c(1, 1, 1, 1, 0.45),
+    guides  = "collect"
+  ) +
   plot_annotation(theme = theme(plot.margin = margin(6, 6, 6, 6)))
 
 dir.create("results/figures/final", recursive = TRUE, showWarnings = FALSE)
