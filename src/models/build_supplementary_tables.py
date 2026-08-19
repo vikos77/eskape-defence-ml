@@ -1,8 +1,17 @@
 """
-Generate all supplementary tables (S1–S15) as CSV files in results/tables/.
+Generate all supplementary tables (S1–S16) as CSV files in results/tables/.
 
 Run from project root:
   conda run -n eskape-ml python src/models/build_supplementary_tables.py
+
+WARNING (2026-08-19): the S1, S7, S9, and S11 sections below are STALE —
+they generate output that regresses the currently-committed CSVs, which
+were hand-refined after their last generation from this script (extra
+phylogroup-count column in S7, merged Euclidean+Jaccard layout in S9, an
+extra derived-ratio-features clause in S1, extra columns in S11). Do not
+run this script and blindly commit its output for those four tables until
+those sections are updated to match. S12 was brought back in sync this
+session (14-condition Q3b scheme) and is safe to regenerate.
 """
 
 import json, os, shutil
@@ -351,13 +360,25 @@ save(s11, "S11_q3_clustering_summary", "Q3 clustering metrics full vs dereplicat
 
 # ────────────────────────────────────────────────────────────────────────────
 # S12 — Q3b multi-block ARI and permutation (filtered values)
+# 14 conditions: individual blocks, defence + one block, multi-block combos.
+# Order/labels match notebooks/09_unsupervised_archetypes.ipynb Cell 22
+# (CANONICAL_ORDER) — keep both in sync if conditions are added/renamed.
 # ────────────────────────────────────────────────────────────────────────────
 BLOCK_LABEL = {
-    "defence_only": "Defence only",
-    "is_filt":      "IS elements (marker-filtered)",
-    "hmrg_filt":    "HMRG (marker-filtered)",
-    "arg_filt":     "ARG (marker-filtered)",
-    "defence_is":   "Defence + IS (combined)",
+    "defence_only":       "Defence",
+    "is_filt":            "IS elements",
+    "hmrg_filt":          "HMRG",
+    "arg_filt":           "ARG",
+    "antidef_filt":       "Anti-defence",
+    "defence_is":         "Defence + IS",
+    "defence_hmrg":       "Defence + HMRG",
+    "defence_arg":        "Defence + ARG",
+    "defence_antidef":    "Defence + Anti-defence",
+    "mobile_filt":        "IS + HMRG + ARG",
+    "all_filt":           "Defence + IS + HMRG + ARG",
+    "defence_is_antidef": "Defence + IS + Anti-defence",
+    "mobile_all_filt":    "IS + HMRG + ARG + Anti-defence",
+    "all_five_filt":      "Defence + IS + HMRG + ARG + Anti-defence",
 }
 s12_rows = []
 for key, label in BLOCK_LABEL.items():
@@ -368,7 +389,7 @@ for key, label in BLOCK_LABEL.items():
         "ARI (K=6, dereplicated)": round(v["ari_primary"], 4),
         "ARI 95% CI": fmt_ci(*v["ari_ci95"]),
         "Permutation p": round(v["permutation_p"], 4),
-        "Significant (p<0.05)": "Yes"
+        "Significant (p<0.05)": "Yes" if v["permutation_p"] < 0.05 else "No"
     })
 s12 = pd.DataFrame(s12_rows)
 save(s12, "S12_q3b_multiblock_ari", "Q3b multi-block clustering ARI (marker-filtered)")

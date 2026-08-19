@@ -144,7 +144,7 @@ panel_c <- ggplot(model_df, aes(x = ba, y = model)) +
   labs(x = "Balanced accuracy (5-fold CV)", y = "ML classifier", tag = "C") +
   theme_eskape(base_size = 10) +
   theme(
-    plot.tag.position  = c(0.28, 0.98),
+    plot.tag.position  = c(0.14, 0.98),
     panel.grid.major.y = element_blank(),
     axis.text.y        = element_text(lineheight = 0.85)
   )
@@ -156,7 +156,7 @@ panel_c <- ggplot(model_df, aes(x = ba, y = model)) +
 
 figure1 <- panel_a + panel_b + panel_c + guide_area() +
   plot_layout(
-    design  = "AAAAG\nBBCCG",
+    design  = "AAAAG\nBBCCC",
     heights = c(1.45, 1),
     widths  = c(1, 1, 1, 1, 0.45),
     guides  = "collect"
@@ -164,4 +164,4 @@ figure1 <- panel_a + panel_b + panel_c + guide_area() +
   plot_annotation(theme = theme(plot.margin = margin(6, 6, 6, 6)))
 
 dir.create("results/figures/final", recursive = TRUE, showWarnings = FALSE)
-save_fig(figure1, "results/figures/final/figure1", width = 7.5, height = 8.5)
+save_fig(figure1, "results/figures/final/figure1", width = 8.5, height = 8.5)

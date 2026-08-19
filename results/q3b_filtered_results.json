@@ -82,5 +82,89 @@
     ],
     "permutation_p": 0.000999000999000999,
     "n_bootstrap": 2000
+  },
+  "antidef_filt": {
+    "label": "antidef_filt",
+    "n_features": 37,
+    "ari_primary": 0.11538692815306253,
+    "silhouette": 0.4266364947103188,
+    "ari_ci95": [
+      0.05402527526751779,
+      0.2319006636189911
+    ],
+    "permutation_p": 0.000999000999000999,
+    "n_bootstrap": 2000
+  },
+  "defence_hmrg": {
+    "label": "defence_hmrg",
+    "n_features": 368,
+    "ari_primary": 0.23636829898494693,
+    "silhouette": 0.02409977812589908,
+    "ari_ci95": [
+      0.11394634697880099,
+      0.3642522077909333
+    ],
+    "permutation_p": 0.000999000999000999,
+    "n_bootstrap": 2000
+  },
+  "defence_arg": {
+    "label": "defence_arg",
+    "n_features": 493,
+    "ari_primary": 0.2682220849548386,
+    "silhouette": 0.022426881571267748,
+    "ari_ci95": [
+      0.04582473295988603,
+      0.3954071750195144
+    ],
+    "permutation_p": 0.000999000999000999,
+    "n_bootstrap": 2000
+  },
+  "defence_antidef": {
+    "label": "defence_antidef",
+    "n_features": 396,
+    "ari_primary": 0.20810429683517329,
+    "silhouette": 0.019795336262814003,
+    "ari_ci95": [
+      0.08194821464560507,
+      0.33926309095683976
+    ],
+    "permutation_p": 0.000999000999000999,
+    "n_bootstrap": 2000
+  },
+  "defence_is_antidef": {
+    "label": "defence_is_antidef",
+    "n_features": 415,
+    "ari_primary": 0.32130763030699006,
+    "silhouette": 0.02510336250864465,
+    "ari_ci95": [
+      0.20320864242026243,
+      0.48404229016665384
+    ],
+    "permutation_p": 0.000999000999000999,
+    "n_bootstrap": 2000
+  },
+  "mobile_all_filt": {
+    "label": "mobile_all_filt",
+    "n_features": 199,
+    "ari_primary": 0.2437454069165399,
+    "silhouette": 0.1577795135395852,
+    "ari_ci95": [
+      0.16395841069656467,
+      0.38499215960245564
+    ],
+    "permutation_p": 0.000999000999000999,
+    "n_bootstrap": 2000
+  },
+  "all_five_filt": {
+    "label": "all_five_filt",
+    "n_features": 558,
+    "ari_primary": 0.4057731019854959,
+    "silhouette": 0.030098566132138113,
+    "ari_ci95": [
+      0.17906055924663394,
+      0.5085613507964979
+    ],
+    "permutation_p": 0.000999000999000999,
+    "n_bootstrap": 2000
   }
 }

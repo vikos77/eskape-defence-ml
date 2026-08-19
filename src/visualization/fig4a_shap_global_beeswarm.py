@@ -74,8 +74,13 @@ shap.summary_plot(
 fig.canvas.draw()
 main_ax = fig.axes[0]   # axes[0] is beeswarm; axes[1] is SHAP's colorbar
 
+# ── Remove SHAP's external colorbar; redraw in right figure margin ────────────
+if len(fig.axes) > 1:
+    fig.delaxes(fig.axes[1])
+
 ylabels = [t.get_text() for t in main_ax.get_yticklabels()]
 main_ax.set_yticklabels(ylabels, fontsize=8)
+main_ax.set_ylabel("Defence system", fontsize=9)
 main_ax.tick_params(axis="x", labelsize=8)
 main_ax.set_xlabel(main_ax.get_xlabel(), fontsize=9)
 
@@ -87,7 +92,21 @@ main_ax.set_title(
     pad=8,
 )
 
+# Place colorbar as an inset in the upper-right of the beeswarm axes —
+# that region is empty (dots for top features end near x=0.06, axis runs to 0.14).
 plt.tight_layout()
+cbar_ax = main_ax.inset_axes([0.76, 0.68, 0.025, 0.28])
+cb = plt.colorbar(
+    plt.cm.ScalarMappable(
+        norm=plt.Normalize(vmin=0, vmax=1),
+        cmap=shap.plots.colors.red_blue,
+    ),
+    cax=cbar_ax,
+)
+cb.set_ticks([0, 1])
+cb.set_ticklabels(["Low", "High"], fontsize=7)
+cb.set_label("Feature value", fontsize=8, labelpad=6)
+cbar_ax.tick_params(labelsize=7)
 
 for ext in ("png", "pdf"):
     path = os.path.join(OUT_DIR, f"fig4a_shap_global_beeswarm.{ext}")

@@ -303,6 +303,7 @@ Library/
 
 # Supplementary data — deposited to Zenodo on release
 Supplementary_Data_*.xlsx
+results/Supplemental_Tables.xlsx
 
 # Notebook builder scripts — development tools used to generate notebooks programmatically
 notebooks/build_*.py

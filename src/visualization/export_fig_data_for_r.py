@@ -8,6 +8,7 @@ Generates:
   results/fig1a_cm_for_r.csv          -- row-normalised confusion matrix (6x6)
   results/fig1a_stats_for_r.json      -- BA, 95% CI, fold_bas
   results/fig1b_holdout_for_r.json    -- per-species recall, holdout BA + CI, CV BA + CI
+  results/fig4a_beeswarm_for_r.csv    -- SHAP beeswarm long-format (genome x top-20 feature)
   results/fig4b_heatmap_for_r.csv     -- SHAP heatmap (20 rows x 6 species columns)
 """
 
@@ -118,5 +119,28 @@ for row_i, feat_i in enumerate(top20_idx):
 
 pd.DataFrame(rows).to_csv(p("results/fig4b_heatmap_for_r.csv"), index=False)
 print("  -> fig4b_heatmap_for_r.csv")
+
+# ── Fig 4A: SHAP beeswarm long-format ────────────────────────────────────────
+# Reuses shap_3d, feat_cols_all, fm, top20, top20_idx already loaded above.
+print("Exporting Fig 4A SHAP beeswarm data...")
+
+def _clean(feat):
+    return feat.removeprefix("dp_").removeprefix("df_").removeprefix("padloc_")
+
+shap_2d  = np.abs(shap_3d).mean(axis=2)          # (3335, 359) mean |SHAP| over 6 classes
+shap_top = shap_2d[:, top20_idx]                  # (3335, 20)
+X_top    = fm[list(top20["feature"])].to_numpy(dtype=float)
+
+labels = [_clean(f) for f in top20["feature"]]
+ranks  = list(range(1, N_FEATS + 1))
+n      = shap_top.shape[0]
+
+bee_rows = [
+    {"feature": labels[j], "rank": ranks[j],
+     "shap_value": float(shap_top[i, j]), "feature_value": float(X_top[i, j])}
+    for i in range(n) for j in range(N_FEATS)
+]
+pd.DataFrame(bee_rows).to_csv(p("results/fig4a_beeswarm_for_r.csv"), index=False)
+print(f"  -> fig4a_beeswarm_for_r.csv  ({len(bee_rows):,} rows)")
 
 print("\nAll exports complete.")

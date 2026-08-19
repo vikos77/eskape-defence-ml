@@ -17,8 +17,8 @@ source("src/visualization/eskape_theme.R")
 # Section 1: Generate individual panels
 # =============================================================================
 
-source("src/visualization/fig3a_q2_auroc_forest.R")   # → results/figures/q2/fig2a_q2_auroc_forest.png
-source("src/visualization/fig3b_q2_driver_dotplot.R")  # → results/figures/q2/fig2b_q2_driver_dotplot.png
+source("src/visualization/fig2a_q2_auroc_forest.R")   # → results/figures/q2/fig2a_q2_auroc_forest.png
+source("src/visualization/fig2b_q2_driver_dotplot.R")  # → results/figures/q2/fig2b_q2_driver_dotplot.png
 
 # =============================================================================
 # Section 2: Stack panels vertically (centre narrower panel on white canvas)

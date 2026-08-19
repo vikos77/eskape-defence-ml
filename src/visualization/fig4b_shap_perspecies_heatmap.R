@@ -45,18 +45,21 @@ p <- ggplot(df_long, aes(x = species, y = feature, fill = shap)) +
   ) +
   scale_color_manual(values = c("TRUE" = "white", "FALSE" = "grey25"), guide = "none") +
   scale_x_discrete(labels = function(x) parse(text = x),
-                   position = "top") +
-  labs(x = NULL, y = NULL, tag = "B") +
+                   position = "bottom") +
+  labs(x = "ESKAPE species", y = "Defence system", tag = "B") +
   theme_eskape(base_size = 8.5) +
   theme(
-    axis.text.x        = element_text(angle = 40, hjust = 0, face = "italic", size = 7.5),
-    axis.text.y        = element_text(size = 7.5),
+    axis.text.x         = element_text(angle = 40, hjust = 1, face = "italic", size = 7.5),
+    axis.text.y         = element_text(size = 7.5),
+    axis.title.x.bottom = element_text(size = 8.5, margin = margin(t = 6)),
+    axis.title.y        = element_text(size = 8.5, angle = 90, vjust = 0.5,
+                                       margin = margin(r = 6)),
     panel.grid         = element_blank(),
     panel.border       = element_blank(),
     legend.position    = "right",
     legend.key.height  = unit(1.2, "cm"),
-    plot.margin        = margin(t = 30, r = 5, b = 5, l = 5)
+    plot.margin        = margin(t = 10, r = 5, b = 5, l = 5)
   )
 
 dir.create("results/figures/interpretation", recursive = TRUE, showWarnings = FALSE)
-save_fig(p, "results/figures/interpretation/fig4b_shap_heatmap", width = 6.5, height = 7)
+save_fig(p, "results/figures/interpretation/fig4b_shap_heatmap", width = 6.5, height = 7.5)

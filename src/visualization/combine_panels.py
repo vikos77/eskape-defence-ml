@@ -7,7 +7,7 @@ Run from project root:
 Outputs (all 300 DPI PNG + PDF stub):
   results/figures/final/fig1_q1_classification.{png,pdf}
   results/figures/final/fig2_q2_arg_prediction.{png,pdf}
-  results/figures/final/fig3_q3b_block_comparison.{png,pdf}   (copy)
+  results/figures/final/fig3_combined.{png,pdf}               (3A top + 3B bottom)
   results/figures/final/fig4_shap_interpretation.{png,pdf}
 """
 
@@ -77,16 +77,22 @@ fig2b = load("results/figures/q2/fig2b_q2_driver_dotplot.png")
 # 2A: 1950x1140, 2B: 2700x2100 — stack 2A on top of 2B
 save(stack_vertical([fig2a, fig2b]), "fig2_q2_arg_prediction")
 
-# ── Fig 3: Q3b block comparison (standalone) ─────────────────────────────────
+# ── Fig 3: K-selection (3A, top) + Q3b block comparison (3B, bottom) ─────────
 print("Building Fig 3...")
-fig3 = load("results/figures/q3b/fig3_q3b_block_comparison.png")
-save(fig3, "fig3_q3b_block_comparison")
+fig3 = stack_vertical([
+    load("results/figures/final/fig3a_k_selection.png"),
+    load("results/figures/final/fig3_q3b_block_comparison.png"),
+])
+save(fig3, "fig3_combined")
 
 # ── Fig 4: SHAP interpretation (4A global beeswarm / 4B per-species heatmap) ─
 print("Building Fig 4...")
 fig4a = load("results/figures/interpretation/fig4a_shap_global_beeswarm.png")
 fig4b = load("results/figures/interpretation/fig4b_shap_heatmap.png")
-# 4A: 2519x2065, 4B: 1950x2100 — side by side (similar heights)
+# Crop top whitespace from 4B so its first heatmap row aligns with 4A's first
+# beeswarm row (angled species labels push 4B content ~130 px below 4A content).
+CROP_TOP_4B = 0
+fig4b = fig4b.crop((0, CROP_TOP_4B, fig4b.width, fig4b.height))
 save(side_by_side([fig4a, fig4b]), "fig4_shap_interpretation")
 
 print("\nAll combined figures written to results/figures/final/")

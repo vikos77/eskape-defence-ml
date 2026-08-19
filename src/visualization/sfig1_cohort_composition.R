@@ -58,7 +58,7 @@ bar_theme <- function(legend_cols = 1) {
 # In-bar label helper
 # IMPORTANT: pass full df (not a filtered subset) so position_stack can compute
 # correct cumulative positions for every segment. Small segments get "" label.
-bar_label <- function(df, threshold = 5) {
+bar_label <- function(df, threshold = 4) {
   geom_text(
     data = df,
     aes(label = ifelse(pct >= threshold, paste0(round(pct), "%"), "")),
@@ -79,12 +79,12 @@ all_meta <- map2_dfr(SP_KEYS, SP_LABELS, function(key, lbl) {
 # Use countrycode continent mapping (Africa, Americas, Asia, Europe, Oceania)
 CONT_LEVELS <- c("Asia", "Europe", "Americas", "Oceania", "Africa", "Unknown")
 CONT_COLORS <- c(
-  "Asia"     = "#e07b39",   # warm orange
-  "Europe"   = "#2980b9",   # blue
-  "Americas" = "#27ae60",   # green
-  "Oceania"  = "#8e44ad",   # purple
-  "Africa"   = "#f1c40f",   # yellow
-  "Unknown"  = "#c8c8c8"    # grey
+  "Asia"     = "#E69F00",   # Okabe-Ito orange
+  "Europe"   = "#0072B2",   # Okabe-Ito blue
+  "Americas" = "#009E73",   # Okabe-Ito bluish green
+  "Oceania"  = "#CC79A7",   # Okabe-Ito reddish purple
+  "Africa"   = "#F0E442",   # Okabe-Ito yellow
+  "Unknown"  = "#999999"    # grey
 )
 
 country_data <- all_meta %>%
@@ -170,12 +170,12 @@ ISO_MAP <- c(
 ISO_LEVELS <- c("Clinical (human)", "Clinical (animal)", "Environmental",
                 "Food", "Other / unspecified", "Not provided")
 ISO_COLORS <- c(
-  "Clinical (human)"    = "#c0392b",
-  "Clinical (animal)"   = "#e67e22",
-  "Environmental"       = "#27ae60",
-  "Food"                = "#f1c40f",
-  "Other / unspecified" = "#95a5a6",
-  "Not provided"        = "#dcdde1"
+  "Clinical (human)"    = "#D55E00",   # Okabe-Ito vermilion
+  "Clinical (animal)"   = "#E69F00",   # Okabe-Ito orange
+  "Environmental"       = "#009E73",   # Okabe-Ito bluish green
+  "Food"                = "#F0E442",   # Okabe-Ito yellow
+  "Other / unspecified" = "#999999",   # grey
+  "Not provided"        = "#CCCCCC"    # light grey
 )
 
 # Species name map for the CSV (full Linnaean → short label)
@@ -224,13 +224,21 @@ fig1 <- panel_a | panel_b | panel_c
 out_dir <- "results/figures"
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
-ggsave(file.path(out_dir, "fig1_cohort_composition.png"),
+ggsave(file.path(out_dir, "sfig1_cohort_composition.png"),
        fig1, width = 15, height = 7, dpi = 300, bg = "white")
 
-pdf(file.path(out_dir, "fig1_cohort_composition.pdf"),
+pdf(file.path(out_dir, "sfig1_cohort_composition.pdf"),
     width = 15, height = 7)
 print(fig1)
 invisible(dev.off())
 
-cat("Saved:\n  results/figures/fig1_cohort_composition.png\n")
-cat("  results/figures/fig1_cohort_composition.pdf\n")
+# also copy to final/ — this is the path referenced from figures.md and
+# supplemental_material.md
+dir.create(file.path(out_dir, "final"), showWarnings = FALSE, recursive = TRUE)
+file.copy(file.path(out_dir, "sfig1_cohort_composition.png"),
+          file.path(out_dir, "final", "sfig1_cohort_composition.png"),
+          overwrite = TRUE)
+file.copy(file.path(out_dir, "sfig1_cohort_composition.pdf"),
+          file.path(out_dir, "final", "sfig1_cohort_composition.pdf"),
+          overwrite = TRUE)
+cat("Saved:\n  results/figures/sfig1_cohort_composition.png\n  results/figures/final/sfig1_cohort_composition.png\n")
