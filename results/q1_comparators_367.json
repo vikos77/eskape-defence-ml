@@ -1,0 +1,227 @@
+{
+  "rf_reference": {
+    "cv_ba": 0.8998260703476838,
+    "cv_ci95": [
+      0.871,
+      0.923
+    ],
+    "cv_per_class_recall": {
+      "paeruginosa": 0.893427900085654,
+      "saureus": 1.0,
+      "abaumannii": 0.7109803471984698,
+      "ecloaceae": 0.9013395457192779,
+      "efaecium": 0.9849341192787794,
+      "kpneumoniae": 0.9082745098039215
+    },
+    "holdout_ba": 0.9444444444444445,
+    "holdout_ci95": [
+      0.9111111111111111,
+      0.9722222222222223
+    ],
+    "holdout_per_class_recall": {
+      "abaumannii": 0.9666666666666667,
+      "ecloaceae": 0.8333333333333334,
+      "efaecium": 1.0,
+      "kpneumoniae": 0.9333333333333333,
+      "paeruginosa": 0.9333333333333333,
+      "saureus": 1.0
+    }
+  },
+  "mlst_training_pool_context": {
+    "per_species": {
+      "abaumannii": {
+        "n_candidates": 631,
+        "n_concordant": 631,
+        "n_discordant": 0,
+        "n_untypeable": 0,
+        "discordant_schemes_seen": [],
+        "n_st_unassigned_among_concordant": 18,
+        "st_unassigned_rate_among_concordant": 0.028526148969889066
+      },
+      "ecloaceae": {
+        "n_candidates": 536,
+        "n_concordant": 505,
+        "n_discordant": 29,
+        "n_untypeable": 2,
+        "discordant_schemes_seen": [
+          "cronobacter",
+          "salmonella"
+        ],
+        "n_st_unassigned_among_concordant": 42,
+        "st_unassigned_rate_among_concordant": 0.08316831683168317
+      },
+      "efaecium": {
+        "n_candidates": 524,
+        "n_concordant": 524,
+        "n_discordant": 0,
+        "n_untypeable": 0,
+        "discordant_schemes_seen": [],
+        "n_st_unassigned_among_concordant": 15,
+        "st_unassigned_rate_among_concordant": 0.02862595419847328
+      },
+      "kpneumoniae": {
+        "n_candidates": 600,
+        "n_concordant": 504,
+        "n_discordant": 96,
+        "n_untypeable": 0,
+        "discordant_schemes_seen": [
+          "ecoli_achtman_4"
+        ],
+        "n_st_unassigned_among_concordant": 11,
+        "st_unassigned_rate_among_concordant": 0.021825396825396824
+      },
+      "paeruginosa": {
+        "n_candidates": 600,
+        "n_concordant": 600,
+        "n_discordant": 0,
+        "n_untypeable": 0,
+        "discordant_schemes_seen": [],
+        "n_st_unassigned_among_concordant": 38,
+        "st_unassigned_rate_among_concordant": 0.06333333333333334
+      },
+      "saureus": {
+        "n_candidates": 600,
+        "n_concordant": 600,
+        "n_discordant": 0,
+        "n_untypeable": 0,
+        "discordant_schemes_seen": [],
+        "n_st_unassigned_among_concordant": 23,
+        "st_unassigned_rate_among_concordant": 0.03833333333333333
+      }
+    },
+    "total_candidates": 3491,
+    "total_concordant": 3364,
+    "total_discordant": 125,
+    "total_untypeable": 2,
+    "overall_concordance_rate": 0.9636207390432541,
+    "total_st_unassigned_among_concordant": 147,
+    "st_unassigned_rate_among_concordant": 0.043697978596908445,
+    "note": "st_unassigned = species scheme matched correctly, but no catalogued ST for this allele combination (novel combination). This is MLST's actual designed task (strain-level resolution) failing, distinct from species-level scheme detection (near-100% throughout)."
+  },
+  "mlst_holdout_classifier": {
+    "accuracy": 1.0,
+    "ci95": [
+      1.0,
+      1.0
+    ],
+    "per_species_recall": {
+      "abaumannii": 1.0,
+      "ecloaceae": 1.0,
+      "efaecium": 1.0,
+      "kpneumoniae": 1.0,
+      "paeruginosa": 1.0,
+      "saureus": 1.0
+    },
+    "n_discordant_calls": 0,
+    "n_untypeable_calls": 0,
+    "confusion_note": "0 discordant, 0 untypeable across all 180 holdout genomes",
+    "n_st_unassigned_among_concordant": 27,
+    "st_unassigned_rate_among_concordant": 0.15,
+    "st_unassigned_note": "Species scheme call correct but no catalogued ST (novel allele combination) -- elevated here vs. the training pool because the holdout was deliberately enriched for novel STs (Methods \u00a78)."
+  },
+  "mash_knn_training_cv": {
+    "note": "REVISED 2026-09-08: an earlier version of this docstring flagged this as circular (phylogroups derived from Mash distances scoring a Mash-distance classifier). That concern doesn't hold: phylogroups are built by WITHIN-species clustering (Methods \u00a74) over genomes already assigned to species by NCBI taxonomy, so the CV grouping has no mechanism to inflate SPECIES-level separation, which is what this classifier is scored on. The all-k tie at exactly 1.000 reflects the real, expected geometry: inter-species Mash distance dwarfs intra-species distance for six organisms spanning two phyla. Mash/ANI-based whole-genome relatedness is the modern standard for bacterial species delineation (operationalised in GTDB) and is treated as the PRIMARY R1-4 comparator, not a sanity check.",
+    "k_grid_mean_ba": {
+      "1": 1.0,
+      "3": 1.0,
+      "5": 1.0,
+      "11": 1.0,
+      "25": 1.0
+    },
+    "best_k": 1,
+    "fold_bas": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "mean_ba": 1.0,
+    "ci95_ba": [
+      1.0,
+      1.0
+    ],
+    "per_class_recall": {
+      "abaumannii": 1.0,
+      "ecloaceae": 1.0,
+      "efaecium": 1.0,
+      "kpneumoniae": 1.0,
+      "paeruginosa": 1.0,
+      "saureus": 1.0
+    }
+  },
+  "mash_knn_holdout": {
+    "k_used": 1,
+    "accuracy": 1.0,
+    "ci95": [
+      1.0,
+      1.0
+    ],
+    "per_species_recall": {
+      "abaumannii": 1.0,
+      "ecloaceae": 1.0,
+      "efaecium": 1.0,
+      "kpneumoniae": 1.0,
+      "paeruginosa": 1.0,
+      "saureus": 1.0
+    },
+    "confusion_matrix": [
+      [
+        30,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        30,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        30,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        30,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        30,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        30
+      ]
+    ],
+    "confusion_labels": [
+      "abaumannii",
+      "ecloaceae",
+      "efaecium",
+      "kpneumoniae",
+      "paeruginosa",
+      "saureus"
+    ]
+  }
+}
